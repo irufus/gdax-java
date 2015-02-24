@@ -2,8 +2,8 @@
 Java based wrapper for the [Coinbase Exchange API](https://docs.exchange.coinbase.com/#introduction)
 
 #Functions needed:
-    *Authentication
-    *Get Accounts
+    *Authentication (Basic authentication for Get requests has been done)
+    *Get Accounts (DONE)
     *Place a new Order
     *Cancel a new Order
     *List Open Orders
