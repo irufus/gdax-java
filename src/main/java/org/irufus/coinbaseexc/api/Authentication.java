@@ -23,8 +23,7 @@ public class Authentication {
         this.passphrase = passphrase;
         this.secretKey = secret_key;
     }
-    public void setAuthenticationHeaders(HttpGet getRequest, String endpoint_url, String body) throws InvalidKeyException, NoSuchAlgorithmException 
-    {
+    public void setAuthenticationHeaders(HttpGet getRequest, String endpoint_url, String body) throws InvalidKeyException, NoSuchAlgorithmException, CloneNotSupportedException {
         String method = "GET";
         String timestamp = Instant.now().getEpochSecond() + "";
         String signature = generateSignature(secretKey, timestamp, method, endpoint_url, body);
@@ -35,15 +34,14 @@ public class Authentication {
         getRequest.addHeader("CB-ACCESS-TIMESTAMP", timestamp);
         getRequest.addHeader("CB-ACCESS-PASSPHRASE", passphrase);
     }
-    public void setAuthenticationHeaders(HttpGet getRequest, String endpoint_url) throws NoSuchAlgorithmException, InvalidKeyException 
-    {
+    public void setAuthenticationHeaders(HttpGet getRequest, String endpoint_url) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException {
         setAuthenticationHeaders(getRequest, endpoint_url, "");
     }
-    public static String generateSignature(String secret_key, String timestamp, String method, String endpoint_url, String body) throws NoSuchAlgorithmException, InvalidKeyException {
+    public static String generateSignature(String secret_key, String timestamp, String method, String endpoint_url, String body) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException {
         String prehash = timestamp + method.toUpperCase() + endpoint_url + body;
         byte[] secretDecoded = Base64.getDecoder().decode(secret_key);
         SecretKeySpec keyspec = new SecretKeySpec(secretDecoded, "HmacSHA256");
-        Mac sha256 = Mac.getInstance("HmacSHA256");
+        Mac sha256 = (Mac) CoinbaseExchangeImpl.SHARED_MAC.clone();
         sha256.init(keyspec);
         return Base64.getEncoder().encodeToString(sha256.doFinal(prehash.getBytes()));
     }
