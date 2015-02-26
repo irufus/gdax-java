@@ -2,7 +2,7 @@
 Java based wrapper for the [Coinbase Exchange API](https://docs.exchange.coinbase.com/#introduction)
 
 #Functions needed:
-    - [x]Authentication (Basic authentication for Get requests has been done)
+    - [x]Authentication (GET, POST, DELETE supported)
     - [x]Get Accounts
     - [x]Place a new Order
     - [x]Cancel an Order
