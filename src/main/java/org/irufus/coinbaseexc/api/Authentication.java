@@ -1,9 +1,13 @@
 package org.irufus.coinbaseexc.api;
 
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -23,19 +27,18 @@ public class Authentication {
         this.passphrase = passphrase;
         this.secretKey = secret_key;
     }
-    public void setAuthenticationHeaders(HttpGet getRequest, String endpoint_url, String body) throws InvalidKeyException, NoSuchAlgorithmException, CloneNotSupportedException {
-        String method = "GET";
+    public void setAuthenticationHeaders(HttpUriRequest request, String method, String endpoint_url, String body) throws InvalidKeyException, NoSuchAlgorithmException, CloneNotSupportedException, UnsupportedEncodingException {
         String timestamp = Instant.now().getEpochSecond() + "";
         String signature = generateSignature(secretKey, timestamp, method, endpoint_url, body);
-        
-        getRequest.addHeader("accept", "application/json");
-        getRequest.addHeader("CB-ACCESS-KEY", publicKey);
-        getRequest.addHeader("CB-ACCESS-SIGN", signature);
-        getRequest.addHeader("CB-ACCESS-TIMESTAMP", timestamp);
-        getRequest.addHeader("CB-ACCESS-PASSPHRASE", passphrase);
+
+        request.addHeader("accept", "application/json");
+        request.addHeader("CB-ACCESS-KEY", publicKey);
+        request.addHeader("CB-ACCESS-SIGN", signature);
+        request.addHeader("CB-ACCESS-TIMESTAMP", timestamp);
+        request.addHeader("CB-ACCESS-PASSPHRASE", passphrase);
     }
-    public void setAuthenticationHeaders(HttpGet getRequest, String endpoint_url) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException {
-        setAuthenticationHeaders(getRequest, endpoint_url, "");
+    public void setAuthenticationHeaders(HttpUriRequest request, String method, String endpoint_url) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, UnsupportedEncodingException {
+        setAuthenticationHeaders(request, method, endpoint_url, "");
     }
     public static String generateSignature(String secret_key, String timestamp, String method, String endpoint_url, String body) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException {
         String prehash = timestamp + method.toUpperCase() + endpoint_url + body;
@@ -44,5 +47,9 @@ public class Authentication {
         Mac sha256 = (Mac) CoinbaseExchangeImpl.SHARED_MAC.clone();
         sha256.init(keyspec);
         return Base64.getEncoder().encodeToString(sha256.doFinal(prehash.getBytes()));
+    }
+    public static void setNonAuthenticationHeaders(HttpUriRequest request)
+    {
+        request.addHeader("accept", "application/json");
     }
 }

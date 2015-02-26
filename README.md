@@ -4,16 +4,16 @@ Java based wrapper for the [Coinbase Exchange API](https://docs.exchange.coinbas
 #Functions needed:
     - [x]Authentication (Basic authentication for Get requests has been done)
     - [x]Get Accounts
-    - [ ]Place a new Order
-    - [ ]Cancel a new Order
+    - [x]Place a new Order
+    - [x]Cancel an Order
     - [x]List Open Orders
-    - [ ]Get an Order
+    - [x]Get an Order
     - [ ]List fills
-    - [ ]Transfer Funds
     - [ ]HTTP Error code support
     - [ ]Pagination support for all calls that support it
     
 #Features wanted:
+    - [ ]Transfer Funds
     - [ ]Web Socket support
     - [ ]Market Data support
     - [ ]RealTime order book support

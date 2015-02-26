@@ -8,10 +8,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.irufus.coinbaseexc.api.entity.Account;
-import org.irufus.coinbaseexc.api.entity.AccountHistory;
-import org.irufus.coinbaseexc.api.entity.Hold;
-import org.irufus.coinbaseexc.api.entity.Order;
+import org.irufus.coinbaseexc.api.entity.*;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -36,7 +33,9 @@ public interface CoinbaseExchange {
     public Account getAccount(String accountid);
     public AccountHistory[] getAccountHistory(String accountid);
     public Hold[] getHolds(String accountid);
-    public String cancelOrder(String orderid);
+    public Order createOrder(NewOrderSingle order) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException;
+    public String cancelOrder(String orderid) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException;
     public Order[] getOpenOrders() throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException;
-    public Order getOrder(String order_id);
+    public Order getOrder(String order_id) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException;
+    public Product[] getProducts() throws IOException;
 }

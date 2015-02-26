@@ -1,13 +1,14 @@
 package org.irufus.coinbaseexc.api;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
-import org.irufus.coinbaseexc.api.entity.Account;
-import org.irufus.coinbaseexc.api.entity.AccountHistory;
-import org.irufus.coinbaseexc.api.entity.Hold;
-import org.irufus.coinbaseexc.api.entity.Order;
+import org.irufus.coinbaseexc.api.entity.*;
 
 import javax.crypto.Mac;
 import java.io.BufferedReader;
@@ -55,8 +56,16 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     }
 
     @Override
-    public String cancelOrder(String orderid) {
-        return null;
+    public Order createOrder(NewOrderSingle order) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
+        Gson gson = new Gson();
+        String body = gson.toJson(order);
+        String response = generatePostRequestJSON("/orders", body);
+        return gson.fromJson(response, Order.class);
+    }
+
+    @Override
+    public String cancelOrder(String orderid) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
+        return executeDeleteRequest("/orders", orderid);
     }
 
     @Override
@@ -69,12 +78,44 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     }
 
     @Override
-    public Order getOrder(String order_id) {
-        return null;
+    public Order getOrder(String order_id) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
+        String endpoint = "/orders/" + order_id;
+        String json = generateGetRequestJSON(endpoint);
+        Gson gson = new Gson();
+        return gson.fromJson(json, Order.class);
+    }
+
+    @Override
+    public Product[] getProducts() throws IOException {
+        String endpoint = "/products";
+        HttpGet getRequest = new HttpGet(cbURL + endpoint);
+        Authentication.setNonAuthenticationHeaders(getRequest);
+        CloseableHttpResponse response = HttpClients.createDefault().execute(getRequest);
+        BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+        String json = processStream(br);
+        Gson gson = new Gson();
+        Product[] products = gson.fromJson(json, Product[].class);
+        return products;
+    }
+    private String executeDeleteRequest(String endpoint, String parameter) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException {
+        HttpDelete deleteRequest = new HttpDelete(cbURL + endpoint + "/" + parameter);
+        auth.setAuthenticationHeaders(deleteRequest, "DELETE", endpoint + "/" + parameter);
+        CloseableHttpResponse response = HttpClients.createDefault().execute(deleteRequest);
+        BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+        return processStream(br);
+    }
+    private String generatePostRequestJSON(String endpoint, String body) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException {
+        HttpPost postRequest = new HttpPost(cbURL + endpoint);
+        auth.setAuthenticationHeaders(postRequest, "POST", endpoint, body);
+        postRequest.addHeader("content-type", "application/json");
+        postRequest.setEntity(new StringEntity(body));
+        CloseableHttpResponse response = HttpClients.createDefault().execute(postRequest);
+        BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+        return processStream(br);
     }
     private String generateGetRequestJSON(String endpoint) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException {
         HttpGet getRequest = new HttpGet(cbURL + endpoint);
-        auth.setAuthenticationHeaders(getRequest, endpoint);
+        auth.setAuthenticationHeaders(getRequest, "GET", endpoint);
         CloseableHttpResponse response = HttpClients.createDefault().execute(getRequest);
         BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
         return processStream(br);
