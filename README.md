@@ -8,6 +8,7 @@ Java based wrapper for the [Coinbase Exchange API](https://docs.exchange.coinbas
     - [x]Cancel an Order
     - [x]List Open Orders
     - [x]Get an Order
+    - [x]Get Account History
     - [ ]List fills
     - [ ]HTTP Error code support
     - [ ]Pagination support for all calls that support it
