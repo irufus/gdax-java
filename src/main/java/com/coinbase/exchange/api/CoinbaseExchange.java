@@ -31,5 +31,6 @@ public interface CoinbaseExchange {
     public Product[] getProducts() throws IOException;
     public Fill[] getFills();
     public String getMarketDataOrderBook(String product, String level) throws IOException;
-        
+
+    ProductOrderBook getMarketDataOrderBookProduct(String product, String level) throws IOException;
 }

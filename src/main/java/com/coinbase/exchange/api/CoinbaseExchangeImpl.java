@@ -66,6 +66,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
         Gson gson = new Gson();
         String body = gson.toJson(order);
         String json = generatePostRequestJSON("/orders", body);
+        System.out.println(json);
         return gson.fromJson(json, Order.class);
     }
 
@@ -120,6 +121,13 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
         BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
         String json = processStream(br);
         return json;
+    }
+    @Override
+    public ProductOrderBook getMarketDataOrderBookProduct(String product, String level) throws IOException{
+        String json = getMarketDataOrderBook(product, level);
+        Gson gson = new Gson();
+        ProductOrderBook pob = gson.fromJson(json, ProductOrderBook.class);
+        return pob;
     }
 
     private String executeDeleteRequest(String endpoint, String parameter) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException {
