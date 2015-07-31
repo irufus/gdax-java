@@ -122,13 +122,14 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
         String json = processStream(br);
         return json;
     }
+    /*
     @Override
     public ProductOrderBook getMarketDataOrderBookProduct(String product, String level) throws IOException{
         String json = getMarketDataOrderBook(product, level);
         Gson gson = new Gson();
         ProductOrderBook pob = gson.fromJson(json, ProductOrderBook.class);
         return pob;
-    }
+    }*/
 
     private String executeDeleteRequest(String endpoint, String parameter) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException {
         HttpDelete deleteRequest = new HttpDelete(cbURL + endpoint + "/" + parameter);
