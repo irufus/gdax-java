@@ -5,13 +5,13 @@ import java.math.BigDecimal;
 /**
  * Created by irufus on 2/25/15.
  */
-public class NewOrderSingle {
+public abstract class NewOrderSingle {
     private String client_oid; //optional
-    private BigDecimal price; 
-    private Double size;
+    private String type; //default is limit, other type is market
     private String side;
     private String product_id;
     private String stp; //optional: values are dc, co , cn , cb
+    private BigDecimal funds;
 
     public String getStp() {
         return stp;
@@ -37,27 +37,27 @@ public class NewOrderSingle {
         this.side = side;
     }
 
-    public Double getSize() {
-        return size;
-    }
-
-    public void setSize(Double size) {
-        this.size = size;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
     public String getClient_oid() {
         return client_oid;
     }
 
     public void setClient_oid(String client_oid) {
         this.client_oid = client_oid;
+    }
+
+    public BigDecimal getFunds() {
+        return funds;
+    }
+
+    public void setFunds(BigDecimal funds) {
+        this.funds = funds;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
