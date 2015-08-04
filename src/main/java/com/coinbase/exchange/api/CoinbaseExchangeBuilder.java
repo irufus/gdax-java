@@ -16,6 +16,10 @@ public class CoinbaseExchangeBuilder {
     public CoinbaseExchange build() throws NoSuchAlgorithmException {
         return new CoinbaseExchangeImpl(this);
     }
+    public CoinbaseExchangeBuilder useDefault(){
+        url = "https://api.exchange.coinbase.com";
+        return this;
+    }
     public CoinbaseExchangeBuilder withAPIUrl(String url)
     {
         this.url = url;
