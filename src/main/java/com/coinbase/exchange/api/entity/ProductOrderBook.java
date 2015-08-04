@@ -6,7 +6,7 @@ import java.util.List;
  * Created by irufus on 8/3/15.
  */
 public class ProductOrderBook {
-    private int sequenece;
+    private Integer sequence;
     private List<List<String>> bids;
     private List<List<String>> asks;
 
@@ -26,11 +26,11 @@ public class ProductOrderBook {
         this.bids = bids;
     }
 
-    public int getSequenece() {
-        return sequenece;
+    public Integer getSequence() {
+        return sequence;
     }
 
-    public void setSequenece(int sequenece) {
-        this.sequenece = sequenece;
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
     }
 }
