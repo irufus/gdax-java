@@ -1,5 +1,5 @@
-# gdax-java (Recently known as coinbase-exchange-java)
-Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction)
+# gdax-java (coinbase-exchange-java)
+Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
 
 #Functions needed:
     - [ ]List fills
@@ -7,6 +7,7 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction)
     - [ ]Pagination support for all calls that support it
     - [ ]List of Currencies
     - [ ]Ethereal support
+    - [ ]Sandbox support
     
 #Features wanted:
     - [ ]Transfer Funds
