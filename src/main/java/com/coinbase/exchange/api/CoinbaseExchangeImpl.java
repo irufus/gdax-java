@@ -34,7 +34,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     @Override
     public Account[] getAccounts() throws IOException, InvalidKeyException, NoSuchAlgorithmException, CloneNotSupportedException {
         String endpoint = "/accounts";
-        String json = generateGetRequestJSON(endpoint);
+        String json = generateGetRequestJSON(endpoint); //todo ADD handler for request timestamp expired. This can be caused by an out of date clock
         Gson gson = new Gson();
         Account[] accounts = gson.fromJson(json, Account[].class );
         return accounts;

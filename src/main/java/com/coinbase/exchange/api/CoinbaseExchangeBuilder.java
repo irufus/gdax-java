@@ -16,6 +16,12 @@ public class CoinbaseExchangeBuilder {
     public CoinbaseExchange build() throws NoSuchAlgorithmException {
         return new CoinbaseExchangeImpl(this);
     }
+
+    /**
+     * @Description use this for the default web api. Use withAPIUrl for now until the default is changed.
+     * @return CoinbaseExchangeBuilder
+     * @deprecated
+     */
     public CoinbaseExchangeBuilder useDefault(){
         url = "https://api.exchange.coinbase.com";
         return this;
