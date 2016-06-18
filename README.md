@@ -1,6 +1,8 @@
 # coinbase-exchange-java
 Java based wrapper for the [Coinbase Exchange API](https://docs.exchange.coinbase.com/#introduction)
 
+
+
 #Functions needed:
     - [x]Authentication (GET, POST, DELETE supported)
     - [x]Get Accounts
@@ -19,6 +21,12 @@ Java based wrapper for the [Coinbase Exchange API](https://docs.exchange.coinbas
     - [ ]Web Socket support
     - [ ]Market Data support
     - [x]Product Order book support
+
+Examples
+--------
+```java
+CoinbaseEx
+
 
 #Notes:
 >Coinbase Exchange primary data sources and servers run in the Amazon US East data center. To minimize latency for API access, we recommend making requests from servers located near the US East data center.

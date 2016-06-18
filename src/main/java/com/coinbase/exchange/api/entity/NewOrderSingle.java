@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  */
 public abstract class NewOrderSingle {
     private String client_oid; //optional
-    private String type; //default is limit, other type is market
+    private String type; //default is limit, other types are market and stop
     private String side;
     private String product_id;
     private String stp; //optional: values are dc, co , cn , cb
