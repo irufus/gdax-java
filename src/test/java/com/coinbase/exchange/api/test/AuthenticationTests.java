@@ -8,7 +8,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 
 /**
  * Created by irufus (sakamura@gmail.com)
@@ -17,19 +22,28 @@ import static junit.framework.TestCase.assertTrue;
 public class AuthenticationTests {
     @BeforeClass
     public static void oneTimeSetup(){
-        System.out.println("Init General Tests \\==/ Authentication Tests");
+        System.out.println("Init General Tests | Authentication Tests");
     }
     @AfterClass
     public static void oneTimeTearDown(){
-        System.out.println("Clean up \\==/ Authentication Tests");
+        System.out.println("Clean up | Authentication Tests");
     }
 
     @Test
     public void simpleAuthenticationTest(){
-        String api = "";
-        String key = "";
-        String secret = "";
-        String passphrase = "";
+        Properties prop = new Properties();
+        InputStream in = getClass().getClassLoader().getResourceAsStream("gdax.properties");
+        try{
+            prop.load(in);
+        } catch(IOException ex){
+            ex.printStackTrace();
+            fail("Need to set properties file for test");
+        }
+
+        String api = prop.getProperty("gdax.api");
+        String key = prop.getProperty("gdax.key");
+        String secret = prop.getProperty("gdax.secret");
+        String passphrase = prop.getProperty("gdax.passphrase");
         try {
             CoinbaseExchange exchange = new CoinbaseExchangeBuilder()
                     .withAPIUrl(api)
@@ -40,6 +54,7 @@ public class AuthenticationTests {
         }
         catch(Exception ex){
             ex.printStackTrace();
+            fail();
         }
     }
 
