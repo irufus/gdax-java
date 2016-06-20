@@ -4,6 +4,8 @@ import com.coinbase.exchange.api.CoinbaseExchange;
 import com.coinbase.exchange.api.CoinbaseExchangeBuilder;
 import com.coinbase.exchange.api.CoinbaseExchangeImpl;
 import com.coinbase.exchange.api.entity.Account;
+import com.coinbase.exchange.api.entity.Order;
+import com.coinbase.exchange.api.entity.Product;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,7 +51,13 @@ public class OrderTests {
     public void simpleMarketOrderTest(){
         try
         {
+            Product[] products = exchange.getProducts();
             Account[] accounts = exchange.getAccounts();
+            for(Product product : products){
+                Order newOrder = new Order();
+                //Order order = exchange.createOrder();
+            }
+
 
         }
         catch(Exception ex){
