@@ -1,6 +1,9 @@
 package com.coinbase.exchange.api;
 
 import org.apache.http.client.methods.HttpUriRequest;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
@@ -13,16 +16,22 @@ import java.util.Base64;
  * Created by irufus on 2/19/15.
  */
 public class Authentication {
-    
-    private String publicKey;
-    private String passphrase;
-    private String secretKey;
-    
-    public Authentication(String public_key, String secret_key, String passphrase){
-        this.publicKey = public_key;
+
+    static String publicKey;
+    static String secretKey;
+    static String passphrase;
+
+    public Authentication() { }
+
+    public Authentication(@Value("${gdax.key}") String publicKey,
+                          @Value("${gdax.secret}") String secretKey,
+                          @Value("${gdax.passphrase}") String passphrase) {
+
+        this.publicKey = publicKey;
+        this.secretKey = secretKey;
         this.passphrase = passphrase;
-        this.secretKey = secret_key;
     }
+
     public void setAuthenticationHeaders(HttpUriRequest request, String method, String endpoint_url, String body) throws InvalidKeyException, NoSuchAlgorithmException, CloneNotSupportedException, UnsupportedEncodingException {
         String timestamp = Instant.now().getEpochSecond() + "";
         String signature = generateSignature(secretKey, timestamp, method, endpoint_url, body);

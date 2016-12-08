@@ -20,7 +20,9 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
 
 #Examples
 --------
-```java
-//coming soon (July 2016)
 
+//coming soon (February 2017)
+
+#Updates
+--------
 

@@ -1,0 +1,50 @@
+apply plugin: 'java'
+
+group = 'irufus'
+version = '0.7.1-SNAPSHOT'
+
+
+buildscript {
+    repositories {
+        maven { url "http://repo.maven.apache.org/maven2" }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.3.RELEASE"
+    }
+}
+
+repositories {
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+dependencies {
+    compile 'junit:junit:4.12'
+    compile 'org.apache.httpcomponents:httpclient:4.5.2'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.ning:async-http-client:1.9.40'
+    compile 'org.springframework:spring-context:4.3.4.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-web:1.4.3.RELEASE'
+
+    testCompile 'org.springframework:spring-test:4.3.5.RELEASE'
+    testCompile 'org.springframework.boot:spring-boot-test:1.4.3.RELEASE'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
+tasks.withType(Jar) {
+    destinationDir = file("${rootDir}/build/")
+}
