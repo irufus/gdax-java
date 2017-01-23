@@ -3,5 +3,3 @@
 .gradle/
 build/
 gdax.properties
-application.yml
-application-test.yml
