@@ -1,5 +1,6 @@
-package com.coinbase.exchange.api;
+package com.coinbase.exchange.api.exchange;
 
+import com.coinbase.exchange.api.authentication.Authentication;
 import com.google.gson.Gson;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -8,6 +9,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import com.coinbase.exchange.api.entity.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.Mac;
 import java.io.BufferedReader;
@@ -17,18 +19,24 @@ import java.net.MalformedURLException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+
 /**
  * Created by irufus on 2/25/15.
  */
 public class CoinbaseExchangeImpl implements CoinbaseExchange {
+
+    public static Mac SHARED_MAC;
+
+    @Value("${gdax.encryption.mode}")
+    private String encryptionMode;
     private Authentication auth;
     private String apiUrl;
-    protected static Mac SHARED_MAC;
+
 
     public CoinbaseExchangeImpl(CoinbaseExchangeBuilder builder) throws NoSuchAlgorithmException, MalformedURLException {
         this.auth = builder.authentication;
         this.apiUrl = builder.endpoint.toURL().toString();
-        SHARED_MAC = Mac.getInstance("HmacSHA256"); // TODO - this should be a parameter in the config
+        this.SHARED_MAC = Mac.getInstance(encryptionMode);
     }
 
     @Override
@@ -47,8 +55,8 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
     @Override
     public AccountHistory[] getAccountHistory(String accountid) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
-        Gson gson = new Gson();
         String endpoint = "/accounts/" + accountid + "/ledger";
+        Gson gson = new Gson();
         String json = generateGetRequestJSON(endpoint);
         return gson.fromJson(json, AccountHistory[].class);
     }
@@ -171,5 +179,10 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
         while((output = br.readLine()) != null)
             json += output;
         return json;
+    }
+
+    private TypeReference<T> T fromJson(String endpoint, TypeReference<T> objectType) {
+
+
     }
 }

@@ -1,8 +1,9 @@
-package com.coinbase.exchange.api;
+package com.coinbase.exchange.api.authentication;
 
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeImpl;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -15,6 +16,7 @@ import java.util.Base64;
 /**
  * Created by irufus on 2/19/15.
  */
+@Component
 public class Authentication {
 
     static String publicKey;

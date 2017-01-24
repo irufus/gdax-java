@@ -1,4 +1,6 @@
-package com.coinbase.exchange.api;
+package com.coinbase.exchange.api.exchange;
+
+import com.coinbase.exchange.api.authentication.Authentication;
 
 import java.net.MalformedURLException;
 import java.net.URI;

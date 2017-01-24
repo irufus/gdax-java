@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api;
 
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

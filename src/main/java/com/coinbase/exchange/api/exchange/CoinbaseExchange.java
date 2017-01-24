@@ -1,7 +1,7 @@
 /**
  * Created by irufus on 2/19/15.
  */
-package com.coinbase.exchange.api;
+package com.coinbase.exchange.api.exchange;
 
 import com.coinbase.exchange.api.entity.*;
 
