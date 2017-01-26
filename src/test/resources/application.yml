@@ -1,8 +1,0 @@
-gdax:
-    api:
-      url: "https://api.gdax.com/"
-    key: "your_public_key_here"
-    secret: "your_secret_here"
-    passphrase: "your_passphrase_here"
-    encryption:
-      mode: "HmacSHA256"

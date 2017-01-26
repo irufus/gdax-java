@@ -1,21 +1,19 @@
 package com.coinbase.exchange.api.exchange;
 
+import com.coinbase.exchange.api.accounts.AccountsService;
 import com.coinbase.exchange.api.authentication.Authentication;
+import com.coinbase.exchange.api.entity.*;
 import com.google.gson.Gson;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
-import com.coinbase.exchange.api.entity.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-import javax.crypto.Mac;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -23,34 +21,30 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by irufus on 2/25/15.
  */
+@Component
 public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
-    public static Mac SHARED_MAC;
+    private String baseUrl;
 
-    @Value("${gdax.encryption.mode}")
-    private String encryptionMode;
+    @Autowired
     private Authentication auth;
-    private String apiUrl;
 
+    @Autowired
+    AccountsService accountService;
 
-    public CoinbaseExchangeImpl(CoinbaseExchangeBuilder builder) throws NoSuchAlgorithmException, MalformedURLException {
-        this.auth = builder.authentication;
-        this.apiUrl = builder.endpoint.toURL().toString();
-        this.SHARED_MAC = Mac.getInstance(encryptionMode);
+    @Autowired
+    public CoinbaseExchangeImpl(@Value("${gdax.api.baseUrl}") String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    @Override
+    public Account getAccount(String accountId) {
+        return accountService.getAccount(accountId);
     }
 
     @Override
     public Account[] getAccounts() throws IOException, InvalidKeyException, NoSuchAlgorithmException, CloneNotSupportedException {
-        String endpoint = "/accounts";
-        String json = generateGetRequestJSON(endpoint); //todo ADD handler for request timestamp expired. This can be caused by an out of date clock
-        Gson gson = new Gson();
-        Account[] accounts = gson.fromJson(json, Account[].class );
-        return accounts;
-    }
-
-    @Override
-    public Account getAccount(String accountid) {
-        return null;
+       return accountService.getAccounts();
     }
 
     @Override
@@ -103,11 +97,9 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     @Override
     public Product[] getProducts() throws IOException {
         String endpoint = "/products";
-        HttpGet getRequest = new HttpGet(apiUrl + endpoint);
+        HttpGet getRequest = new HttpGet(baseUrl + endpoint);
         Authentication.setNonAuthenticationHeaders(getRequest);
-        CloseableHttpResponse response = HttpClients.createDefault().execute(getRequest);
-        BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-        String json = processStream(br);
+        String json = getResponse(getRequest);
         Gson gson = new Gson();
         Product[] products = gson.fromJson(json, Product[].class);
         return products;
@@ -123,12 +115,9 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
         String endpoint = "/products/" + product + "/book";
         if(level != null)
             endpoint += "?level=" + level;
-        HttpGet getRequest = new HttpGet(apiUrl + endpoint);
+        HttpGet getRequest = new HttpGet(baseUrl + endpoint);
         Authentication.setNonAuthenticationHeaders(getRequest);
-        CloseableHttpResponse response = HttpClients.createDefault().execute(getRequest);
-        BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-        String json = processStream(br);
-        return json;
+        return getResponse(getRequest);
     }
 
     /**
@@ -148,41 +137,62 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     }
 
     private String executeDeleteRequest(String endpoint, String parameter) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException {
-        HttpDelete deleteRequest = new HttpDelete(apiUrl + endpoint + "/" + parameter);
+        HttpDelete deleteRequest = new HttpDelete(baseUrl + endpoint + "/" + parameter);
         auth.setAuthenticationHeaders(deleteRequest, "DELETE", endpoint + "/" + parameter);
-        CloseableHttpResponse response = HttpClients.createDefault().execute(deleteRequest);
-        BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-        return processStream(br);
+        return getResponse(deleteRequest);
     }
 
-    private String generatePostRequestJSON(String endpoint, String body) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException {
-        HttpPost postRequest = new HttpPost(apiUrl + endpoint);
-        auth.setAuthenticationHeaders(postRequest, "POST", endpoint, body);
-        postRequest.addHeader("content-type", "application/json");
-        postRequest.setEntity(new StringEntity(body));
-        CloseableHttpResponse response = HttpClients.createDefault().execute(postRequest);
-        BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-        return processStream(br);
+    public String generatePostRequestJSON(String endpoint, String body) {
+        try {
+            HttpPost postRequest = new HttpPost(baseUrl + endpoint);
+            auth.setAuthenticationHeaders(postRequest, "POST", endpoint, body);
+            postRequest.addHeader("content-type", "application/json");
+            postRequest.setEntity(new StringEntity(body));
+            return getResponse(postRequest);
+        } catch (NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
+        } catch (InvalidKeyException ex) {
+            ex.printStackTrace();
+        } catch (CloneNotSupportedException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return "";
     }
 
-    private String generateGetRequestJSON(String endpoint) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException {
-        HttpGet getRequest = new HttpGet(apiUrl + endpoint);
-        auth.setAuthenticationHeaders(getRequest, "GET", endpoint);
-        CloseableHttpResponse response = HttpClients.createDefault().execute(getRequest);
-        BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-        return processStream(br);
+    public String generateGetRequestJSON(String endpoint){
+        HttpGet getRequest = new HttpGet(baseUrl + endpoint);
+        try {
+            auth.setAuthenticationHeaders(getRequest, "GET", endpoint);
+            return getResponse(getRequest);
+        } catch (NoSuchAlgorithmException nsaEx) {
+            nsaEx.printStackTrace();
+        } catch (InvalidKeyException ikEx) {
+            ikEx.printStackTrace();
+        } catch (CloneNotSupportedException cnsEx) {
+            cnsEx.printStackTrace();
+        } catch (IOException ioEx) {
+            ioEx.printStackTrace();
+        }
+        return "";
     }
 
-    private String processStream(BufferedReader br) throws IOException {
+    public String processStream(BufferedReader br) {
         String json = "";
         String output = null;
-        while((output = br.readLine()) != null)
-            json += output;
+        try {
+            while ((output = br.readLine()) != null)
+                json += output;
+        } catch (IOException ioEx) {
+            ioEx.printStackTrace();
+        }
         return json;
     }
 
-    private TypeReference<T> T fromJson(String endpoint, TypeReference<T> objectType) {
-
-
+    public String getResponse(HttpUriRequest request) throws IOException {
+        CloseableHttpResponse response = HttpClients.createDefault().execute(request);
+        BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+        return processStream(br);
     }
 }

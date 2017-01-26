@@ -3,12 +3,14 @@
  */
 package com.coinbase.exchange.api.exchange;
 
+import com.coinbase.exchange.api.authentication.Authentication;
 import com.coinbase.exchange.api.entity.*;
+import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-
 
 public interface CoinbaseExchange {
     /**
@@ -33,5 +35,8 @@ public interface CoinbaseExchange {
     public String getMarketDataOrderBook(String product, String level) throws IOException;
     public ProductOrderBook getMarketDataProductOrderBook(String product, String level) throws IOException;
 
+    public String generatePostRequestJSON(String endpoint, String body) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException;
+    public String generateGetRequestJSON(String endpoint);
+    public String processStream(BufferedReader br);
 
 }
