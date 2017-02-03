@@ -10,7 +10,8 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url "http://repo.maven.apache.org/maven2" }
-        maven { url "https://repo.spring.io/release"}
+        maven { url "https://repo.spring.io/release" }
+
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.3.RELEASE"
@@ -18,9 +19,10 @@ buildscript {
 }
 
 repositories {
-    mavenCentral()
-    maven { url "http://repo.maven.apache.org/maven2" }
-    maven { url "https://repo.spring.io/release"}
+    maven { url "http://central.maven.org/maven2/"}
+    maven { url "http://repo1.maven.org/maven2/" }
+    maven { url "https://repo.spring.io/release/"}
+
 }
 
 project.archivesBaseName = 'gdax-java'
@@ -40,7 +42,7 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:2.8.6"
     compile "com.fasterxml.jackson.core:jackson-core:2.8.6"
     compile "com.fasterxml.jackson.core:jackson-annotations:2.8.6"
-    compile "com.fasterxml.jackson.core:jackson-datatype-jdk8:2.8.6"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.8.6"
 
     testCompile 'org.springframework:spring-test:4.3.5.RELEASE'
     testCompile 'org.springframework.boot:spring-boot-test:1.4.3.RELEASE'
