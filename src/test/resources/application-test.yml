@@ -1,6 +1,6 @@
 gdax:
     api:
       baseUrl: "https://api-public.sandbox.gdax.com/"
-    key: "b101da586f5510d69fc1f7da2feb8ca5"
-    secret: "q6v0UliBhOxM62+AX80/LXUeSabF0cbaLJo7RLOFnegP2iclSykY3lrjAzv+Z0qPf3UfcuHY7IL3OlJ9f2ecOQ=="
-    passphrase: "fybip64ufbdzfueh4fc8wu3di"
+    key: "7463b1c45ae19291b17a26071ea5a5b8"
+    secret: "djneiyiwRFqslb1fKY+NZGnoTZobwbJXKpZhUfeSVsdxWl+c+Qo48hb+BhBuNsJsylJTRC8zCUTdTk0Y8ZGKLA=="
+    passphrase: "8m03xhdk5vlnild8uxfscerk9"

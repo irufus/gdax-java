@@ -1,8 +1,14 @@
 package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.BaseTest;
-import com.coinbase.exchange.api.entity.Account;
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import static org.junit.Assert.*;
 
 /**
  * Created by ren7881 on 03/02/2017.
@@ -10,10 +16,9 @@ import org.junit.Test;
 public class AccountsTest extends BaseTest {
 
     @Test
-    public void canGetAccounts(){
+    public void canGetAccounts() throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
         Account[] accounts  = exchange.getAccounts();
-        for ( Account acc : accounts);
-
+        assertTrue(accounts.length >= 1);
     }
 
 

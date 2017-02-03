@@ -1,4 +1,6 @@
-package com.coinbase.exchange.api.entity;
+package com.coinbase.exchange.api.accounts;
+
+import com.coinbase.exchange.api.entity.Detail;
 
 import java.math.BigDecimal;
 

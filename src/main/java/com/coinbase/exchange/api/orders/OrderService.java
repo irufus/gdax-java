@@ -2,10 +2,8 @@ package com.coinbase.exchange.api.orders;
 
 import com.coinbase.exchange.api.authentication.Authentication;
 import com.coinbase.exchange.api.entity.NewOrderSingle;
-import com.coinbase.exchange.api.entity.Order;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import com.google.gson.Gson;
-import org.apache.http.client.methods.HttpDelete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +27,6 @@ public class OrderService {
         Gson gson = new Gson();
         String body = gson.toJson(order);
         String json = exchange.generatePostRequestJSON("/orders", body);
-        System.out.println(json);
         return gson.fromJson(json, Order.class);
     }
 

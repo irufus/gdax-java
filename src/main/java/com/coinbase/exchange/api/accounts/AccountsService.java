@@ -1,6 +1,5 @@
 package com.coinbase.exchange.api.accounts;
 
-import com.coinbase.exchange.api.entity.Account;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,11 @@
 package com.coinbase.exchange.api.exchange;
 
+import com.coinbase.exchange.api.accounts.Account;
+import com.coinbase.exchange.api.accounts.AccountHistory;
 import com.coinbase.exchange.api.accounts.AccountsService;
 import com.coinbase.exchange.api.authentication.Authentication;
 import com.coinbase.exchange.api.entity.*;
+import com.coinbase.exchange.api.orders.Order;
 import com.coinbase.exchange.api.orders.OrderService;
 import com.google.gson.Gson;
 import org.apache.http.client.methods.*;

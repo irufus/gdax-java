@@ -3,9 +3,10 @@
  */
 package com.coinbase.exchange.api.exchange;
 
-import com.coinbase.exchange.api.authentication.Authentication;
+import com.coinbase.exchange.api.accounts.Account;
+import com.coinbase.exchange.api.accounts.AccountHistory;
 import com.coinbase.exchange.api.entity.*;
-import org.springframework.stereotype.Component;
+import com.coinbase.exchange.api.orders.Order;
 
 import java.io.BufferedReader;
 import java.io.IOException;
