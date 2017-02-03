@@ -26,8 +26,6 @@ public interface CoinbaseExchange {
     public Account getAccount(String accountid);
     public AccountHistory[] getAccountHistory(String accountid) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException;
     public Hold[] getHolds(String accountid) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException;
-    public Order createOrder(NewOrderSingle order) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException;
-    public String cancelOrder(String orderid) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException;
     public Order[] getOpenOrders() throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException;
     public Order getOrder(String order_id) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException;
     public Product[] getProducts() throws IOException;
@@ -35,6 +33,7 @@ public interface CoinbaseExchange {
     public String getMarketDataOrderBook(String product, String level) throws IOException;
     public ProductOrderBook getMarketDataProductOrderBook(String product, String level) throws IOException;
 
+    public String executeDeleteRequest(String orderId) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException;
     public String generatePostRequestJSON(String endpoint, String body) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException;
     public String generateGetRequestJSON(String endpoint);
     public String processStream(BufferedReader br);

@@ -15,8 +15,6 @@ import static junit.framework.TestCase.fail;
  */
 public class AuthenticationTests extends BaseTest {
 
-
-
     @Test
     public void simpleAuthenticationTest(){
         try {

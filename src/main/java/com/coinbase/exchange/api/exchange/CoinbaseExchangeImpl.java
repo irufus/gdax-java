@@ -3,6 +3,7 @@ package com.coinbase.exchange.api.exchange;
 import com.coinbase.exchange.api.accounts.AccountsService;
 import com.coinbase.exchange.api.authentication.Authentication;
 import com.coinbase.exchange.api.entity.*;
+import com.coinbase.exchange.api.orders.OrderService;
 import com.google.gson.Gson;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
@@ -31,6 +32,9 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
     @Autowired
     AccountsService accountService;
+
+    @Autowired
+    OrderService orderService;
 
     @Autowired
     public CoinbaseExchangeImpl(@Value("${gdax.api.baseUrl}") String baseUrl) {
@@ -63,27 +67,11 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
         return gson.fromJson(json, Hold[].class);
     }
 
-    @Override
-    public Order createOrder(NewOrderSingle order) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
-        Gson gson = new Gson();
-        String body = gson.toJson(order);
-        String json = generatePostRequestJSON("/orders", body);
-        System.out.println(json);
-        return gson.fromJson(json, Order.class);
-    }
 
-    @Override
-    public String cancelOrder(String orderid) throws CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
-        return executeDeleteRequest("/orders", orderid);
-    }
 
     @Override
     public Order[] getOpenOrders() throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException {
-        String endpoint = "/orders";
-        String json = generateGetRequestJSON(endpoint);
-        Gson gson = new Gson();
-        Order[] orders = gson.fromJson(json, Order[].class);
-        return orders;
+        return orderService.getOpenOrders();
     }
 
     @Override
@@ -136,9 +124,9 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
         return pob;
     }
 
-    private String executeDeleteRequest(String endpoint, String parameter) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException {
-        HttpDelete deleteRequest = new HttpDelete(baseUrl + endpoint + "/" + parameter);
-        auth.setAuthenticationHeaders(deleteRequest, "DELETE", endpoint + "/" + parameter);
+    public String executeDeleteRequest(String parameter) throws NoSuchAlgorithmException, InvalidKeyException, CloneNotSupportedException, IOException {
+        HttpDelete deleteRequest = new HttpDelete(baseUrl + "orders/" + parameter);
+        auth.setAuthenticationHeaders(deleteRequest, "DELETE", baseUrl + "/" + parameter);
         return getResponse(deleteRequest);
     }
 
