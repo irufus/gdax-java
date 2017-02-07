@@ -17,10 +17,15 @@ public class AccountsTest extends BaseTest {
     AccountService accountService;
 
     @Test
-    public void canGetAccounts() throws InvalidKeyException, CloneNotSupportedException {
+    public void canGetAccounts() {
         Account[] accounts  = accountService.getAccounts();
-        assertTrue(accounts.length >= 1);
+        assertTrue(accounts.length >= 0);
     }
 
-
+    @Test
+    public void canGetAccountHistory() {
+        Account[] accounts = accountService.getAccounts();
+        AccountHistory[] history = accountService.getAccountHistory(accounts[0].getId());
+        assertTrue(history.length >=0);
+    }
 }
