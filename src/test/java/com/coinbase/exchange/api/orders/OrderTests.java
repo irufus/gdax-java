@@ -2,9 +2,13 @@ package com.coinbase.exchange.api.orders;
 
 import com.coinbase.exchange.api.BaseTest;
 import com.coinbase.exchange.api.accounts.Account;
+import com.coinbase.exchange.api.accounts.AccountService;
 import com.coinbase.exchange.api.entity.Product;
+import com.coinbase.exchange.api.marketdata.MarketDataService;
+import com.coinbase.exchange.api.products.ProductService;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 
@@ -17,11 +21,20 @@ import static org.junit.Assert.assertTrue;
  */
 public class OrderTests extends BaseTest {
 
+    @Autowired
+    ProductService productService;
+
+    @Autowired
+    AccountService accountService;
+
+    @Autowired
+    MarketDataService marketDataService;
+
     @Test
     public void canMakeOrder(){
         try {
-            Product[] products = exchange.getProducts();
-            Account[] accounts = exchange.getAccounts();
+            Product[] products = productService.getProducts();
+            Account[] accounts = accountService.getAccounts();
             OrderBuilder builder = new OrderBuilder();
 
             String result = "";
@@ -30,7 +43,7 @@ public class OrderTests extends BaseTest {
                         .setSize(new BigDecimal(1.0))
                         .setSide("BUY")
                         .build();
-                result = exchange.getMarketDataOrderBook(product.getId(), "1");
+                result = marketDataService.getMarketDataOrderBook(product.getId(), "1");
                 assertTrue(result != null);
             }
             // assert something rather than nothing here.
