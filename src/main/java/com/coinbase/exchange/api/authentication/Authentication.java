@@ -1,8 +1,6 @@
 package com.coinbase.exchange.api.authentication;
 
 import com.coinbase.exchange.api.constants.GdaxConstants;
-import com.coinbase.exchange.api.exchange.CoinbaseExchange;
-import com.coinbase.exchange.api.exchange.CoinbaseExchangeImpl;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,8 +55,8 @@ public class Authentication {
         sha256.init(keyspec);
         return Base64.getEncoder().encodeToString(sha256.doFinal(prehash.getBytes()));
     }
-    public static void setNonAuthenticationHeaders(HttpUriRequest request)
-    {
+
+    public static void setNonAuthenticationHeaders(HttpUriRequest request) {
         request.addHeader("accept", "application/json");
     }
 }
