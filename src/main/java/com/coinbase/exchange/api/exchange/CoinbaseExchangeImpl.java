@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.exchange;
 
+import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.constants.GdaxConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,8 @@ import java.security.InvalidKeyException;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.HashMap;
+
+import static org.springframework.http.HttpMethod.GET;
 
 
 /**
@@ -48,11 +51,12 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
     @Override
     public <T> T get(String resourcePath, ParameterizedTypeReference<T> responseType) {
-        ResponseEntity<Type> response = restTemplate.exchange(getBaseUrl() + resourcePath,
-                HttpMethod.GET,
-                securityHeaders(resourcePath, "GET", ""),
-                (ParameterizedTypeReference) responseType);
-        return (T) response.getBody();
+
+        String url = getBaseUrl() + resourcePath;
+        ResponseEntity<T> responseEntity = restTemplate.exchange(url,
+                GET, securityHeaders(resourcePath, "GET", ""), responseType);
+
+        return responseEntity.getBody();
     }
 
     @Override

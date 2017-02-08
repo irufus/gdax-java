@@ -3,15 +3,8 @@ package com.coinbase.exchange.api.products;
 import com.coinbase.exchange.api.entity.Product;
 import com.coinbase.exchange.api.entity.ProductOrderBook;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
-import com.coinbase.exchange.api.exchange.GenericParameterizedType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
-import java.security.InvalidKeyException;
 
 /**
  * Created by robevansuk on 03/02/2017.
