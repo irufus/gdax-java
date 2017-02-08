@@ -5,6 +5,7 @@ import com.coinbase.exchange.api.entity.Hold;
 import com.coinbase.exchange.api.entity.NewOrderSingle;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
 import java.security.InvalidKeyException;
@@ -21,20 +22,20 @@ public class OrderService {
     public static final String ORDERS_ENDPOINT = "/orders";
 
     public Hold[] getHolds(String accountId) {
-        return exchange.get(ORDERS_ENDPOINT + "/" + accountId + "/holds", new GenericParameterizedType<Hold[]>());
+        return exchange.get(ORDERS_ENDPOINT + "/" + accountId + "/holds", new ParameterizedTypeReference<Hold[]>(){});
     }
 
     public Order[] getOpenOrders(String accountId) {
-        return exchange.get(ORDERS_ENDPOINT + "/" + accountId + "/orders", new GenericParameterizedType<Order[]>());
+        return exchange.get(ORDERS_ENDPOINT + "/" + accountId + "/orders", new ParameterizedTypeReference<Order[]>(){});
     }
 
     public Order getOrder(String orderId) {
-        return exchange.get(ORDERS_ENDPOINT + "/" + orderId,new GenericParameterizedType<Order>());
+        return exchange.get(ORDERS_ENDPOINT + "/" + orderId,new ParameterizedTypeReference<Order>(){});
     }
 
     public Order createOrder(NewOrderSingle order) {
         String createOrderEndpoint = ORDERS_ENDPOINT + "/" + order;
-        return exchange.post(createOrderEndpoint, new GenericParameterizedType<Order>(), order.toString());
+        return exchange.post(createOrderEndpoint, new ParameterizedTypeReference<Order>(){}, order.toString());
     }
 
     public String cancelOrder(String orderId) {
@@ -42,17 +43,17 @@ public class OrderService {
     }
 
     public Order[] getOpenOrders() {
-        return exchange.get(ORDERS_ENDPOINT, new GenericParameterizedType<Order[]>());
+        return exchange.get(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){});
     }
 
     public String executeDeleteRequest(String orderId) {
         String deleteEndpoint = ORDERS_ENDPOINT + "/" + orderId;
-        return exchange.delete(deleteEndpoint, new GenericParameterizedType<String>());
+        return exchange.delete(deleteEndpoint, new ParameterizedTypeReference<String>(){});
     }
 
     public Fill[] getAllFills() throws CloneNotSupportedException, InvalidKeyException {
         String fillsEndpoint = "/fills";
-        return exchange.get(fillsEndpoint, new GenericParameterizedType<Fill[]>());
+        return exchange.get(fillsEndpoint, new ParameterizedTypeReference<Fill[]>(){});
     }
 }
 

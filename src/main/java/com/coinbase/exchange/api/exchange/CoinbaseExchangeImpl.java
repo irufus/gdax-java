@@ -51,9 +51,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
     @Override
     public <T> T get(String resourcePath, ParameterizedTypeReference<T> responseType) {
-
-        String url = getBaseUrl() + resourcePath;
-        ResponseEntity<T> responseEntity = restTemplate.exchange(url,
+        ResponseEntity<T> responseEntity = restTemplate.exchange( getBaseUrl() + resourcePath,
                 GET, securityHeaders(resourcePath, "GET", ""), responseType);
 
         return responseEntity.getBody();
@@ -61,20 +59,20 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
     @Override
     public <T> T delete(String resourcePath, ParameterizedTypeReference<T> responseType) {
-        ResponseEntity<String> response = restTemplate.exchange(getBaseUrl() + resourcePath,
+        ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
                 HttpMethod.DELETE,
                 securityHeaders(resourcePath, "DELETE", ""),
-                (ParameterizedTypeReference) responseType);
-        return (T) response.getBody();
+                responseType);
+        return response.getBody();
     }
 
     @Override
     public <T> T post(String resourcePath,  ParameterizedTypeReference<T> responseType, String jsonBody) {
-        ResponseEntity<String> response = restTemplate.exchange(getBaseUrl() + resourcePath,
+        ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
                 HttpMethod.POST,
                 securityHeaders(resourcePath, "POST", jsonBody),
-                (ParameterizedTypeReference) responseType);
-        return (T) response.getBody();
+                responseType);
+        return response.getBody();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.coinbase.exchange.api.marketdata;
 
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class MarketDataService {
         if(level != null && !level.equals(""))
             marketDataEndpoint += "?level=" + level;
 
-       return exchange.get(marketDataEndpoint, new GenericParameterizedType<String>());
+       return exchange.get(marketDataEndpoint, new ParameterizedTypeReference<String>(){});
 
     }
 }
