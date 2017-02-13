@@ -7,10 +7,13 @@ import java.math.BigDecimal;
  */
 public class Account {
     private String id;
-    private BigDecimal balance;
-    private BigDecimal hold;
-    private BigDecimal available;
     private String currency;
+    private BigDecimal balance;
+    private BigDecimal available;
+    private BigDecimal hold;
+    private String profile_id;
+
+    public Account() {}
 
     public String getId() {
         return id;
@@ -50,5 +53,13 @@ public class Account {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public String getProfile_id() {
+        return profile_id;
+    }
+
+    public void setProfile_id(String profile_id) {
+        this.profile_id = profile_id;
     }
 }

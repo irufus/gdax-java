@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 
 /**
- * Created by ren7881 on 07/02/2017.
+ * Created by robevansuk on 07/02/2017.
  */
 @Component
 public class MarketDataService {
@@ -20,12 +20,12 @@ public class MarketDataService {
 
     public static final String PRODUCT_ENDPOINT = "/products";
 
-    public String getMarketDataOrderBook(String productId, String level) throws IOException, CloneNotSupportedException, InvalidKeyException {
+    public MarketData getMarketDataOrderBook(String productId, String level) {
         String marketDataEndpoint = PRODUCT_ENDPOINT + "/" + productId + "/book";
         if(level != null && !level.equals(""))
             marketDataEndpoint += "?level=" + level;
 
-       return exchange.get(marketDataEndpoint, new ParameterizedTypeReference<String>(){});
+       return exchange.get(marketDataEndpoint, new ParameterizedTypeReference<MarketData>(){});
 
     }
 }

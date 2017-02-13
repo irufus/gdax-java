@@ -7,7 +7,6 @@ import java.math.BigDecimal;
  */
 public class NewMarketOrderSingle extends NewOrderSingle {
     private BigDecimal size; //optional: Desired amount in BTC
-    private BigDecimal funds; //optional: Desired amount of fiat funds to use
 
     public NewMarketOrderSingle(){
         setType("market");
@@ -21,13 +20,4 @@ public class NewMarketOrderSingle extends NewOrderSingle {
         this.size = size;
     }
 
-    @Override
-    public BigDecimal getFunds() {
-        return funds;
-    }
-
-    @Override
-    public void setFunds(BigDecimal funds) {
-        this.funds = funds;
-    }
 }

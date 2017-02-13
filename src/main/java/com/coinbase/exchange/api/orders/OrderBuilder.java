@@ -8,27 +8,27 @@ import java.math.BigDecimal;
 public class OrderBuilder {
 
     private String id;
-    private BigDecimal size;
-    private BigDecimal price;
+    private String size;
+    private String price;
     private String product_id;
     private String status;
-    private BigDecimal filled_size;
-    private BigDecimal fill_fees;
-    private Boolean settled;
+    private String filled_size;
+    private String fill_fees;
     private String side;
     private String created_at;
+    private Boolean settled;
 
     public OrderBuilder setId(String id) {
         this.id = id;
         return this;
     }
 
-    public OrderBuilder setSize(BigDecimal size) {
+    public OrderBuilder setSize(String size) {
         this.size = size;
         return this;
     }
 
-    public OrderBuilder setPrice(BigDecimal price) {
+    public OrderBuilder setPrice(String price) {
         this.price = price;
         return this;
     }
@@ -43,12 +43,12 @@ public class OrderBuilder {
         return this;
     }
 
-    public OrderBuilder setFilled_size(BigDecimal filled_size) {
+    public OrderBuilder setFilled_size(String filled_size) {
         this.filled_size = filled_size;
         return this;
     }
 
-    public OrderBuilder setFill_fees(BigDecimal fill_fees) {
+    public OrderBuilder setFill_fees(String fill_fees) {
         this.fill_fees = fill_fees;
         return this;
     }
@@ -72,11 +72,11 @@ public class OrderBuilder {
         return id;
     }
 
-    public BigDecimal getSize() {
+    public String getSize() {
         return size;
     }
 
-    public BigDecimal getPrice() {
+    public String getPrice() {
         return price;
     }
 
@@ -88,11 +88,11 @@ public class OrderBuilder {
         return status;
     }
 
-    public BigDecimal getFilled_size() {
+    public String getFilled_size() {
         return filled_size;
     }
 
-    public BigDecimal getFill_fees() {
+    public String getFill_fees() {
         return fill_fees;
     }
 
