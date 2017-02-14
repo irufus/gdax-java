@@ -2,7 +2,6 @@ package com.coinbase.exchange.api.orders;
 
 import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.Hold;
-import com.coinbase.exchange.api.entity.NewLimitOrderSingle;
 import com.coinbase.exchange.api.entity.NewOrderSingle;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,7 @@ public class OrderService {
     }
 
     public Order createOrder(NewOrderSingle order) {
-        String createOrderEndpoint = ORDERS_ENDPOINT;
-        return exchange.post(createOrderEndpoint, new ParameterizedTypeReference<Order>(){}, order);
+        return exchange.post(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order>(){}, order);
     }
 
     public String cancelOrder(String orderId) {

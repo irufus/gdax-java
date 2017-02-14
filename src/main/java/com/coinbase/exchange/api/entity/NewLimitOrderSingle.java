@@ -1,6 +1,5 @@
 package com.coinbase.exchange.api.entity;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**

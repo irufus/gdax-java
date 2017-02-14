@@ -1,7 +1,5 @@
 package com.coinbase.exchange.api.entity;
 
-import java.math.BigDecimal;
-
 /**
  * Created by irufus on 2/25/15.
  */

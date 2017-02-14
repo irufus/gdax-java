@@ -19,8 +19,8 @@ public interface CoinbaseExchange {
      * @throws CloneNotSupportedException
      */
     public String getBaseUrl();
-    public <R> HttpEntity<String> securityHeaders(String endpoint, String method, R body) throws InvalidKeyException, CloneNotSupportedException;
-    public String generateSignature(String timestamp, String method, String endpoint_url, String body) throws InvalidKeyException, CloneNotSupportedException;
+    public <R> HttpEntity<String> securityHeaders(String endpoint, String method, String body);
+    public String generateSignature(String timestamp, String method, String endpoint_url, String body);
     public <T> T get(String endpoint, ParameterizedTypeReference<T> type);
     public <T, R> T post(String endpoint, ParameterizedTypeReference<T> type, R jsonObject);
     public <T> T delete(String endpoint, ParameterizedTypeReference<T> type);

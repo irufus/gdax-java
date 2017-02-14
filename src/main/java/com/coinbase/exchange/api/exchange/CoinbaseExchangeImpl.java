@@ -1,7 +1,8 @@
 package com.coinbase.exchange.api.exchange;
 
-import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.constants.GdaxConstants;
+import com.google.gson.Gson;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,11 +16,10 @@ import org.springframework.web.client.RestTemplate;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.management.RuntimeErrorException;
-import java.lang.reflect.Type;
 import java.security.InvalidKeyException;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.HashMap;
+import java.util.Collections;
 
 import static org.springframework.http.HttpMethod.GET;
 
@@ -29,6 +29,8 @@ import static org.springframework.http.HttpMethod.GET;
  */
 @Component
 public class CoinbaseExchangeImpl implements CoinbaseExchange {
+
+    static Logger log = Logger.getLogger(CoinbaseExchangeImpl.class.getName());
 
     String publicKey;
     String secretKey;
@@ -67,7 +69,10 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     }
 
     @Override
-    public <T> T post(String resourcePath,  ParameterizedTypeReference<T> responseType, String jsonBody) {
+    public <T, R> T post(String resourcePath,  ParameterizedTypeReference<T> responseType, R jsonObj) {
+        Gson gson = new Gson();
+        String jsonBody = gson.toJson(jsonObj);
+
         ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
                 HttpMethod.POST,
                 securityHeaders(resourcePath, "POST", jsonBody),
@@ -81,23 +86,34 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     }
 
     @Override
-    public HttpEntity<String> securityHeaders(String endpoint, String method, String body) {
+    public HttpEntity<String> securityHeaders(String endpoint, String method, String jsonBody) {
         HttpHeaders headers = new HttpHeaders();
+
         String timestamp = Instant.now().getEpochSecond() + "";
         String resource = endpoint.replace(getBaseUrl(), "");
 
         headers.add("accept", "application/json");
         headers.add("content-type", "application/json");
         headers.add("CB-ACCESS-KEY", publicKey);
-        headers.add("CB-ACCESS-SIGN", generateSignature(resource, method, body, timestamp));
+        headers.add("CB-ACCESS-SIGN", generateSignature(resource, method, jsonBody, timestamp));
         headers.add("CB-ACCESS-TIMESTAMP", timestamp);
         headers.add("CB-ACCESS-PASSPHRASE", passphrase);
 
-        if (method.equals("POST")) {
-            return new HttpEntity<String>(jsonBody, headers);
-        }
+        curlRequest(method, jsonBody, headers, resource);
 
-        return new HttpEntity<String>(headers);
+        return new HttpEntity<>(jsonBody, headers);
+    }
+
+    private void curlRequest(String method, String jsonBody, HttpHeaders headers, String resource) {
+        String curlTest = "curl ";
+        for (String key : headers.keySet()){
+            curlTest +=  "-H '" + key + ":" + headers.get(key).get(0) + "' ";
+        }
+        if (!jsonBody.equals(""))
+            curlTest += "-d '" + jsonBody + "' ";
+
+        curlTest += "-X " + method + " " + getBaseUrl() + resource;
+        log.info(curlTest);
     }
 
     /**

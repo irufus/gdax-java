@@ -1,7 +1,5 @@
 package com.coinbase.exchange.api.orders;
 
-import java.math.BigDecimal;
-
 /**
  * Created by robevansuk on 03/02/2017.
  */
