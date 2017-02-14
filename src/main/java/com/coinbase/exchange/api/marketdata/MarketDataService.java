@@ -20,7 +20,7 @@ public class MarketDataService {
 
     public static final String PRODUCT_ENDPOINT = "/products";
 
-    public MarketData getMarketDataOrderBook(String productId, String level) {
+    public MarketData getMarketDataOrderBook(String productId, String level) throws IOException, CloneNotSupportedException, InvalidKeyException {
         String marketDataEndpoint = PRODUCT_ENDPOINT + "/" + productId + "/book";
         if(level != null && !level.equals(""))
             marketDataEndpoint += "?level=" + level;

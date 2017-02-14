@@ -10,11 +10,18 @@ import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.products.ProductService;
 import org.junit.Assert;
 import org.junit.Test;
+import org.omg.CORBA.UserException;
+import org.omg.CORBA.portable.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.MissingRequiredPropertiesException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
+import static com.sun.tools.internal.ws.wsdl.parser.Util.fail;
+import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -34,25 +41,48 @@ public class OrderTests extends BaseTest {
     @Autowired
     OrderService orderService;
 
+    // accounts: BTC, USD, GBP, EUR, CAD
+    // products: BTC-USD, BTC-GBP, BTC-EUR, ETH-BTC, ETH-USD, LTC-BTC, LTC-USD
     @Test
     public void canMakeLimitOrder(){
         try {
-            Product btcUsdProduct = getProducts();
-            assertTrue(btcUsdProduct.getId().equals("BTC-USD"));
-            MarketData marketData = getMarketDataOrderBook(btcUsdProduct);
-            assertTrue(marketData != null);
-            Account usdAccount = getUsdAccount();
+            Product[] products = productService.getProducts();
+            Account[] accounts = accountService.getAccounts();
 
-            NewLimitOrderSingle limitOrder = new NewLimitOrderSingle();
-            limitOrder.setSide("buy");
-            limitOrder.setProduct_id(btcUsdProduct.getId());
-            limitOrder.setPrice(new BigDecimal(200.00));//getAskPrice(marketData));
-            limitOrder.setSize(new BigDecimal(0.01)); //getSizeOfOrder(marketData));
+            Account usdAccountTotalHeld = Arrays.stream(accounts)
+                    .filter(it -> it.getCurrency().equals("USD"))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("No USD Accounts found"));
+            OrderBuilder builder = new OrderBuilder();
 
-            Order[] openOrders = orderService.getOpenOrders();
-            Order order = orderService.createOrder(limitOrder);
+            MarketData marketData = null;
+            for(Product product : products){
+                Order order = builder.setProduct_id(product.getId())
+                        .setSize(new BigDecimal(1.0))
+                        .setSide("BUY")
+                        .setProduct_id(product.getId())
+                        .build();
+                marketData = marketDataService.getMarketDataOrderBook(product.getId(), "1");
+                assertTrue(marketData != null);
+
+                NewLimitOrderSingle limitOrder = new NewLimitOrderSingle();
+                limitOrder.setSide("buy");
+
+                BigDecimal dollarPrice = marketData.getAsks()[0][0].setScale(2, BigDecimal.ROUND_HALF_UP);
+                BigDecimal bitcoinAmount = marketData.getAsks()[0][1].setScale(8, BigDecimal.ROUND_HALF_UP);
+                BigDecimal numberOfOrders = marketData.getAsks()[0][2].setScale(1, BigDecimal.ROUND_HALF_UP);
+
+                limitOrder.setPrice(marketData.getAsks()[0][0].setScale(8, BigDecimal.ROUND_HALF_UP));
+                limitOrder.setSize(marketData.getAsks()[0][1].setScale(2, BigDecimal.ROUND_HALF_UP));
+                limitOrder.setProduct_id(product.getId());
+
+                orderService.createOrder(limitOrder);
+                Order[] openOrders = orderService.getOpenOrders();
+                assertEquals(1, openOrders.length);
+
+            }
             // assert something rather than nothing here.
-            assertTrue(order.getId() != null);
+
         } catch(Exception ex) {
             ex.printStackTrace();
             Assert.fail();

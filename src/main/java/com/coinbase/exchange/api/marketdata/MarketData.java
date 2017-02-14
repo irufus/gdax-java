@@ -3,19 +3,19 @@ package com.coinbase.exchange.api.marketdata;
 import java.math.BigDecimal;
 
 /**
- * Created by robevansuk on 11/02/2017.
+ * Created by robevansuk on 09/02/2017.
  */
 public class MarketData {
 
-    Integer sequence;
+    Long sequence;
     BigDecimal[][] bids; // price, size, orders
     BigDecimal[][] asks; // price, size, orders
 
-    public Integer getSequence() {
+    public Long getSequence() {
         return sequence;
     }
 
-    public void setSequence(Integer sequence) {
+    public void setSequence(Long sequence) {
         this.sequence = sequence;
     }
 
