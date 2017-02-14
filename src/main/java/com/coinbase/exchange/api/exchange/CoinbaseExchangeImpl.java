@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
@@ -19,7 +20,7 @@ import javax.management.RuntimeErrorException;
 import java.security.InvalidKeyException;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.Collections;
+import java.util.Optional;
 
 import static org.springframework.http.HttpMethod.GET;
 
@@ -53,19 +54,28 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
     @Override
     public <T> T get(String resourcePath, ParameterizedTypeReference<T> responseType) {
-        ResponseEntity<T> responseEntity = restTemplate.exchange( getBaseUrl() + resourcePath,
-                GET, securityHeaders(resourcePath, "GET", ""), responseType);
-
-        return responseEntity.getBody();
+        try {
+            ResponseEntity<T> responseEntity = restTemplate.exchange(getBaseUrl() + resourcePath,
+                    GET, securityHeaders(resourcePath, "GET", ""), responseType);
+            return responseEntity.getBody();
+        } catch (HttpClientErrorException ex) {
+            log.error("GET request Failed: " + ex.getResponseBodyAsString());
+        }
+        return null;
     }
 
     @Override
     public <T> T delete(String resourcePath, ParameterizedTypeReference<T> responseType) {
-        ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
+        try {
+            ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
                 HttpMethod.DELETE,
                 securityHeaders(resourcePath, "DELETE", ""),
                 responseType);
-        return response.getBody();
+            return response.getBody();
+        } catch (HttpClientErrorException ex) {
+            log.error("DELETE request Failed: " + ex.getResponseBodyAsString());
+        }
+        return null;
     }
 
     @Override
@@ -73,11 +83,16 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
         Gson gson = new Gson();
         String jsonBody = gson.toJson(jsonObj);
 
-        ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
-                HttpMethod.POST,
-                securityHeaders(resourcePath, "POST", jsonBody),
-                responseType);
-        return response.getBody();
+        try {
+            ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
+                    HttpMethod.POST,
+                    securityHeaders(resourcePath, "POST", jsonBody),
+                    responseType);
+            return response.getBody();
+        } catch (HttpClientErrorException ex) {
+            log.error("POST request Failed: " + ex.getResponseBodyAsString());
+        }
+        return null;
     }
 
     @Override

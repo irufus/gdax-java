@@ -41,37 +41,37 @@ public class OrderTests extends BaseTest {
 
     // accounts: BTC, USD, GBP, EUR, CAD
     // products: BTC-USD, BTC-GBP, BTC-EUR, ETH-BTC, ETH-USD, LTC-BTC, LTC-USD
+
+    /**
+     * Not Strictly the best test but tests placing the order and
+     * then cancelling it without leaving a mess.
+     */
     @Test
-    public void canMakeLimitOrder() {
-        try {
-            Product product = getUsdProduct();
-            MarketData marketData = getMarketDataOrderBook(product);
-            assertTrue(marketData != null);
+    public void canMakeLimitOrderAndCancelIt() {
+        String product = "BTC-USD";
+        MarketData marketData = getMarketDataOrderBook(product);
+        assertTrue(marketData != null);
 
-            BigDecimal price = getAskPrice(marketData).setScale(8, BigDecimal.ROUND_HALF_UP);
-            BigDecimal size = new BigDecimal(0.01).setScale(8, BigDecimal.ROUND_HALF_UP);
+        BigDecimal price = getAskPrice(marketData).setScale(8, BigDecimal.ROUND_HALF_UP);
+        BigDecimal size = new BigDecimal(0.01).setScale(8, BigDecimal.ROUND_HALF_UP);
 
-            NewLimitOrderSingle limitOrder = new NewLimitOrderSingle();
-            limitOrder.setSide("buy");
-            limitOrder.setPrice(price);
-            limitOrder.setSize(size);
-            limitOrder.setProduct_id(product.getId());
-            limitOrder.setType("limit");
+        NewLimitOrderSingle limitOrder = new NewLimitOrderSingle();
+        limitOrder.setProduct_id("BTC-USD");
+        limitOrder.setSide("buy");
+        limitOrder.setType("limit");
+        limitOrder.setPrice(price);
+        limitOrder.setSize(size);
 
-            Order order = orderService.createOrder(limitOrder);
-            assertTrue(order!=null);
-            assertEquals(size, new BigDecimal(order.getSize()).setScale(8, BigDecimal.ROUND_HALF_UP));
-            assertEquals(price, new BigDecimal(order.getPrice()).setScale(8, BigDecimal.ROUND_HALF_UP));
-            assertEquals("buy", order.getSide());
-            assertEquals("limit", order.getType());
-            assertEquals("BTC-USD", order.getProduct_id());
-        } catch (HttpClientErrorException ex) {
-            log.error(ex.getResponseBodyAsString());
-            Assert.fail();
-        } catch(Exception ex) {
-            ex.printStackTrace();
-            Assert.fail();
-        }
+        Order order = orderService.createOrder(limitOrder);
+
+        assertTrue(order!=null);
+        assertEquals("BTC-USD", order.getProduct_id());
+        assertEquals(size, new BigDecimal(order.getSize()).setScale(8, BigDecimal.ROUND_HALF_UP));
+        assertEquals(price, new BigDecimal(order.getPrice()).setScale(8, BigDecimal.ROUND_HALF_UP));
+        assertEquals("buy", order.getSide());
+        assertEquals("limit", order.getType());
+
+        orderService.cancelOrder(order.getId());
     }
 
     private Order[] getOrderIds() {
@@ -89,8 +89,8 @@ public class OrderTests extends BaseTest {
         return size + "";
     }
 
-    private MarketData getMarketDataOrderBook(Product btcUsdProduct) {
-        return marketDataService.getMarketDataOrderBook(btcUsdProduct.getId(), "1");
+    private MarketData getMarketDataOrderBook(String product) {
+        return marketDataService.getMarketDataOrderBook(product, "1");
     }
 
     private BigDecimal getAskPrice(MarketData marketData) {

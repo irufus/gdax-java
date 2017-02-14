@@ -38,16 +38,12 @@ public class OrderService {
     }
 
     public String cancelOrder(String orderId) {
-        return executeDeleteRequest(orderId);
+        String deleteEndpoint = ORDERS_ENDPOINT + "/" + orderId;
+        return exchange.delete(deleteEndpoint, new ParameterizedTypeReference<String>(){});
     }
 
     public Order[] getOpenOrders() {
         return exchange.get(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){});
-    }
-
-    public String executeDeleteRequest(String orderId) {
-        String deleteEndpoint = ORDERS_ENDPOINT + "/" + orderId;
-        return exchange.delete(deleteEndpoint, new ParameterizedTypeReference<String>(){});
     }
 
     public Fill[] getAllFills() throws CloneNotSupportedException, InvalidKeyException {

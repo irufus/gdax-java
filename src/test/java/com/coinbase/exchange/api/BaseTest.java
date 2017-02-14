@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
                     "spring.profiles.active=test"
                 }
 )
-public class BaseTest {
+public abstract class BaseTest {
 
     @Autowired
     public CoinbaseExchange exchange;
