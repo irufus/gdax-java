@@ -8,9 +8,10 @@ import java.math.BigDecimal;
 public class Fill {
     private Integer trade_id;
     private String product_id;
-    private Double size;
+    private BigDecimal size;
     private String order_id;
     private String created_at;
+    private String liquidity;
     private BigDecimal fee;
     private Boolean settled;
     private String side;
@@ -47,6 +48,14 @@ public class Fill {
         this.created_at = created_at;
     }
 
+    public String getLiquidity() {
+        return liquidity;
+    }
+
+    public void setLiquidity(String liquidity) {
+        this.liquidity = liquidity;
+    }
+
     public String getOrder_id() {
         return order_id;
     }
@@ -55,11 +64,11 @@ public class Fill {
         this.order_id = order_id;
     }
 
-    public Double getSize() {
+    public BigDecimal getSize() {
         return size;
     }
 
-    public void setSize(Double size) {
+    public void setSize(BigDecimal size) {
         this.size = size;
     }
 

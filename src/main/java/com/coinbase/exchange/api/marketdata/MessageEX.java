@@ -15,6 +15,5 @@ public class MessageEX {
     public static class MessageSide{
         public final static String BUY = "buy";
         public final static String SELL = "sell";
-
     }
 }

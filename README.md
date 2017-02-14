@@ -2,12 +2,12 @@
 Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
 
 #Functions needed:
-    - [ ]List fills
-    - [ ]HTTP Error code support
+    - [x]List fills
+    - [x]HTTP Error code support
     - [ ]Pagination support for all calls that support it
     - [ ]List of Currencies
     - [ ]Ethereal support
-    - [ ]Sandbox support
+    - [x]Sandbox support
     
 #Features wanted:
     - [ ]Transfer Funds
@@ -21,6 +21,6 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
 #Examples
 --------
 ```java
-//coming soon (February 2017)
+//coming soon (July 2016)
 
 
