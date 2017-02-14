@@ -3,6 +3,7 @@ package com.coinbase.exchange.api.orders;
 import com.coinbase.exchange.api.BaseTest;
 import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
+import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.NewLimitOrderSingle;
 import com.coinbase.exchange.api.entity.Product;
 import com.coinbase.exchange.api.marketdata.MarketData;
@@ -47,7 +48,7 @@ public class OrderTests extends BaseTest {
      * then cancelling it without leaving a mess.
      */
     @Test
-    public void canMakeLimitOrderAndCancelIt() {
+    public void canMakeLimitOrderAndGetTheOrderAndCancelIt() {
         String product = "BTC-USD";
         MarketData marketData = getMarketDataOrderBook(product);
         assertTrue(marketData != null);
@@ -72,7 +73,30 @@ public class OrderTests extends BaseTest {
         assertEquals("limit", order.getType());
 
         orderService.cancelOrder(order.getId());
+        Order[] orders = orderService.getOpenOrders();
+        for (Order o : orders) {
+            assertTrue(o.getId() != order.getId());
+        }
     }
+
+    @Test
+    public void cancelAllOrders() {
+        Order[] cancelledOrders = orderService.cancelAllOpenOrders();
+        assertTrue(cancelledOrders.length >=0);
+    }
+
+    @Test
+    public void getAllOpenOrders() {
+        Order[] openOrders = orderService.getOpenOrders();
+        assertTrue(openOrders.length >= 0);
+    }
+
+    @Test
+    public void getFills() {
+        Fill[] fills = orderService.getAllFills();
+        assertTrue(fills.length >= 0);
+    }
+
 
     private Order[] getOrderIds() {
         return orderService.getOpenOrders();

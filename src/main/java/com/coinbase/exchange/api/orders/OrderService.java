@@ -46,7 +46,11 @@ public class OrderService {
         return exchange.get(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){});
     }
 
-    public Fill[] getAllFills() throws CloneNotSupportedException, InvalidKeyException {
+    public Order[] cancelAllOpenOrders() {
+        return exchange.delete(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){});
+    }
+
+    public Fill[] getAllFills() {
         String fillsEndpoint = "/fills";
         return exchange.get(fillsEndpoint, new ParameterizedTypeReference<Fill[]>(){});
     }
