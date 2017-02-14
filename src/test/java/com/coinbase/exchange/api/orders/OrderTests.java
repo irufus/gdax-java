@@ -97,22 +97,6 @@ public class OrderTests extends BaseTest {
         assertTrue(fills.length >= 0);
     }
 
-
-    private Order[] getOrderIds() {
-        return orderService.getOpenOrders();
-    }
-
-    private String getSizeOfOrder(MarketData marketData) {
-        BigDecimal quantity = marketData.getAsks()[0][1].setScale(8, BigDecimal.ROUND_HALF_UP);
-        BigDecimal size = new BigDecimal(0.001);
-        size.setScale(8, BigDecimal.ROUND_HALF_UP);
-        if (size.floatValue() > quantity.floatValue()) {
-            size = quantity;
-        }
-        size = size.setScale(8, BigDecimal.ROUND_HALF_UP);
-        return size + "";
-    }
-
     private MarketData getMarketDataOrderBook(String product) {
         return marketDataService.getMarketDataOrderBook(product, "1");
     }
@@ -120,28 +104,4 @@ public class OrderTests extends BaseTest {
     private BigDecimal getAskPrice(MarketData marketData) {
         return marketData.getAsks()[0][0].setScale(4, BigDecimal.ROUND_HALF_UP);
     }
-
-    private Product getUsdProduct() {
-        Product[] products = productService.getProducts();
-        Product product = Arrays.stream(products)
-                .filter(p -> p.getId().equals("BTC-USD"))
-                .findFirst()
-                .orElseThrow(() -> new NullPointerException("BTC-USD product unavailable"));
-        return product;
-    }
-
-    private Account getUsdAccount() throws Exception {
-        Account[] accounts = accountService.getAccounts();
-        Account usdAccount = Arrays.stream(accounts)
-                .filter(account -> account.getCurrency().equals("USD"))
-                .findFirst()
-                .orElseThrow(() -> new NullPointerException("No USD accounts available"));
-        if (usdAccount.getBalance().intValue() <= 1) {
-            throw new Exception("Not enough funds in your USD account for the test transaction. " +
-                    "Please top up your sandbox USD account.");
-        }
-        return usdAccount;
-    }
-
-
 }

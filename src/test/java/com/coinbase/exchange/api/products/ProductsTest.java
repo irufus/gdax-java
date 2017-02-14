@@ -17,7 +17,7 @@ public class ProductsTest extends BaseTest {
     ProductService productService;
 
     @Test
-    public void testProducts() {
+    public void canGetProducts() {
         Product[] products = productService.getProducts();
         assertTrue(products.length >= 0);
     }
