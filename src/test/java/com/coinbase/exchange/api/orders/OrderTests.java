@@ -8,6 +8,7 @@ import com.coinbase.exchange.api.entity.Product;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.products.ProductService;
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,15 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Ishmael (sakamura@gmail.com) on 6/18/2016.
  */
 public class OrderTests extends BaseTest {
+
+    static final Logger log = Logger.getLogger(OrderTests.class);
 
     @Autowired
     ProductService productService;
@@ -44,18 +48,25 @@ public class OrderTests extends BaseTest {
             MarketData marketData = getMarketDataOrderBook(product);
             assertTrue(marketData != null);
 
+            BigDecimal price = getAskPrice(marketData).setScale(8, BigDecimal.ROUND_HALF_UP);
+            BigDecimal size = new BigDecimal(0.01).setScale(8, BigDecimal.ROUND_HALF_UP);
+
             NewLimitOrderSingle limitOrder = new NewLimitOrderSingle();
             limitOrder.setSide("buy");
-            limitOrder.setPrice(getAskPrice(marketData));
-            limitOrder.setSize(new BigDecimal(0.01));//marketData.getAsks()[0][1].setScale(8, BigDecimal.ROUND_HALF_UP));
+            limitOrder.setPrice(price);
+            limitOrder.setSize(size);
             limitOrder.setProduct_id(product.getId());
             limitOrder.setType("limit");
 
-            orderService.createOrder(limitOrder);
-            //Order[] openOrders = orderService.getOpenOrders();
-            //assertEquals(1, openOrders.length);
+            Order order = orderService.createOrder(limitOrder);
+            assertTrue(order!=null);
+            assertEquals(size, new BigDecimal(order.getSize()).setScale(8, BigDecimal.ROUND_HALF_UP));
+            assertEquals(price, new BigDecimal(order.getPrice()).setScale(8, BigDecimal.ROUND_HALF_UP));
+            assertEquals("buy", order.getSide());
+            assertEquals("limit", order.getType());
+            assertEquals("BTC-USD", order.getProduct_id());
         } catch (HttpClientErrorException ex) {
-            System.out.println(ex.getResponseBodyAsString());
+            log.error(ex.getResponseBodyAsString());
             Assert.fail();
         } catch(Exception ex) {
             ex.printStackTrace();
