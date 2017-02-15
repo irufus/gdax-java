@@ -16,12 +16,14 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
     - [x]List Products
     - [x]HTTP Error code support
     - [x]List of Currencies - comes from Accounts
+    - [x]Transfers api
+    - [x]Payments api
     - [ ]Pagination support for all calls that support it
     - [ ]Ethereal support
     - [x]Sandbox support
     
 #Features wanted:
-    - [ ]Transfer Funds
+    - [x]Transfer Funds
     - [ ]Web Socket support
     - [x]Market Data support
     - [x]Product Order book support
@@ -59,3 +61,7 @@ Then in your method you can carry out any of the public api operations such as `
 - better configuration options using `application.yml` for your live environment and `application-test.yml` for your sandbox environment.
 - banner displayed (specific to each environment) :)
 - generally more structure.
+
+# TODO
+-------
+- Rename CoinbaseExchange to GdaxExchange - coinbase is another application that has its own api which might be useful in conjunction with this api. Seems like it would be confusing to name them both coinbase. (requires a version bump).
