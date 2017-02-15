@@ -1,17 +1,16 @@
 package com.coinbase.exchange.api.entity;
 
-import java.math.BigDecimal;
-
 /**
  * Created by irufus on 2/25/15.
  */
 public abstract class NewOrderSingle {
+
     private String client_oid; //optional
     private String type; //default is limit, other types are market and stop
     private String side;
     private String product_id;
     private String stp; //optional: values are dc, co , cn , cb
-    private BigDecimal funds;
+    private String funds;
 
     public String getStp() {
         return stp;
@@ -45,11 +44,11 @@ public abstract class NewOrderSingle {
         this.client_oid = client_oid;
     }
 
-    public BigDecimal getFunds() {
+    public String getFunds() {
         return funds;
     }
 
-    public void setFunds(BigDecimal funds) {
+    public void setFunds(String funds) {
         this.funds = funds;
     }
 
