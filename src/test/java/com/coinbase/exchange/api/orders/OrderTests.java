@@ -3,11 +3,13 @@ package com.coinbase.exchange.api.orders;
 import com.coinbase.exchange.api.BaseTest;
 import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
+import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.NewLimitOrderSingle;
 import com.coinbase.exchange.api.entity.Product;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.products.ProductService;
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +18,15 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Ishmael (sakamura@gmail.com) on 6/18/2016.
  */
 public class OrderTests extends BaseTest {
+
+    static final Logger log = Logger.getLogger(OrderTests.class);
 
     @Autowired
     ProductService productService;
@@ -37,76 +42,66 @@ public class OrderTests extends BaseTest {
 
     // accounts: BTC, USD, GBP, EUR, CAD
     // products: BTC-USD, BTC-GBP, BTC-EUR, ETH-BTC, ETH-USD, LTC-BTC, LTC-USD
+
+    /**
+     * Not Strictly the best test but tests placing the order and
+     * then cancelling it without leaving a mess.
+     */
     @Test
-    public void canMakeLimitOrder() {
-        try {
-            Product product = getUsdProduct();
-            MarketData marketData = getMarketDataOrderBook(product);
-            assertTrue(marketData != null);
+    public void canMakeLimitOrderAndGetTheOrderAndCancelIt() {
+        String product = "BTC-USD";
+        MarketData marketData = getMarketDataOrderBook(product);
+        assertTrue(marketData != null);
 
-            NewLimitOrderSingle limitOrder = new NewLimitOrderSingle();
-            limitOrder.setSide("buy");
-            limitOrder.setPrice(getAskPrice(marketData));
-            limitOrder.setSize(new BigDecimal(0.01));//marketData.getAsks()[0][1].setScale(8, BigDecimal.ROUND_HALF_UP));
-            limitOrder.setProduct_id(product.getId());
-            limitOrder.setType("limit");
+        BigDecimal price = getAskPrice(marketData).setScale(8, BigDecimal.ROUND_HALF_UP);
+        BigDecimal size = new BigDecimal(0.01).setScale(8, BigDecimal.ROUND_HALF_UP);
 
-            orderService.createOrder(limitOrder);
-            //Order[] openOrders = orderService.getOpenOrders();
-            //assertEquals(1, openOrders.length);
-        } catch (HttpClientErrorException ex) {
-            System.out.println(ex.getResponseBodyAsString());
-            Assert.fail();
-        } catch(Exception ex) {
-            ex.printStackTrace();
-            Assert.fail();
+        NewLimitOrderSingle limitOrder = new NewLimitOrderSingle();
+        limitOrder.setProduct_id("BTC-USD");
+        limitOrder.setSide("buy");
+        limitOrder.setType("limit");
+        limitOrder.setPrice(price);
+        limitOrder.setSize(size);
+
+        Order order = orderService.createOrder(limitOrder);
+
+        assertTrue(order!=null);
+        assertEquals("BTC-USD", order.getProduct_id());
+        assertEquals(size, new BigDecimal(order.getSize()).setScale(8, BigDecimal.ROUND_HALF_UP));
+        assertEquals(price, new BigDecimal(order.getPrice()).setScale(8, BigDecimal.ROUND_HALF_UP));
+        assertEquals("buy", order.getSide());
+        assertEquals("limit", order.getType());
+
+        orderService.cancelOrder(order.getId());
+        Order[] orders = orderService.getOpenOrders();
+        for (Order o : orders) {
+            assertTrue(o.getId() != order.getId());
         }
     }
 
-    private Order[] getOrderIds() {
-        return orderService.getOpenOrders();
+    @Test
+    public void cancelAllOrders() {
+        Order[] cancelledOrders = orderService.cancelAllOpenOrders();
+        assertTrue(cancelledOrders.length >=0);
     }
 
-    private String getSizeOfOrder(MarketData marketData) {
-        BigDecimal quantity = marketData.getAsks()[0][1].setScale(8, BigDecimal.ROUND_HALF_UP);
-        BigDecimal size = new BigDecimal(0.001);
-        size.setScale(8, BigDecimal.ROUND_HALF_UP);
-        if (size.floatValue() > quantity.floatValue()) {
-            size = quantity;
-        }
-        size = size.setScale(8, BigDecimal.ROUND_HALF_UP);
-        return size + "";
+    @Test
+    public void getAllOpenOrders() {
+        Order[] openOrders = orderService.getOpenOrders();
+        assertTrue(openOrders.length >= 0);
     }
 
-    private MarketData getMarketDataOrderBook(Product btcUsdProduct) {
-        return marketDataService.getMarketDataOrderBook(btcUsdProduct.getId(), "1");
+    @Test
+    public void getFills() {
+        Fill[] fills = orderService.getAllFills();
+        assertTrue(fills.length >= 0);
+    }
+
+    private MarketData getMarketDataOrderBook(String product) {
+        return marketDataService.getMarketDataOrderBook(product, "1");
     }
 
     private BigDecimal getAskPrice(MarketData marketData) {
         return marketData.getAsks()[0][0].setScale(4, BigDecimal.ROUND_HALF_UP);
     }
-
-    private Product getUsdProduct() {
-        Product[] products = productService.getProducts();
-        Product product = Arrays.stream(products)
-                .filter(p -> p.getId().equals("BTC-USD"))
-                .findFirst()
-                .orElseThrow(() -> new NullPointerException("BTC-USD product unavailable"));
-        return product;
-    }
-
-    private Account getUsdAccount() throws Exception {
-        Account[] accounts = accountService.getAccounts();
-        Account usdAccount = Arrays.stream(accounts)
-                .filter(account -> account.getCurrency().equals("USD"))
-                .findFirst()
-                .orElseThrow(() -> new NullPointerException("No USD accounts available"));
-        if (usdAccount.getBalance().intValue() <= 1) {
-            throw new Exception("Not enough funds in your USD account for the test transaction. " +
-                    "Please top up your sandbox USD account.");
-        }
-        return usdAccount;
-    }
-
-
 }

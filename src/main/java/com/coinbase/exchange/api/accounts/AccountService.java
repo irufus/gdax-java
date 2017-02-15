@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.accounts;
 
+import com.coinbase.exchange.api.entity.Hold;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -16,13 +17,22 @@ public class AccountService {
 
     public static final String ACCOUNTS_ENDPOINT = "/accounts";
 
-    public AccountHistory[] getAccountHistory(String accountid) {
-        String accountHistoryEndpoint = ACCOUNTS_ENDPOINT + "/" + accountid + "/ledger";
+
+    public Account[] getAccounts(){
+        return exchange.get(ACCOUNTS_ENDPOINT, new ParameterizedTypeReference<Account[]>(){});
+    }
+
+    public Account getAccount(String id) {
+        return exchange.get(ACCOUNTS_ENDPOINT + "/" + id, new ParameterizedTypeReference<Account>() {});
+    }
+
+    public AccountHistory[] getAccountHistory(String accountId) {
+        String accountHistoryEndpoint = ACCOUNTS_ENDPOINT + "/" + accountId + "/ledger";
         return exchange.get(accountHistoryEndpoint, new ParameterizedTypeReference<AccountHistory[]>(){});
     }
 
-    //todo ADD handler for request timestamp expired. This can be caused by an out of date clock
-    public Account[] getAccounts(){
-        return exchange.get(ACCOUNTS_ENDPOINT, new ParameterizedTypeReference<Account[]>(){});
+    public Hold[] getHolds(String accountId) {
+        String accountHistoryEndpoint = ACCOUNTS_ENDPOINT + "/" + accountId + "/holds";
+        return exchange.get(accountHistoryEndpoint, new ParameterizedTypeReference<Hold[]>(){});
     }
 }
