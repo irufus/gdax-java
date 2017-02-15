@@ -17,7 +17,6 @@ public class MarketDataService {
     @Autowired
     CoinbaseExchange exchange;
 
-
     public static final String PRODUCT_ENDPOINT = "/products";
 
     public MarketData getMarketDataOrderBook(String productId, String level) {
@@ -26,6 +25,5 @@ public class MarketDataService {
             marketDataEndpoint += "?level=" + level;
 
        return exchange.get(marketDataEndpoint, new ParameterizedTypeReference<MarketData>(){});
-
     }
 }

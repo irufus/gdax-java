@@ -17,10 +17,12 @@ public class MarketDataTest extends BaseTest {
     MarketDataService marketDataService;
 
     @Test
-    public void canGetMarketData() {
+    public void canGetMarketDataForTopLevelBidAndAsk() {
         MarketData marketData = marketDataService.getMarketDataOrderBook("BTC-USD", "1");
         assertTrue(marketData.getSequence() > 0);
         assertTrue(marketData.getAsks()[0].length == 3);
         assertTrue(marketData.getBids()[0].length == 3);
     }
+
+    //TODO add a test for levels >1.
 }
