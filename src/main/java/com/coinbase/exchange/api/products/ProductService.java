@@ -21,17 +21,4 @@ public class ProductService {
     public Product[] getProducts() {
         return exchange.get(PRODUCTS_ENDPOINT, new ParameterizedTypeReference<Product[]>(){});
     }
-
-    /**
-     * @param product
-     * @param level
-     * @return ProductOrderBook
-     */
-    public ProductOrderBook getMarketDataProductOrderBook(String product, String level) {
-        String productOrderBookEndpoint = PRODUCTS_ENDPOINT + "/" + product + "/book";
-        if(level != null && !level.equals(""))
-            productOrderBookEndpoint += "?level=" + level;
-        return exchange.get(productOrderBookEndpoint, new ParameterizedTypeReference<ProductOrderBook>(){});
-    }
-
 }
