@@ -11,7 +11,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
-public interface CoinbaseExchange {
+public interface GdaxExchange {
     /**
      * @return
      * @throws IOException

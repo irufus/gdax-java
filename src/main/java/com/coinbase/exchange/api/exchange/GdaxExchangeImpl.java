@@ -20,7 +20,6 @@ import javax.management.RuntimeErrorException;
 import java.security.InvalidKeyException;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.Optional;
 
 import static org.springframework.http.HttpMethod.GET;
 
@@ -29,9 +28,9 @@ import static org.springframework.http.HttpMethod.GET;
  * Created by irufus on 2/25/15.
  */
 @Component
-public class CoinbaseExchangeImpl implements CoinbaseExchange {
+public class GdaxExchangeImpl implements GdaxExchange {
 
-    static Logger log = Logger.getLogger(CoinbaseExchangeImpl.class.getName());
+    static Logger log = Logger.getLogger(GdaxExchangeImpl.class.getName());
 
     String publicKey;
     String secretKey;
@@ -42,10 +41,10 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     RestTemplate restTemplate;
 
     @Autowired
-    public CoinbaseExchangeImpl(@Value("${gdax.key}") String publicKey,
-                                @Value("${gdax.secret}") String secretKey,
-                                @Value("${gdax.passphrase}") String passphrase,
-                                @Value("${gdax.api.baseUrl}") String baseUrl) {
+    public GdaxExchangeImpl(@Value("${gdax.key}") String publicKey,
+                            @Value("${gdax.secret}") String secretKey,
+                            @Value("${gdax.passphrase}") String passphrase,
+                            @Value("${gdax.api.baseUrl}") String baseUrl) {
         this.publicKey = publicKey;
         this.secretKey = secretKey;
         this.passphrase = passphrase;

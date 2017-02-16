@@ -1,8 +1,7 @@
 package com.coinbase.exchange.api.products;
 
 import com.coinbase.exchange.api.entity.Product;
-import com.coinbase.exchange.api.entity.ProductOrderBook;
-import com.coinbase.exchange.api.exchange.CoinbaseExchange;
+import com.coinbase.exchange.api.exchange.GdaxExchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class ProductService {
 
     @Autowired
-    CoinbaseExchange exchange;
+    GdaxExchange exchange;
 
     public static final String PRODUCTS_ENDPOINT = "/products";
 

@@ -3,12 +3,10 @@ package com.coinbase.exchange.api.orders;
 import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.Hold;
 import com.coinbase.exchange.api.entity.NewOrderSingle;
-import com.coinbase.exchange.api.exchange.CoinbaseExchange;
+import com.coinbase.exchange.api.exchange.GdaxExchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
-
-import java.security.InvalidKeyException;
 
 /**
  * Created by robevansuk on 03/02/2017.
@@ -17,7 +15,7 @@ import java.security.InvalidKeyException;
 public class OrderService {
 
     @Autowired
-    CoinbaseExchange exchange;
+    GdaxExchange exchange;
 
     public static final String ORDERS_ENDPOINT = "/orders";
 
