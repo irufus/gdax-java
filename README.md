@@ -1,7 +1,7 @@
-# gdax-java (coinbase-exchange-java)
+# gdax-java
 Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
 
-#Functions needed:
+#Functions implemented:
     - [x]Authentication (GET, POST, DELETE supported)
     - [x]Get Account
     - [x]Get Accounts
@@ -15,9 +15,12 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
     - [x]List fills
     - [x]List Products
     - [x]HTTP Error code support
-    - [x]List of Currencies - comes from Accounts
-    - [x]Transfers api
-    - [x]Payments api
+    - [x]List of Currencies - from Accounts
+    - [x]Withdrawals - from coinbase accounts / payment methods / crypto account address
+    - [x]Deposits - from coinbase accounts / payment methods
+    - [x]Transfers - from coinbase accounts
+    - [x]Payment methods - coinbase / payment methods
+    - [x]Reports
     - [ ]Pagination support for all calls that support it
     - [ ]Ethereal support
     - [x]Sandbox support
@@ -64,4 +67,4 @@ Then in your method you can carry out any of the public api operations such as `
 
 # TODO
 -------
-- Rename CoinbaseExchange to GdaxExchange - coinbase is another application that has its own api which might be useful in conjunction with this api. Seems like it would be confusing to name them both coinbase. (requires a version bump).
+- add pagination versions of all endpoints, or offer a way to append to the endpoint urls.

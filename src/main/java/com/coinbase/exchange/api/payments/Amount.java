@@ -3,18 +3,18 @@ package com.coinbase.exchange.api.payments;
 import java.math.BigDecimal;
 
 /**
- * Created by robevansuk on 15/02/2017.
+ * Created by robevansuk on 16/02/2017.
  */
-public class PaymentRequest {
+public class Amount {
 
     BigDecimal amount;
     String currency;
-    String payment_method_id;
 
-    public PaymentRequest(BigDecimal amount, String currency, String payment_method_id) {
+    public Amount() {}
+
+    public Amount(BigDecimal amount, String currency) {
         this.amount = amount;
         this.currency = currency;
-        this.payment_method_id = payment_method_id;
     }
 
     public BigDecimal getAmount() {
@@ -31,13 +31,5 @@ public class PaymentRequest {
 
     public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    public String getPayment_method_id() {
-        return payment_method_id;
-    }
-
-    public void setPayment_method_id(String payment_method_id) {
-        this.payment_method_id = payment_method_id;
     }
 }

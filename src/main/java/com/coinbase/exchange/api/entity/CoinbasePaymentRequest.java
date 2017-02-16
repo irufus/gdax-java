@@ -1,4 +1,4 @@
-package com.coinbase.exchange.api.payments;
+package com.coinbase.exchange.api.entity;
 
 import java.math.BigDecimal;
 
