@@ -21,7 +21,7 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
     - [x]Transfers - from coinbase accounts
     - [x]Payment methods - coinbase / payment methods
     - [x]Reports
-    - [ ]Pagination support for all calls that support it
+    - [x]Pagination support for all calls that support it
     - [ ]Ethereal support
     - [x]Sandbox support
     

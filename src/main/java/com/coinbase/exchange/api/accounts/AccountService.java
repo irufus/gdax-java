@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by robevansuk on 25/01/2017.
  */
@@ -16,7 +20,6 @@ public class AccountService {
     GdaxExchange exchange;
 
     public static final String ACCOUNTS_ENDPOINT = "/accounts";
-
 
     public Account[] getAccounts(){
         return exchange.get(ACCOUNTS_ENDPOINT, new ParameterizedTypeReference<Account[]>(){});
@@ -31,8 +34,34 @@ public class AccountService {
         return exchange.get(accountHistoryEndpoint, new ParameterizedTypeReference<AccountHistory[]>(){});
     }
 
-    public Hold[] getHolds(String accountId) {
-        String accountHistoryEndpoint = ACCOUNTS_ENDPOINT + "/" + accountId + "/holds";
-        return exchange.get(accountHistoryEndpoint, new ParameterizedTypeReference<Hold[]>(){});
+    public AccountHistory[] getPagedAccountHistory(String accountId,
+                                                       String beforeOrAfter,
+                                                       Integer pageNumber,
+                                                       Integer limit) {
+
+        String accountHistoryEndpoint = ACCOUNTS_ENDPOINT + "/" + accountId + "/ledger";
+        return exchange.pagedGet(accountHistoryEndpoint,
+                new ParameterizedTypeReference<AccountHistory[]>(){},
+                beforeOrAfter,
+                pageNumber,
+                limit);
     }
+
+    public Hold[] getHolds(String accountId) {
+        String holdsEndpoint = ACCOUNTS_ENDPOINT + "/" + accountId + "/holds";
+        return exchange.get(holdsEndpoint, new ParameterizedTypeReference<Hold[]>(){});
+    }
+
+    public Hold[] getPagedHolds(String accountId,
+                                    String beforeOrAfter,
+                                    Integer pageNumber,
+                                    Integer limit) {
+        String holdsEndpoint = ACCOUNTS_ENDPOINT + "/" + accountId + "/holds";
+        return exchange.pagedGet(holdsEndpoint,
+                new ParameterizedTypeReference<Hold[]>(){},
+                beforeOrAfter,
+                pageNumber,
+                limit);
+    }
+
 }

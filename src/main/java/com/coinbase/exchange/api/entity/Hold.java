@@ -4,13 +4,36 @@ import java.math.BigDecimal;
 
 /**
  * Created by irufus on 2/18/15.
+ * Updated by robevansuk on 17/2/17
  */
 public class Hold {
-    private String created_at;
-    private String update_at;
-    private String order_id;
-    private BigDecimal amount;
-    private String account_id;
+    String id;
+    String account_id;
+    String created_at;
+    String update_at;
+    BigDecimal amount;
+    String type;
+    String ref;
+
+    public Hold () {}
+
+    public Hold(String id, String account_id, String created_at, String update_at, BigDecimal amount, String type, String ref) {
+        this.id = id;
+        this.account_id = account_id;
+        this.created_at = created_at;
+        this.update_at = update_at;
+        this.amount = amount;
+        this.type = type;
+        this.ref = ref;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getAccount_id() {
         return account_id;
@@ -20,20 +43,12 @@ public class Hold {
         this.account_id = account_id;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public String getCreated_at() {
+        return created_at;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public String getOrder_id() {
-        return order_id;
-    }
-
-    public void setOrder_id(String order_id) {
-        this.order_id = order_id;
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
     public String getUpdate_at() {
@@ -44,11 +59,27 @@ public class Hold {
         this.update_at = update_at;
     }
 
-    public String getCreated_at() {
-        return created_at;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getRef() {
+        return ref;
+    }
+
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 }

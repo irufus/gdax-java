@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
 
 /**
  * Created by irufus (sakamura@gmail.com)
@@ -21,6 +20,7 @@ public class AuthenticationTests extends BaseTest {
     @Test
     public void simpleAuthenticationTest(){
         Account[] accounts = accountService.getAccounts();
+        assertTrue(accounts != null);
         assertTrue(accounts.length > 0);
     }
 

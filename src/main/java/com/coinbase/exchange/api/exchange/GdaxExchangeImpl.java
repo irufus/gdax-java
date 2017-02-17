@@ -2,6 +2,7 @@ package com.coinbase.exchange.api.exchange;
 
 import com.coinbase.exchange.api.constants.GdaxConstants;
 import com.google.gson.Gson;
+import com.sun.xml.internal.rngom.digested.DDataPattern;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,12 +56,26 @@ public class GdaxExchangeImpl implements GdaxExchange {
     public <T> T get(String resourcePath, ParameterizedTypeReference<T> responseType) {
         try {
             ResponseEntity<T> responseEntity = restTemplate.exchange(getBaseUrl() + resourcePath,
-                    GET, securityHeaders(resourcePath, "GET", ""), responseType);
+                    GET,
+                    securityHeaders(resourcePath,
+                    "GET",
+                    ""),
+                    responseType);
             return responseEntity.getBody();
         } catch (HttpClientErrorException ex) {
-            log.error("GET request Failed: " + ex.getResponseBodyAsString());
+            log.error("GET request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
         }
         return null;
+    }
+
+    @Override
+    public <T> T pagedGet(String resourcePath,
+                          ParameterizedTypeReference<T> responseType,
+                          String beforeOrAfter,
+                          Integer pageNumber,
+                          Integer limit) {
+        resourcePath += "?" + beforeOrAfter + "=" + pageNumber + "&limit=" + limit;
+        return get(resourcePath, responseType);
     }
 
     @Override
@@ -72,7 +87,7 @@ public class GdaxExchangeImpl implements GdaxExchange {
                 responseType);
             return response.getBody();
         } catch (HttpClientErrorException ex) {
-            log.error("DELETE request Failed: " + ex.getResponseBodyAsString());
+            log.error("DELETE request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
         }
         return null;
     }
@@ -89,7 +104,7 @@ public class GdaxExchangeImpl implements GdaxExchange {
                     responseType);
             return response.getBody();
         } catch (HttpClientErrorException ex) {
-            log.error("POST request Failed: " + ex.getResponseBodyAsString());
+            log.error("POST request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
         }
         return null;
     }
