@@ -51,6 +51,17 @@ public class AccountsTest extends BaseTest {
     }
 
     @Test
+    public void canGetPagedAccounts() {
+        String beforeOrAfter = "before";
+        int pageNumber = 1;
+        int limit = 5;
+        Account[] pagedAccounts = accountService.getPagedAccounts(beforeOrAfter, pageNumber, limit);
+        assertTrue(pagedAccounts!=null);
+        assertTrue(pagedAccounts.length > 0);
+        assertTrue(pagedAccounts.length <= limit);
+    }
+
+    @Test
     public void canGetPagedAccountHistory() {
         Account[] accounts = accountService.getAccounts();
         assertTrue(accounts!=null);
