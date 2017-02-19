@@ -29,14 +29,14 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
         - open orders for account
         - all open orders
         - all fills
-    - [ ]Ethereal support
     - [x]Sandbox support
-    
+    - [ ]Ethereal support
+
 #Features wanted:
     - [x]Transfer Funds
-    - [ ]Web Socket support
-    - [x]Market Data support
     - [x]Product Order book support
+    - [x]Market Data support
+    - [ ]Web Socket support
 
 #Notes:
 >GDAX primary data sources and servers run in the Amazon US East data center. To minimize latency for API access, we recommend making requests from servers located near the US East data center.
@@ -71,7 +71,5 @@ Then in your method you can carry out any of the public api operations such as `
 - better configuration options using `application.yml` for your live environment and `application-test.yml` for your sandbox environment.
 - banner displayed (specific to each environment) :)
 - generally more structure.
+- added pagination to all the relevant calls (some not supported since it seems pointless due to the limited offering from gdax - e.g. products)
 
-# TODO
--------
-- add pagination versions of all endpoints, or offer a way to append to the endpoint urls.

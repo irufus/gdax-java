@@ -2,7 +2,6 @@ package com.coinbase.exchange.api.exchange;
 
 import com.coinbase.exchange.api.constants.GdaxConstants;
 import com.google.gson.Gson;
-import com.sun.xml.internal.rngom.digested.DDataPattern;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

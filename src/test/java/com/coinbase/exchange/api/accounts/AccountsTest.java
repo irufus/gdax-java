@@ -39,14 +39,19 @@ public class AccountsTest extends BaseTest {
         assertTrue(history.length >=0); // anything but null/error.
     }
 
+    /**
+     * this test only works if you have open orders in the sandbox where your funds are held.
+     */
     @Test
     public void canGetAccountHolds() {
         Account[] accounts = accountService.getAccounts();
         Hold[] holds = accountService.getHolds(accounts[0].getId());
-        assertTrue(holds != null);
-        assertTrue(holds.length >= 0);
-        if (holds.length>0) {
-            assertTrue(holds[0].getAmount().floatValue() >= 0.0f);
+        if (holds != null) {
+            assertTrue(holds != null);
+            assertTrue(holds.length >= 0);
+            if (holds.length > 0) {
+                assertTrue(holds[0].getAmount().floatValue() >= 0.0f);
+            }
         }
     }
 
@@ -56,7 +61,7 @@ public class AccountsTest extends BaseTest {
         int pageNumber = 1;
         int limit = 5;
         Account[] pagedAccounts = accountService.getPagedAccounts(beforeOrAfter, pageNumber, limit);
-        assertTrue(pagedAccounts!=null);
+        assertTrue(pagedAccounts != null);
         assertTrue(pagedAccounts.length > 0);
         assertTrue(pagedAccounts.length <= limit);
     }
