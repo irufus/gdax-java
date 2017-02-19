@@ -19,12 +19,12 @@ public class OrderService {
 
     public static final String ORDERS_ENDPOINT = "/orders";
 
-    public Hold[] getHolds(String accountId) {
+    public Hold[] getAccountHolds(String accountId) {
         return exchange.get(ORDERS_ENDPOINT + "/" + accountId + "/holds",
                 new ParameterizedTypeReference<Hold[]>(){});
     }
 
-    public Hold[] getHolds(String accountId,
+    public Hold[] getPagedAccountHolds(String accountId,
                               String beforeOrAfter,
                               Integer pageNumber,
                               Integer limit) {
@@ -35,12 +35,12 @@ public class OrderService {
                 limit);
     }
 
-    public Order[] getOpenOrders(String accountId) {
+    public Order[] getAccountOpenOrders(String accountId) {
         return exchange.get(ORDERS_ENDPOINT + "/" + accountId + "/orders",
                 new ParameterizedTypeReference<Order[]>(){});
     }
 
-    public Order[] getPagedOpenOrders(String accountId,
+    public Order[] getPagedAccountOpenOrders(String accountId,
                                       String beforeOrAfter,
                                       Integer pageNumber,
                                       Integer limit) {
