@@ -1,6 +1,12 @@
+# Note to Devs - coinbase/gdax shut down their test environment with no prior warning.
+#                therefore this section is largely redundant but left in place in case
+#                wish to trade using an alternative configuration.
 gdax:
     api:
       baseUrl: "https://api-public.sandbox.gdax.com"
     key: "your_key_here"
     secret: "your_service_here"
     passphrase: "your_passphrase_here"
+
+websocket:
+  baseUrl: "wss://ws-feed.gdax.com/"

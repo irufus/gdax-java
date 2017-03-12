@@ -39,6 +39,7 @@ dependencies {
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.8.6'
     compile 'org.springframework.boot:spring-boot-starter-web:1.4.3.RELEASE'
     compile 'org.springframework:spring-context:4.3.4.RELEASE'
+    compile 'joda-time:joda-time:2.9.7'
 
     testCompile 'org.springframework:spring-test:4.3.5.RELEASE'
     testCompile 'org.springframework.boot:spring-boot-test:1.4.3.RELEASE'

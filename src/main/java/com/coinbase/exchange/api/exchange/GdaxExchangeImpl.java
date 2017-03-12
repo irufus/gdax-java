@@ -1,8 +1,10 @@
 package com.coinbase.exchange.api.exchange;
 
 import com.coinbase.exchange.api.constants.GdaxConstants;
+import com.coinbase.exchange.api.gui.orderbook.OrderBookView;
+import com.coinbase.exchange.api.util.WebsocketFeed;
+import com.coinbase.exchange.api.websocketfeed.SubscribeMessage;
 import com.google.gson.Gson;
-import com.sun.xml.internal.rngom.digested.DDataPattern;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,8 @@ import org.springframework.web.client.RestTemplate;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.management.RuntimeErrorException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.time.Instant;
 import java.util.Base64;
@@ -37,6 +41,7 @@ public class GdaxExchangeImpl implements GdaxExchange {
     String secretKey;
     String passphrase;
     String baseUrl;
+    String socketfeed;
 
     @Autowired
     RestTemplate restTemplate;
@@ -45,11 +50,13 @@ public class GdaxExchangeImpl implements GdaxExchange {
     public GdaxExchangeImpl(@Value("${gdax.key}") String publicKey,
                             @Value("${gdax.secret}") String secretKey,
                             @Value("${gdax.passphrase}") String passphrase,
-                            @Value("${gdax.api.baseUrl}") String baseUrl) {
+                            @Value("${gdax.api.baseUrl}") String baseUrl,
+                            @Value("${websocket.baseUrl}") String socketfeed) {
         this.publicKey = publicKey;
         this.secretKey = secretKey;
         this.passphrase = passphrase;
         this.baseUrl = baseUrl;
+        this.socketfeed = socketfeed;
     }
 
     @Override
@@ -90,6 +97,36 @@ public class GdaxExchangeImpl implements GdaxExchange {
             log.error("DELETE request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
         }
         return null;
+    }
+
+    @Override
+    public void websocketFeed(SubscribeMessage message) {
+
+        Gson gson = new Gson();
+        String jsonSubscribeMessage = gson.toJson(message);
+
+        try {
+            final WebsocketFeed clientEndPoint = new WebsocketFeed(new URI(socketfeed));
+
+            // add listener
+            clientEndPoint.addMessageHandler(new WebsocketFeed.MessageHandler() {
+                @Autowired
+                OrderBookView orderBookView;
+
+                public void handleMessage(String msg) {
+                    orderBookView.newTrade(msg);
+                }
+            });
+            // send message to websocket
+            clientEndPoint.sendMessage(jsonSubscribeMessage);
+
+            Thread.sleep(1000);
+
+        } catch (InterruptedException ex) {
+            System.err.println("InterruptedException exception: " + ex.getMessage());
+        } catch (URISyntaxException ex) {
+            System.err.println("URISyntaxException exception: " + ex.getMessage());
+        }
     }
 
     @Override

@@ -3,12 +3,15 @@
  */
 package com.coinbase.exchange.api.exchange;
 
+import com.coinbase.exchange.api.orders.Order;
+import com.coinbase.exchange.api.websocketfeed.SubscribeMessage;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.stream.Stream;
 
 public interface GdaxExchange {
     /**
@@ -25,4 +28,5 @@ public interface GdaxExchange {
     public <T> T pagedGet(String endpoint, ParameterizedTypeReference<T> responseType, String beforeOrAfter, Integer pageNumber, Integer limit);
     public <T, R> T post(String endpoint, ParameterizedTypeReference<T> type, R jsonObject);
     public <T> T delete(String endpoint, ParameterizedTypeReference<T> type);
+    public void websocketFeed(SubscribeMessage message);
 }
