@@ -3,7 +3,7 @@ package com.coinbase.exchange.api.exchange;
 import com.coinbase.exchange.api.constants.GdaxConstants;
 import com.coinbase.exchange.api.gui.orderbook.OrderBookView;
 import com.coinbase.exchange.api.util.WebsocketFeed;
-import com.coinbase.exchange.api.websocketfeed.SubscribeMessage;
+import com.coinbase.exchange.api.websocketfeed.message.Subscribe;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +100,7 @@ public class GdaxExchangeImpl implements GdaxExchange {
     }
 
     @Override
-    public void websocketFeed(SubscribeMessage message) {
+    public void websocketFeed(Subscribe message) {
 
         Gson gson = new Gson();
         String jsonSubscribeMessage = gson.toJson(message);

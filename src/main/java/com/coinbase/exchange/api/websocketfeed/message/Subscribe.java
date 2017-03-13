@@ -1,16 +1,16 @@
-package com.coinbase.exchange.api.websocketfeed;
+package com.coinbase.exchange.api.websocketfeed.message;
 
 /**
  * Created by robevansuk on 12/03/2017.
  */
-public class SubscribeMessage {
+public class Subscribe {
 
     String type;
     String[] product_ids;
 
-    public SubscribeMessage() { }
+    public Subscribe() { }
 
-    public SubscribeMessage(String[] product_ids) {
+    public Subscribe(String[] product_ids) {
         this.type = "subscribe";
         this.product_ids = product_ids;
     }
