@@ -13,6 +13,6 @@ package com.coinbase.exchange.api.websocketfeed.message;
      }
  * Created by robevansuk on 15/03/2017.
  */
-public class OrderOpenMessage extends Message {
+public class OrderOpenOrderBookMessage extends OrderBookMessage {
 
 }

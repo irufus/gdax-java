@@ -7,3 +7,6 @@ gdax:
 
 websocket:
   baseUrl: "wss://ws-feed.gdax.com/"
+
+gui:
+  enabled: true

@@ -21,10 +21,8 @@ public interface GdaxExchange {
      */
     public String getBaseUrl();
     public <R> HttpEntity<String> securityHeaders(String endpoint, String method, String body);
-    public String generateSignature(String timestamp, String method, String endpoint_url, String body);
     public <T> T get(String endpoint, ParameterizedTypeReference<T> type);
     public <T> T pagedGet(String endpoint, ParameterizedTypeReference<T> responseType, String beforeOrAfter, Integer pageNumber, Integer limit);
     public <T, R> T post(String endpoint, ParameterizedTypeReference<T> type, R jsonObject);
     public <T> T delete(String endpoint, ParameterizedTypeReference<T> type);
-    public void websocketFeed(Subscribe message);
 }

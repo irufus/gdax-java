@@ -30,5 +30,5 @@ package com.coinbase.exchange.api.websocketfeed.message;
 
  * Created by robevansuk on 15/03/2017.
  */
-public class OrderMatchMessage extends Message {
+public class OrderMatchOrderBookMessage extends OrderBookMessage {
 }

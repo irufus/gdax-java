@@ -46,22 +46,34 @@ import java.math.BigDecimal;
  *
  * Created by robevansuk on 13/03/2017.
  */
-public class OrderReceivedMessage extends Message {
+public class OrderReceivedOrderBookMessage extends OrderBookMessage {
 
-
-    BigDecimal remaining_size;
-
-    String reason;
+    String type;
+    String time;
+    String product_id;
+    Long sequence;
+    String order_id;
+    BigDecimal size;
+    BigDecimal price;
     String side;
     String order_type;
-    String maker_order_id;
-    String take_order_id;
-    BigDecimal new_size;
-    BigDecimal old_size;
-    BigDecimal new_funds;
-    BigDecimal old_funds;
-    
-    public boolean isMarketOrder() {
-        return order_type.equals("market");
+    BigDecimal funds;
+
+    public OrderReceivedOrderBookMessage() { }
+
+    public OrderReceivedOrderBookMessage(OrderBookMessage orderBookMessage) {
+        this.type = orderBookMessage.type;
+        this.time = orderBookMessage.time;
+        this.product_id = orderBookMessage.product_id;
+        this.sequence = orderBookMessage.sequence;
+        this.order_id = orderBookMessage.order_id;
+
+        this.size = orderBookMessage.size;
+        this.price = orderBookMessage.price;
+
+        this.funds = orderBookMessage.funds;
+
+        this.side = orderBookMessage.side;
+        this.order_type = orderBookMessage.order_type; // limit/market order types.
     }
 }

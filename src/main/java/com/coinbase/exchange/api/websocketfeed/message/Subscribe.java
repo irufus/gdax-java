@@ -8,6 +8,12 @@ public class Subscribe {
     String type;
     String[] product_ids;
 
+    // Used for signing the subscribe message to the Websocket feed
+    String signature;
+    String passphrase;
+    String timestamp;
+    String apiKey;
+
     public Subscribe() { }
 
     public Subscribe(String[] product_ids) {
@@ -30,4 +36,25 @@ public class Subscribe {
     public void setProduct_ids(String[] product_ids) {
         this.product_ids = product_ids;
     }
+
+    public Subscribe setSignature(String signature) {
+        this.signature = signature;
+        return this;
+    }
+
+    public Subscribe  setPassphrase(String passphrase) {
+        this.passphrase = passphrase;
+        return this;
+    }
+
+    public Subscribe setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+        return this;
+    }
+
+    public Subscribe setKey(String apiKey) {
+        this.apiKey = apiKey;
+        return this;
+    }
+
 }
