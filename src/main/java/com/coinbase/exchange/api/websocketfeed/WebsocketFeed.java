@@ -2,7 +2,10 @@ package com.coinbase.exchange.api.websocketfeed;
 
 import com.coinbase.exchange.api.exchange.Signature;
 import com.coinbase.exchange.api.gui.orderbook.OrderBook;
-import com.coinbase.exchange.api.websocketfeed.message.*;
+import com.coinbase.exchange.api.websocketfeed.message.HeartBeat;
+import com.coinbase.exchange.api.websocketfeed.message.OrderBookMessage;
+import com.coinbase.exchange.api.websocketfeed.message.OrderReceivedOrderBookMessage;
+import com.coinbase.exchange.api.websocketfeed.message.Subscribe;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
@@ -19,7 +23,7 @@ import java.time.Instant;
 
 /**
  * Websocketfeed adapted from someone else's code
- *
+ * <p>
  * >Jiji Sasidharan
  */
 @Component
@@ -43,7 +47,7 @@ public class WebsocketFeed {
                          @Value("${gdax.key") String key,
                          @Value("${gdax.passphrase}") String passphrase,
                          @Value("${gui.enabled") String guiEnabled,
-                         Signature signature){
+                         Signature signature) {
         this.key = key;
         this.passphrase = passphrase;
         this.websocketUrl = websocketUrl;
@@ -55,9 +59,9 @@ public class WebsocketFeed {
             container.connectToServer(this, new URI(websocketUrl));
         } catch (Exception e) {
             throw new RuntimeException(e);
-
         }
     }
+
     /**
      * Callback hook for Connection open events.
      *
@@ -72,7 +76,7 @@ public class WebsocketFeed {
      * Callback hook for Connection close events.
      *
      * @param userSession the userSession which is getting closed.
-     * @param reason the reason for connection close
+     * @param reason      the reason for connection close
      */
     @OnClose
     public void onClose(Session userSession, CloseReason reason) {
@@ -111,53 +115,73 @@ public class WebsocketFeed {
     }
 
 
-    public void subscribe(Subscribe message, OrderBook orderBook) {
-        String jsonSubscribeMessage = signObject(message);
+    public void subscribe(Subscribe msg, OrderBook orderBook) {
+        String jsonSubscribeMessage = signObject(msg);
 
-        try {
-            addMessageHandler(new MessageHandler() {
+        addMessageHandler(json -> {
 
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
                 @Override
-                public void handleMessage(String json) {
+                public Void doInBackground() {
+                    log.info("WebSocketFeed.HandleMessage");
                     OrderBookMessage message = getObject(json, new TypeReference<OrderBookMessage>() {
                     });
+
                     String type = message.getType();
 
-                    if (type.equals("heartbeat")) {
+                    if (type.equals("heartbeat"))
+
+                    {
                         log.info("heartbeat");
-                        orderBook.heartBeat(getObject(json, new TypeReference<HeartBeat>() {}));
-                    } else if (type.equals("received")) {
+                        orderBook.heartBeat(getObject(json, new TypeReference<HeartBeat>() {
+                        }));
+                    } else if (type.equals("received"))
+
+                    {
                         log.info("order received");
-                        orderBook.updateOrderBook(getObject(json, new TypeReference<OrderReceivedOrderBookMessage>() {}));
-                    } else if (type.equals("open")) {
+                        log.info(json);
+                        orderBook.updateOrderBook(getObject(json, new TypeReference<OrderReceivedOrderBookMessage>() {
+                        }));
+                    } else if (type.equals("open"))
+
+                    {
                         log.info("Order opened");
-//                        orderBook.updateOrderBook(getObject(json, new TypeReference<OrderOpenOrderBookMessage>() {}));
-                    } else if (type.equals("done")) {
+                        //                        orderBook.updateOrderBook(getObject(json, new TypeReference<OrderOpenOrderBookMessage>() {}));
+                    } else if (type.equals("done"))
+
+                    {
                         log.info("Order done");
                         //     orderBook.updateOrderBook(getObject(json, new TypeReference<OrderDoneOrderBookMessage>(){}));
-                    } else if (type.equals("match")) {
+                    } else if (type.equals("match"))
+
+                    {
                         log.info("Order matched!!");
                         //     orderBook.updateOrderBook(getObject(json, new TypeReference<OrderMatchOrderBookMessage>(){}));
-                    } else if (type.equals("change")) {
+                    } else if (type.equals("change"))
+
+                    {
                         log.info("Update");
                         //     orderBook.updateOrderBookWithChange(getObject(json, new TypeReference<OrderChangeOrderBookMessage>(){}));
-                    } else {
+                    } else
+
+                    {
                         // ERROR
-                        log.info("Error");
+                        log.error("Error");
                         //     orderBook.orderBookError(getObject(json, new TypeReference<ErrorOrderBookMessage>(){}));
                     }
+                    return null;
+                }
+
+                public void done() {
 
                 }
-            });
+            };
+            worker.execute();
+        });
 
-            // send message to websocket
-            sendMessage(jsonSubscribeMessage);
+        // send message to websocket
+        sendMessage(jsonSubscribeMessage);
 
-            Thread.sleep(1000);
-
-        } catch (InterruptedException ex) {
-            System.err.println("InterruptedException exception: " + ex.getMessage());
-        }
     }
 
     public String signObject(Subscribe jsonObj) {
@@ -173,7 +197,7 @@ public class WebsocketFeed {
         return gson.toJson(jsonObj);
     }
 
-    public <T> T getObject(String json, TypeReference<T> type){
+    public <T> T getObject(String json, TypeReference<T> type) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(json, type);
