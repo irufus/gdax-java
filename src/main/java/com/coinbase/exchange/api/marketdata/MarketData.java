@@ -1,6 +1,5 @@
 package com.coinbase.exchange.api.marketdata;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**

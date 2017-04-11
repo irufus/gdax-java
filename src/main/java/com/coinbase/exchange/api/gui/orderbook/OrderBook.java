@@ -7,8 +7,8 @@ import com.coinbase.exchange.api.marketdata.OrderItem;
 import com.coinbase.exchange.api.websocketfeed.WebsocketFeed;
 import com.coinbase.exchange.api.websocketfeed.message.HeartBeat;
 import com.coinbase.exchange.api.websocketfeed.message.OrderBookMessage;
-import com.coinbase.exchange.api.websocketfeed.message.OrderReceivedOrderBookMessage;
 import com.coinbase.exchange.api.websocketfeed.message.Subscribe;
+import javafx.embed.swing.JFXPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,49 +16,64 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
-import java.math.BigDecimal;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
 
 /**
+ * TODO - convert to JFX rather than using Swing.
+ *
  * Created by robevansuk on 10/03/2017.
  */
 @Component
-public class OrderBook extends JPanel {
+public class OrderBook extends JFXPanel {
 
     static final Logger log = LoggerFactory.getLogger(OrderBook.class);
-    static String[] productIds = new String[]{"BTC-GBP"}; // make this configurable.
+    static String[] productIds = new String[]{"BTC-GBP", "ETH-BTC"}; // make this configurable.
 
     WebsocketFeed websocketFeed;
     MarketDataService marketDataService;
 
     private boolean isAlive;
-    Map<String, JSplitPane> orderBookPane;
+    Map<String, JPanel> orderBookSplitPaneMap;
 
-    Map<String, JTable> bidTables;
-    Map<String, JTable> askTables;
+    Map<String, JTable> tables;
 
     Map<String, List<OrderItem>> bids;
     Map<String, List<OrderItem>> asks;
 
-    Map<String, JScrollPane> bidScrollPanes;
-    Map<String, JScrollPane> askScrollPanes;
+    Map<String, JScrollPane> scrollPanes;
+
+    // limit order book viewer
+    JPanel lobViewer;
+    JPanel productSelectionPanel;
+    Map<String, Long> maxSequenceIds;
+
 
     @Autowired
     public OrderBook(MarketDataService marketDataService, WebsocketFeed websocketFeed) {
         super();
+        this.maxSequenceIds = new HashMap<>();
+        this.lobViewer = new JPanel();
+        this.add(lobViewer);
+        this.productSelectionPanel = new JPanel();
+        this.productSelectionPanel.setLayout(new BoxLayout(productSelectionPanel, BoxLayout.X_AXIS));
+        this.add(productSelectionPanel);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.websocketFeed = websocketFeed;
         this.marketDataService = marketDataService;
-        this.bidTables = new HashMap<>();
-        this.askTables = new HashMap<>();
-        this.orderBookPane = new HashMap<>();
+        this.tables = new HashMap<>();
+        this.orderBookSplitPaneMap = new HashMap<>();
         this.bids = new HashMap<>();
         this.asks = new HashMap<>();
-        this.bidScrollPanes = new HashMap<>();
-        this.askScrollPanes = new HashMap<>();
+        this.scrollPanes = new HashMap<>();
         this.setVisible(true);
-        SwingUtilities.invokeLater(() -> load());
+
+        try {
+            SwingUtilities.invokeAndWait(() -> load());
+        } catch (InterruptedException | InvocationTargetException e) {
+            log.error("Something went wrong whilst starting the OrderBook", e);
+        }
     }
 
     public void load() {
@@ -73,6 +88,8 @@ public class OrderBook extends JPanel {
                     log.info("******** Getting the orderbook for: " + productId);
                     MarketData marketData = marketDataService.getMarketDataOrderBook(productId, "2");
 
+                    Collections.sort(marketData.getAsks());
+
                     bids.put(productId, new LinkedList<>(marketData.getBids()));
                     asks.put(productId, new LinkedList<>(marketData.getAsks()));
 
@@ -81,40 +98,49 @@ public class OrderBook extends JPanel {
 
                     log.info("Populating ASK table for: " + productId);
                     JTable askTable = initTable(asks.get(productId));
-                    askTables.put(productId, askTable);
+                    tables.put("sell_" + productId, askTable);
+
                     log.info("Populating BID table for: " + productId);
                     JTable bidTable = initTable(bids.get(productId));
-                    bidTables.put(productId, bidTable);
+                    tables.put("buy_" + productId, bidTable);
 
                     JScrollPane scrollerAsks = new JScrollPane(askTable);
                     JScrollPane scrollerBids = new JScrollPane(bidTable);
 
-                    askScrollPanes.put(productId, scrollerAsks);
-                    bidScrollPanes.put(productId, scrollerBids);
+                    scrollPanes.put("sell_" + productId, scrollerAsks);
+                    scrollPanes.put("buy_" + productId, scrollerBids);
 
+                    JPanel orderBookPanelView = new JPanel();
                     JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollerAsks, scrollerBids);
+                    int height = thisOrderBook.getHeight() / 2;
+                    splitPane.setDividerLocation(height);
+                    orderBookPanelView.add(splitPane);
 
-
-
-                    orderBookPane.put(productId, splitPane);
-
+                    orderBookSplitPaneMap.put(productId, orderBookPanelView);
+                    maxSequenceIds.put(productId, new Long(0));
                 }
-                JSplitPane splitPane = orderBookPane.get(productIds[0]);
-                add(splitPane);
 
-                splitPane.setDividerLocation(splitPane.getParent().getHeight()/2);
+                setLobViewer(productIds[0]);
                 log.info("******** Opening Websocket Feed");
+
+                for (String productId : productIds) {
+                    JButton button = new JButton(productId);
+                    button.setFont(new Font("Calibri", Font.PLAIN, 11));
+                    productSelectionPanel.add(button);
+                    button.addActionListener(event -> setLobViewer(event.getActionCommand()));
+                }
+
+                websocketFeed.subscribe(new Subscribe(productIds), thisOrderBook);
                 return null;
             }
 
             @Override
             public void done() {
-
+                repaint();
+                updateUI();
             }
         };
         worker.execute();
-        websocketFeed.subscribe(new Subscribe(productIds), thisOrderBook);
-
     }
 
     private JTable initTable(List<OrderItem> marketData) {
@@ -122,12 +148,14 @@ public class OrderBook extends JPanel {
 
         int index = 0;
         for (OrderItem item : marketData) {
-            log.info("Inserting new OrderItem row at index: " + index);
+            log.info("Inserting new OrderItem row at index: {}, {}, {}", item.getPrice(), item.getSize(), item.getNum());
             model.insertRowAt(item, index);
             index++;
         }
 
-        return new JTable(model);
+        JTable table = new JTable(model);
+        table.setFont(new Font("Calibri", Font.PLAIN, 10));
+        return table;
     }
 
     public void heartBeat(HeartBeat object) {
@@ -135,121 +163,46 @@ public class OrderBook extends JPanel {
     }
 
     /**
-     * TODO this needs refactoring
-     *
      * @param msg
      */
-    public void updateOrderBookReceived(OrderReceivedOrderBookMessage msg) {
-        log.info("OrderBook.updateOrderBookReceived");
-        JScrollBar bidVerticalScrollBar = bidScrollPanes.get(msg.getProduct_id()).getVerticalScrollBar();
-        JScrollBar askVerticalScrollBar = askScrollPanes.get(msg.getProduct_id()).getVerticalScrollBar();
+    public void updateOB(OrderBookMessage msg) {
+        log.info("OrderBook.updateOrderBook");
+        MyTableModel model = ((MyTableModel) tables.get(msg.getSide() + "_" + msg.getProduct_id()).getModel());
 
-        boolean lockBidToMin = false;
-        boolean lockAskToMax = false;
+        model.incomingOrder(msg);
 
-        if (bidVerticalScrollBar.getValue() <= bidVerticalScrollBar.getMinimum()) {
-            lockBidToMin = true;
-        }
-        log.info("Ask Scroll bar value: "+ askVerticalScrollBar.getValue()+ ", Maximum: " + askVerticalScrollBar.getMaximum());
-        if (askVerticalScrollBar.getValue()+200 >= askVerticalScrollBar.getMaximum()) {
-            lockAskToMax = true;
-        }
-
-        insertOrderIntoTable(msg);
-
-        if (lockBidToMin) {
-            bidVerticalScrollBar.setValue(bidVerticalScrollBar.getMinimum());
-        }
-        if (lockAskToMax) {
-            askVerticalScrollBar.setValue(askVerticalScrollBar.getMaximum());
-        }
+        JScrollBar bidVerticalScrollBar = scrollPanes.get("buy_" + msg.getProduct_id()).getVerticalScrollBar();
+        JScrollBar askVerticalScrollBar = scrollPanes.get("sell_" + msg.getProduct_id()).getVerticalScrollBar();
+        askVerticalScrollBar.setValue(askVerticalScrollBar.getMaximum());
+        bidVerticalScrollBar.setValue(bidVerticalScrollBar.getMinimum());
     }
 
-    private void insertOrderIntoTable(OrderReceivedOrderBookMessage msg) {
-        MyTableModel model;
-        boolean notUpdated = false;
-        if (msg.getSide().equals("buy")) { // BUYS / BIDS
-
-            model = (MyTableModel) bidTables.get(msg.getProduct_id()).getModel();
-            for (int i = 0; i < model.getRowCount(); i++) {
-//                log.info("Checking BID price for row: " + i);
-                BigDecimal modelPrice = getPrice((String) model.getValueAt(i, 0));
-                BigDecimal incomingPrice = getPrice(msg);
-
-                if (incomingPrice.compareTo(modelPrice) == 0) {
-                    log.info("Updating BID price: " + getPrice(msg) + ", row:"+ i + ", with size: " + getOrderSize(msg));
-                    model.updateExistingRow(msg, i);
-                    notUpdated = false;
-                    break;
-                } else if (incomingPrice.compareTo(modelPrice) == 1) {
-                    log.info("Inserting new BID price: " + getPrice(msg) + ", row:"+ i);
-                    model.insertRowAt(msg, i);
-                    notUpdated = false;
-                    break;
-                }
-            }
-            if (notUpdated) {
-                // append to the end of the model
-                model.appendTop(msg);
-            }
-        } else { // ASKS / SELLS
-            model = (MyTableModel) askTables.get(msg.getProduct_id()).getModel();
-
-            for (int i = 0; i < model.getRowCount(); i++) {
-//                log.info("Checking ASK price for row: " + i);
-                BigDecimal modelPrice = getPrice((String) model.getValueAt(i, 0));
-                BigDecimal incomingPrice = getPrice(msg);
-
-                if (incomingPrice.compareTo(modelPrice) == 0) {
-                    log.info("Updating ASK price: " + i);
-                    model.updateExistingRow(msg, i);
-                    notUpdated = false;
-                    break;
-                } else if (incomingPrice.compareTo(modelPrice) == -1) {
-                    log.info("Inserting new ASK price: " + i);
-                    model.insertRowAt(msg, i);
-                    notUpdated = false;
-                    break;
-                }
-            }
-            if (notUpdated) {
-                log.info("Appending ASK to bottom of list. Price: " + getPrice(msg));
-                // append to the end of the model
-                model.appendBottom(msg);
-            }
-        }
-    }
-
-    private BigDecimal getPrice(OrderBookMessage msg) {
-        return msg.getPrice().setScale(2, BigDecimal.ROUND_HALF_UP);
-    }
-
-    private BigDecimal getPrice(String priceString) {
-        return new BigDecimal(priceString).setScale(2, BigDecimal.ROUND_HALF_UP);
-    }
-
-    private BigDecimal getOrderSize(OrderBookMessage msg) {
-        return msg.getPrice().setScale(5, BigDecimal.ROUND_HALF_UP);
-    }
-
-    public void updateOrderBook(OrderReceivedOrderBookMessage order) {
+    public void updateOrderBook(OrderBookMessage order) {
 
         SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
             public Void doInBackground() {
-                SwingUtilities.invokeLater(() -> {
-                    updateOrderBookReceived(order);
-                });
+                SwingUtilities.invokeLater(() -> updateOB(order));
                 return null;
             }
 
             @Override
             public void done() {
-                log.info("OrderBook.done()");
+                repaint();
                 updateUI();
             }
         };
 
         worker.execute();
     }
+
+    public void setLobViewer(String productId) {
+        JPanel splitPane = orderBookSplitPaneMap.get(productId);
+        lobViewer.removeAll();
+        lobViewer.add(splitPane);
+        repaint();
+        updateUI();
+    }
+
+
 }

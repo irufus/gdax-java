@@ -1,12 +1,5 @@
 package com.coinbase.exchange.api.websocketfeed.message;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
-import org.springframework.core.ParameterizedTypeReference;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
@@ -14,7 +7,7 @@ import java.math.BigDecimal;
  * so the relevant parts can be determined and the messages typed.
  * Created by robevansuk on 15/03/2017.
  */
-public class OrderBookMessage {
+public class OrderBookMessage implements Comparable {
     String type;
     String time;
     String product_id;
@@ -296,5 +289,15 @@ public class OrderBookMessage {
 
     public void setLast_trade_id(String last_trade_id) {
         this.last_trade_id = last_trade_id;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.getSequence().compareTo(((OrderBookMessage) o).getSequence());
+//        if (getSide().equals("buy")) {
+//            return result;
+//        } else {
+//            return result * -1;
+//        }
     }
 }

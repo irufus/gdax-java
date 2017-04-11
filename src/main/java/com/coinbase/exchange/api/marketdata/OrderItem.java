@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by robevansuk on 20/03/2017.
  */
-public class OrderItem {
+public class OrderItem implements Comparable {
 
     private BigDecimal price;
     private BigDecimal size;
@@ -18,7 +19,7 @@ public class OrderItem {
     @JsonCreator
     public OrderItem(List<BigDecimal> limitOrders) {
         if (CollectionUtils.isEmpty(limitOrders) || limitOrders.size() < 3) {
-            throw new IllegalArgumentException("dkfjdkfjdlkjf");
+            throw new IllegalArgumentException("LimitOrders was empty - check connection to the exchange");
         }
 
         price = limitOrders.get(0);
@@ -38,4 +39,8 @@ public class OrderItem {
         return num;
     }
 
+    @Override
+    public int compareTo(Object o) {
+        return this.getPrice().compareTo(((OrderItem)o).getPrice()) * -1;
+    }
 }
