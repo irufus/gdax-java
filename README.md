@@ -1,43 +1,6 @@
 # gdax-java
 Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
 
-#Functions implemented:
-    - [x]Authentication (GET, POST, DELETE supported)
-    - [x]Get Account
-    - [x]Get Accounts
-    - [x]Get Account History
-    - [x]Get Holds
-    - [x]Place a new Order (limit order)
-    - [x]Get an Order
-    - [x]Cancel an Order
-    - [x]List all open Orders
-    - [x]Get Market Data
-    - [x]List fills
-    - [x]List Products
-    - [x]HTTP Error code support
-    - [x]List of Currencies - from Accounts
-    - [x]Withdrawals - from coinbase accounts / payment methods / crypto account address
-    - [x]Deposits - from coinbase accounts / payment methods
-    - [x]Transfers - from coinbase accounts
-    - [x]Payment methods - coinbase / payment methods
-    - [x]Reports
-    - [x]Pagination support:
-        - accounts
-        - account history
-        - holds for a given account
-        - holds for all orders
-        - open orders for account
-        - all open orders
-        - all fills
-    - [x]Sandbox support
-    - [ ]Ethereal support
-
-#Features wanted:
-    - [x]Transfer Funds
-    - [x]Product Order book support
-    - [x]Market Data support
-    - [ ]Web Socket support
-
 #Notes:
 >GDAX primary data sources and servers run in the Amazon US East data center. To minimize latency for API access, we recommend making requests from servers located near the US East data center.
 
@@ -73,3 +36,5 @@ Then in your method you can carry out any of the public api operations such as `
 - generally more structure.
 - added pagination to all the relevant calls (some not supported since it seems pointless due to the limited offering from gdax - e.g. products)
 
+#Features wanted:
+- Web Socket support
