@@ -7,11 +7,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
 
 /**
  * Created by irufus (sakamura@gmail.com)
- * @Description The primary function of this class is to run through basic tests for the Authentication and CoinbaseExchange classes
+ * @Description The primary function of this class is to run through basic tests for the Authentication and GdaxExchange classes
  */
 public class AuthenticationTests extends BaseTest {
 
@@ -21,6 +20,7 @@ public class AuthenticationTests extends BaseTest {
     @Test
     public void simpleAuthenticationTest(){
         Account[] accounts = accountService.getAccounts();
+        assertTrue(accounts != null);
         assertTrue(accounts.length > 0);
     }
 

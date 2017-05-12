@@ -20,7 +20,6 @@ import javax.management.RuntimeErrorException;
 import java.security.InvalidKeyException;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.Optional;
 
 import static org.springframework.http.HttpMethod.GET;
 
@@ -29,9 +28,9 @@ import static org.springframework.http.HttpMethod.GET;
  * Created by irufus on 2/25/15.
  */
 @Component
-public class CoinbaseExchangeImpl implements CoinbaseExchange {
+public class GdaxExchangeImpl implements GdaxExchange {
 
-    static Logger log = Logger.getLogger(CoinbaseExchangeImpl.class.getName());
+    static Logger log = Logger.getLogger(GdaxExchangeImpl.class.getName());
 
     String publicKey;
     String secretKey;
@@ -42,10 +41,10 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     RestTemplate restTemplate;
 
     @Autowired
-    public CoinbaseExchangeImpl(@Value("${gdax.key}") String publicKey,
-                                @Value("${gdax.secret}") String secretKey,
-                                @Value("${gdax.passphrase}") String passphrase,
-                                @Value("${gdax.api.baseUrl}") String baseUrl) {
+    public GdaxExchangeImpl(@Value("${gdax.key}") String publicKey,
+                            @Value("${gdax.secret}") String secretKey,
+                            @Value("${gdax.passphrase}") String passphrase,
+                            @Value("${gdax.api.baseUrl}") String baseUrl) {
         this.publicKey = publicKey;
         this.secretKey = secretKey;
         this.passphrase = passphrase;
@@ -56,12 +55,26 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     public <T> T get(String resourcePath, ParameterizedTypeReference<T> responseType) {
         try {
             ResponseEntity<T> responseEntity = restTemplate.exchange(getBaseUrl() + resourcePath,
-                    GET, securityHeaders(resourcePath, "GET", ""), responseType);
+                    GET,
+                    securityHeaders(resourcePath,
+                    "GET",
+                    ""),
+                    responseType);
             return responseEntity.getBody();
         } catch (HttpClientErrorException ex) {
-            log.error("GET request Failed: " + ex.getResponseBodyAsString());
+            log.error("GET request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
         }
         return null;
+    }
+
+    @Override
+    public <T> T pagedGet(String resourcePath,
+                          ParameterizedTypeReference<T> responseType,
+                          String beforeOrAfter,
+                          Integer pageNumber,
+                          Integer limit) {
+        resourcePath += "?" + beforeOrAfter + "=" + pageNumber + "&limit=" + limit;
+        return get(resourcePath, responseType);
     }
 
     @Override
@@ -73,7 +86,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
                 responseType);
             return response.getBody();
         } catch (HttpClientErrorException ex) {
-            log.error("DELETE request Failed: " + ex.getResponseBodyAsString());
+            log.error("DELETE request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
         }
         return null;
     }
@@ -90,7 +103,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
                     responseType);
             return response.getBody();
         } catch (HttpClientErrorException ex) {
-            log.error("POST request Failed: " + ex.getResponseBodyAsString());
+            log.error("POST request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
         }
         return null;
     }

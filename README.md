@@ -1,7 +1,7 @@
-# gdax-java (coinbase-exchange-java)
+# gdax-java
 Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
 
-#Functions needed:
+#Functions implemented:
     - [x]Authentication (GET, POST, DELETE supported)
     - [x]Get Account
     - [x]Get Accounts
@@ -15,16 +15,28 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
     - [x]List fills
     - [x]List Products
     - [x]HTTP Error code support
-    - [x]List of Currencies - comes from Accounts
-    - [ ]Pagination support for all calls that support it
-    - [ ]Ethereal support
+    - [x]List of Currencies - from Accounts
+    - [x]Withdrawals - from coinbase accounts / payment methods / crypto account address
+    - [x]Deposits - from coinbase accounts / payment methods
+    - [x]Transfers - from coinbase accounts
+    - [x]Payment methods - coinbase / payment methods
+    - [x]Reports
+    - [x]Pagination support:
+        - accounts
+        - account history
+        - holds for a given account
+        - holds for all orders
+        - open orders for account
+        - all open orders
+        - all fills
     - [x]Sandbox support
-    
+    - [ ]Ethereal support
+
 #Features wanted:
-    - [ ]Transfer Funds
-    - [ ]Web Socket support
-    - [x]Market Data support
+    - [x]Transfer Funds
     - [x]Product Order book support
+    - [x]Market Data support
+    - [ ]Web Socket support
 
 #Notes:
 >GDAX primary data sources and servers run in the Amazon US East data center. To minimize latency for API access, we recommend making requests from servers located near the US East data center.
@@ -59,3 +71,5 @@ Then in your method you can carry out any of the public api operations such as `
 - better configuration options using `application.yml` for your live environment and `application-test.yml` for your sandbox environment.
 - banner displayed (specific to each environment) :)
 - generally more structure.
+- added pagination to all the relevant calls (some not supported since it seems pointless due to the limited offering from gdax - e.g. products)
+
