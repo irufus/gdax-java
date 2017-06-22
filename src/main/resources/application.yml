@@ -1,9 +1,9 @@
 gdax:
   api:
     baseUrl: "https://api.gdax.com/"
-  key: ""wek[fkwqe
-  secret: ""fqwef
-  passphrase: "" ewrwer 
+  key: ""
+  secret: ""
+  passphrase: ""
 
 websocket:
   baseUrl: "wss://ws-feed.gdax.com/"
