@@ -4,3 +4,4 @@
 build/
 gdax.properties
 *.log
+classes/

@@ -29,7 +29,6 @@ public class GdaxExchangeImpl implements GdaxExchange {
     String publicKey;
     String passphrase;
     String baseUrl;
-    String socketfeed;
 
     @Autowired
     RestTemplate restTemplate;
@@ -86,9 +85,6 @@ public class GdaxExchangeImpl implements GdaxExchange {
         }
         return null;
     }
-
-
-
 
     @Override
     public <T, R> T post(String resourcePath,  ParameterizedTypeReference<T> responseType, R jsonObj) {

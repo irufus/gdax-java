@@ -3,7 +3,6 @@
  */
 package com.coinbase.exchange.api.exchange;
 
-import com.coinbase.exchange.api.websocketfeed.message.Subscribe;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 

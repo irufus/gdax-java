@@ -391,7 +391,34 @@ public class MyTableModelTest {
         assertThat(testObject.getRowCount(), equalTo(2));
         assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
         assertThat(testObject.getLastOrders().get(1).getSequence(), equalTo(2L));
+    }
 
+    @Test
+    public void shouldInsertTwoOrdersIntoTableAfterMissingMessageIsReceived(){
+        // create a new order
+        OrderBookMessage message1 = new OrderBookMessage();
+        message1.setType("limit");
+        message1.setPrice(new BigDecimal(1.0));
+        message1.setRemaining_size(new BigDecimal(0.43400));
+        message1.setSide("buy");
+        message1.setSequence(2L);
 
+        testObject.incomingOrder(message1);
+
+        assertThat(testObject.getRowCount(), equalTo(1));
+        assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
+
+        OrderBookMessage message2 = new OrderBookMessage();
+        message2.setType("limit");
+        message2.setPrice(new BigDecimal(1.1));
+        message2.setRemaining_size(new BigDecimal(0.43400));
+        message2.setSide("buy");
+        message2.setSequence(1L);
+
+        testObject.incomingOrder(message2);
+
+        assertThat(testObject.getRowCount(), equalTo(2));
+        assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
+        assertThat(testObject.getLastOrders().get(1).getSequence(), equalTo(2L));
     }
 }

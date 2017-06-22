@@ -2,28 +2,28 @@
 Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
 
 #Functions implemented:
-    - [x]Authentication (GET, POST, DELETE supported)
-    - [x]Get Account
-    - [x]Get Accounts
-    - [x]Get Account History
-    - [x]Get Holds
-    - [x]Place a new Order (limit order)
-    - [x]Get an Order
-    - [x]Cancel an Order
-    - [x]List all open Orders
-    - [x]Get Market Data
-    - [x]List fills
-    - [x]List Products
-    - [x]HTTP Error code support
-    - [x]List of Currencies - from Accounts
-    - [x]Withdrawals - from coinbase accounts / payment methods / crypto account address
-    - [x]Deposits - from coinbase accounts / payment methods
-    - [x]Transfers - from coinbase accounts
-    - [x]Payment methods - coinbase / payment methods
-    - [x]Reports
-    - [ ]Pagination support for all calls that support it
-    - [ ]Ethereal support
-    - [x]Sandbox support
+    * [x]Authentication (GET, POST, DELETE supported)
+    * [x]Get Account
+    * [x]Get Accounts
+    * [x]Get Account History
+    * [x]Get Holds
+    * [x]Place a new Order (limit order)
+    * [x]Get an Order
+    * [x]Cancel an Order
+    * [x]List all open Orders
+    * [x]Get Market Data
+    * [x]List fills
+    * [x]List Products
+    * [x]HTTP Error code support
+    * [x]List of Currencies - from Accounts
+    * [x]Withdrawals - from coinbase accounts / payment methods / crypto account address
+    * [x]Deposits - from coinbase accounts / payment methods
+    * [x]Transfers - from coinbase accounts
+    * [x]Payment methods - coinbase / payment methods
+    * [x]Reports
+    * [ ]Pagination support for all calls that support it
+    * [ ]Ethereal support
+    * [x]Sandbox support - *sandbox support was dropped by gdax so this is now redundant*
     
 #Features wanted:
     - [x]Transfer Funds

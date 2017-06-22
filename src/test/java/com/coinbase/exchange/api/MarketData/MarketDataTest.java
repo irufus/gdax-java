@@ -18,7 +18,8 @@ public class MarketDataTest extends BaseTest {
 
     @Test
     public void canGetMarketDataForTopLevelBidAndAsk() {
-        MarketData marketData = marketDataService.getMarketDataOrderBook("BTC-USD", "3");
+        MarketData marketData = marketDataService.getMarketDataOrderBook("BTC-USD", "1");
+        System.out.println(marketData);
         assertTrue(marketData.getSequence() > 0);
     }
 
