@@ -5,3 +5,4 @@ build/
 gdax.properties
 *.log
 classes/
+application*.yml
