@@ -1,7 +1,7 @@
 # gdax-java
 Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
 
-#Functions implemented:
+# Functions implemented:
 - [x] Authentication (GET, POST, DELETE supported)
 - [x] Get Account
 - [x] Get Accounts
@@ -25,18 +25,18 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
 - [ ] Ethereal support
 - [x] Sandbox support - *sandbox support was dropped by gdax so this is now redundant*
     
-#Features wanted:
+# Features wanted:
 - [x] Transfer Funds
 - [ ] Web Socket support
 - [x] Market Data support
 - [x] Product Order book support
 
-#Notes:
+# Notes:
 >GDAX primary data sources and servers run in the Amazon US East data center. To minimize latency for API access, we recommend making requests from servers located near the US East data center.
 
 >Some of the methods do not yet have tests and so may not work as expected until a later date. Please raise an issue in github if you want something in particular as a priority. I'll be looking to fully flesh this out if possible over the coming months.
 
-#Examples
+# Examples
 --------
 To make use of this library you only need a reference to the service that you want.
 
@@ -51,7 +51,7 @@ This works better if you declare the above method as a google guice/spring bean 
 
 Then in your method you can carry out any of the public api operations such as `orderService().createOrder(NewSingleOrder order);` - this creates a limit order. Currently this is only the basic order.
 
-#Updates
+# Updates
 --------
 - converted to using Gradle
 - converted to using SpringBoot for DI and request building
