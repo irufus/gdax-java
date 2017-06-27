@@ -17,11 +17,27 @@ public class MarketDataTest extends BaseTest {
     MarketDataService marketDataService;
 
     @Test
-    public void canGetMarketDataForTopLevelBidAndAsk() {
-        MarketData marketData = marketDataService.getMarketDataOrderBook("BTC-GBP", "3");
+    public void canGetMarketDataForLevelOneBidAndAsk() {
+        MarketData marketData = marketDataService.getMarketDataOrderBook("BTC-GBP", "1");
         System.out.println(marketData);
         assertTrue(marketData.getSequence() > 0);
     }
 
-    //TODO add a test for levels >1.
+    @Test
+    public void canGetMarketDataForLevelTwoBidAndAsk() {
+        MarketData marketData = marketDataService.getMarketDataOrderBook("BTC-GBP", "2");
+        System.out.println(marketData);
+        assertTrue(marketData.getSequence() > 0);
+    }
+
+    /**
+     * note that the returned results are slightly different for level 3. For level 3 you will see an
+     * order Id rather than the count of orders at a certain price.
+     */
+    @Test
+    public void canGetMarketDataForLevelThreeBidAndAsk() {
+        MarketData marketData = marketDataService.getMarketDataOrderBook("BTC-GBP", "3");
+        System.out.println(marketData);
+        assertTrue(marketData.getSequence() > 0);
+    }
 }
