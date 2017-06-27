@@ -65,6 +65,7 @@ Then in your method you can carry out any of the public api operations such as `
 - better configuration options using `application.yml` for your live environment and `application-test.yml` for your sandbox environment.
 - banner displayed (specific to each environment) :)
 - generally more structure.
+- GDAX is updating its API without updating documentation - I've fixed an issue with market data because of this.
 
 # TODO
 -------

@@ -33,20 +33,14 @@ public class GuiFrame {
     }
 
     public void startGui() {
-        // Main Gui should be created using invokeLater thread.
-//        new Thread(() -> {
-//            SwingUtilities.invokeLater(() -> {
-                if (guiEnabled) {
-                    frame = new JFrame("Gdax Desktop Client");
-                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    frame.setSize(640, 480);
-                    frame.setLayout(new BorderLayout());
-                    frame.add(orderBook, BorderLayout.EAST);
-                    frame.setVisible(true);
-                    log.info("JFrame CTOR");
-
-                }
-//            });
-//        }).start();
+        if (guiEnabled) {
+            frame = new JFrame("Gdax Desktop Client");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(640, 480);
+            frame.setLayout(new BorderLayout());
+            frame.add(orderBook, BorderLayout.EAST);
+            frame.setVisible(true);
+            log.info("JFrame CTOR");
+        }
     }
 }

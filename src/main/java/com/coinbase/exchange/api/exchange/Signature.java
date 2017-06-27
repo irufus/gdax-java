@@ -17,8 +17,7 @@ import java.util.Base64;
 @Component
 public class Signature {
 
-    @Value("${gdax.secret}")
-    String secretKey;
+    private String secretKey;
 
     public Signature() { }
 

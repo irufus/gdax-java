@@ -23,6 +23,10 @@ public class OrderItemDeserializerTest {
 
     }
 
+    /**
+     * This is now out of date - the api delivers a list of strings - amount, price, order Id. NOT number of orders as this test shows.
+     * @throws IOException
+     */
     @Test
     public void testDesirialization() throws IOException {
         String test = "{\n" +
@@ -37,9 +41,6 @@ public class OrderItemDeserializerTest {
                 "    ]\n" +
                 "}";
 
-
         MarketData marketData = mapper.readValue(test, MarketData.class);
-        System.out.println(marketData);
     }
-
 }

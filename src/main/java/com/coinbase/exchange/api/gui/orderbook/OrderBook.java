@@ -8,7 +8,6 @@ import com.coinbase.exchange.api.websocketfeed.WebsocketFeed;
 import com.coinbase.exchange.api.websocketfeed.message.HeartBeat;
 import com.coinbase.exchange.api.websocketfeed.message.OrderBookMessage;
 import com.coinbase.exchange.api.websocketfeed.message.Subscribe;
-import javafx.embed.swing.JFXPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +25,17 @@ import java.util.List;
  * Created by robevansuk on 10/03/2017.
  */
 @Component
-public class OrderBook extends JFXPanel {
+public class OrderBook extends JPanel {
 
     static final Logger log = LoggerFactory.getLogger(OrderBook.class);
     static String[] productIds = new String[]{"BTC-GBP", "ETH-BTC"}; // make this configurable.
 
+    private boolean isAlive;
+
     WebsocketFeed websocketFeed;
     MarketDataService marketDataService;
 
-    private boolean isAlive;
     Map<String, JPanel> orderBookSplitPaneMap;
-
     Map<String, JTable> tables;
 
     Map<String, List<OrderItem>> bids;
@@ -76,6 +75,10 @@ public class OrderBook extends JFXPanel {
         }
     }
 
+    /**
+     * Gets the market data and loads in all the prices for the current order book,
+     * then submits a subscribe message to the server so that price updates are received.
+     */
     public void load() {
         OrderBook thisOrderBook = this;
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {

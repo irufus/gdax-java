@@ -7,9 +7,9 @@ import java.util.List;
  */
 public class MarketData {
 
-    Long sequence;
-    List<OrderItem> bids; // price, size, orders
-    List<OrderItem> asks; // price, size, orders
+    private Long sequence;
+    private List<OrderItem> bids; // price, size, orders
+    private List<OrderItem> asks; // price, size, orders
 
     public MarketData() { }
 

@@ -30,20 +30,21 @@ public class GdaxExchangeImpl implements GdaxExchange {
     String passphrase;
     String baseUrl;
 
-    @Autowired
-    RestTemplate restTemplate;
-
     Signature signature;
+
+    RestTemplate restTemplate;
 
     @Autowired
     public GdaxExchangeImpl(@Value("${gdax.key}") String publicKey,
                             @Value("${gdax.passphrase}") String passphrase,
                             @Value("${gdax.api.baseUrl}") String baseUrl,
-                            Signature signature) {
+                            Signature signature,
+                            RestTemplate restTemplate) {
         this.publicKey = publicKey;
         this.passphrase = passphrase;
         this.baseUrl = baseUrl;
         this.signature = signature;
+        this.restTemplate = restTemplate;
     }
 
     @Override

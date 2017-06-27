@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
 
@@ -14,17 +15,19 @@ public class OrderItem implements Comparable {
 
     private BigDecimal price;
     private BigDecimal size;
+    private String orderId;
     private BigDecimal num;
 
+
     @JsonCreator
-    public OrderItem(List<BigDecimal> limitOrders) {
+    public OrderItem(List<String> limitOrders) {
         if (CollectionUtils.isEmpty(limitOrders) || limitOrders.size() < 3) {
             throw new IllegalArgumentException("LimitOrders was empty - check connection to the exchange");
         }
-
-        price = limitOrders.get(0);
-        size = limitOrders.get(1);
-        num = limitOrders.get(2);
+        price =  new BigDecimal(limitOrders.get(0));
+        size = new BigDecimal(limitOrders.get(1));
+        orderId = limitOrders.get(2);
+        num = new BigDecimal(1);
     }
 
     public BigDecimal getPrice() {
@@ -35,6 +38,10 @@ public class OrderItem implements Comparable {
         return size;
     }
 
+    public String getOrderId() {
+        return orderId;
+    }
+
     public BigDecimal getNum() {
         return num;
     }
@@ -43,4 +50,5 @@ public class OrderItem implements Comparable {
     public int compareTo(Object o) {
         return this.getPrice().compareTo(((OrderItem)o).getPrice()) * -1;
     }
+
 }
