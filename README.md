@@ -36,6 +36,24 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
 
 >Some of the methods do not yet have tests and so may not work as expected until a later date. Please raise an issue in github if you want something in particular as a priority. I'll be looking to fully flesh this out if possible over the coming months.
 
+# Usage
+--------
+
+To build and run the application you can use the gradle script - this requires no installation as the "gradle wrapper" is included as part of the source code. All you need to do is:
+
+1. supply your api keys in `gdax-java/src/main/resources/application.yml`
+1. open a command line terminal
+1. navigate to the root directory of this project (where `build.gradle` sits) 
+1. execute `./gradlew bootRun` (Mac/unix). For equivalent Windows commands just remove the `./` from the commands, there's a gradlew.bat included as well.
+
+This won't actually do much on its own but I did implement a slightly experimental (buggy) GUI which you can switch on and try by changing the setting gui.enabled in the application.yml above to `true`. You should then see a streamed list of updates displayed in a rather rubbish GUI I was attempting to build out. This is a work in progress so please don't assume its a finished product - its just for demoing that this works.
+
+1. tests can also be run with  `./gradlew test` - simple
+
+For a lib:
+
+1. If you'd rather work purely in java then you can build an executable jar file `./gradlew jar` and you should be able to find the jar in the build directory.
+
 # Examples
 --------
 To make use of this library you only need a reference to the service that you want.
