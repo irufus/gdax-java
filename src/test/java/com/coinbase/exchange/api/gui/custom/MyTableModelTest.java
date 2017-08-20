@@ -401,24 +401,40 @@ public class MyTableModelTest {
         message1.setPrice(new BigDecimal(1.0));
         message1.setRemaining_size(new BigDecimal(0.43400));
         message1.setSide("buy");
-        message1.setSequence(2L);
+        message1.setSequence(1L);
 
         testObject.incomingOrder(message1);
 
         assertThat(testObject.getRowCount(), equalTo(1));
         assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
 
-        OrderBookMessage message2 = new OrderBookMessage();
-        message2.setType("limit");
-        message2.setPrice(new BigDecimal(1.1));
-        message2.setRemaining_size(new BigDecimal(0.43400));
-        message2.setSide("buy");
-        message2.setSequence(1L);
+        // third message will be received before 2nd message
+        OrderBookMessage message3 = new OrderBookMessage();
+        message3.setType("limit");
+        message3.setPrice(new BigDecimal(1.1));
+        message3.setRemaining_size(new BigDecimal(0.43400));
+        message3.setSide("buy");
+        message3.setSequence(3L);
 
-        testObject.incomingOrder(message2);
+        testObject.incomingOrder(message3);
 
         assertThat(testObject.getRowCount(), equalTo(2));
         assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
+        assertThat(testObject.getLastOrders().get(1).getSequence(), equalTo(3L));
+
+        // 2nd message arrived late...
+        OrderBookMessage message2 = new OrderBookMessage();
+        message2.setType("limit");
+        message2.setPrice(new BigDecimal(1.3));
+        message2.setRemaining_size(new BigDecimal(0.43400));
+        message2.setSide("buy");
+        message2.setSequence(2L);
+
+        testObject.incomingOrder(message2);
+
+        assertThat(testObject.getRowCount(), equalTo(3));
+        assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
         assertThat(testObject.getLastOrders().get(1).getSequence(), equalTo(2L));
+        assertThat(testObject.getLastOrders().get(2).getSequence(), equalTo(3L));
     }
 }

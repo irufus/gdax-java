@@ -43,15 +43,15 @@ public class WebsocketFeed {
     public WebsocketFeed(@Value("${websocket.baseUrl}") String websocketUrl,
                          @Value("${gdax.key}") String key,
                          @Value("${gdax.passphrase}") String passphrase,
-                         @Value("${gui.enabled}") String guiEnabled,
+                         @Value("${gui.enabled}") boolean guiEnabled,
                          Signature signature) {
         this.key = key;
         this.passphrase = passphrase;
         this.websocketUrl = websocketUrl;
         this.signature = signature;
-        this.guiEnabled = Boolean.parseBoolean(guiEnabled);
+        this.guiEnabled = guiEnabled;
 
-        if (this.guiEnabled) {
+        if (guiEnabled) {
             try {
                 WebSocketContainer container = ContainerProvider.getWebSocketContainer();
                 container.connectToServer(this, new URI(websocketUrl));
@@ -135,7 +135,7 @@ public class WebsocketFeed {
                     else if (type.equals("received"))
                     {
                         // received orders are not necessarily live orders - so I'm ignoring these msgs as they're
-                        // subject to subsequent changes.
+                        // subject to change.
                         log.info("order received {}", json);
 
                     }
@@ -160,7 +160,7 @@ public class WebsocketFeed {
                     }
                     else if (type.equals("change"))
                     {
-                        // TODO - possibly need to provide implementation for this to work
+                        // TODO - possibly need to provide implementation for this to work in real time.
                          log.info("Order Changed {}", json);
                         // orderBook.updateOrderBookWithChange(getObject(json, new TypeReference<OrderChangeOrderBookMessage>(){}));
                     }

@@ -27,9 +27,11 @@ public class GuiFrame {
 
     @Autowired
     public GuiFrame(@Value("${gui.enabled}") boolean guiEnabled, OrderBook orderBook) {
-        this.orderBook = orderBook;
-        this.guiEnabled = guiEnabled;
-        startGui();
+            this.orderBook = orderBook;
+            this.guiEnabled = guiEnabled;
+        if (guiEnabled) {
+            startGui();
+        }
     }
 
     public void startGui() {

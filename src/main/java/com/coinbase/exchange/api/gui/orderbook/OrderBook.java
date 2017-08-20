@@ -11,6 +11,7 @@ import com.coinbase.exchange.api.websocketfeed.message.Subscribe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ import java.util.List;
 
 /**
  * TODO - convert to JFX rather than using Swing.
- *
+ * <p>
  * Created by robevansuk on 10/03/2017.
  */
 @Component
@@ -48,30 +49,35 @@ public class OrderBook extends JPanel {
     JPanel productSelectionPanel;
     Map<String, Long> maxSequenceIds;
 
-
     @Autowired
-    public OrderBook(MarketDataService marketDataService, WebsocketFeed websocketFeed) {
+    public OrderBook(@Value("${gui.enabled}") boolean guiEnabled, MarketDataService marketDataService, WebsocketFeed websocketFeed) {
         super();
-        this.maxSequenceIds = new HashMap<>();
-        this.lobViewer = new JPanel();
-        this.add(lobViewer);
-        this.productSelectionPanel = new JPanel();
-        this.productSelectionPanel.setLayout(new BoxLayout(productSelectionPanel, BoxLayout.X_AXIS));
-        this.add(productSelectionPanel);
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.websocketFeed = websocketFeed;
-        this.marketDataService = marketDataService;
-        this.tables = new HashMap<>();
-        this.orderBookSplitPaneMap = new HashMap<>();
-        this.bids = new HashMap<>();
-        this.asks = new HashMap<>();
-        this.scrollPanes = new HashMap<>();
-        this.setVisible(true);
+        if (guiEnabled) {
+            this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        try {
-            SwingUtilities.invokeAndWait(() -> load());
-        } catch (InterruptedException | InvocationTargetException e) {
-            log.error("Something went wrong whilst starting the OrderBook", e);
+            this.lobViewer = new JPanel();
+            this.add(lobViewer);
+
+            this.productSelectionPanel = new JPanel();
+            this.productSelectionPanel.setLayout(new BoxLayout(productSelectionPanel, BoxLayout.X_AXIS));
+            this.add(productSelectionPanel);
+
+            this.websocketFeed = websocketFeed;
+            this.marketDataService = marketDataService;
+
+            this.orderBookSplitPaneMap = new HashMap<>();
+            this.maxSequenceIds = new HashMap<>();
+            this.tables = new HashMap<>();
+            this.bids = new HashMap<>();
+            this.asks = new HashMap<>();
+            this.scrollPanes = new HashMap<>();
+            this.setVisible(true);
+
+            try {
+                SwingUtilities.invokeAndWait(() -> load());
+            } catch (InterruptedException | InvocationTargetException e) {
+                log.error("Something went wrong whilst starting the OrderBook", e);
+            }
         }
     }
 
@@ -93,11 +99,8 @@ public class OrderBook extends JPanel {
 
                     Collections.sort(marketData.getAsks());
 
-                    bids.put(productId, new LinkedList<>(marketData.getBids()));
-                    asks.put(productId, new LinkedList<>(marketData.getAsks()));
-
-                    JPanel panel = new JPanel();
-                    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                    bids.put(productId, new LinkedList<>(marketData.getBids())); // list of order book items
+                    asks.put(productId, new LinkedList<>(marketData.getAsks())); // list of order book items
 
                     log.info("Populating ASK table for: " + productId);
                     JTable askTable = initTable(asks.get(productId));
@@ -133,6 +136,7 @@ public class OrderBook extends JPanel {
                     button.addActionListener(event -> setLobViewer(event.getActionCommand()));
                 }
 
+                log.info("*** Subscribing ***");
                 websocketFeed.subscribe(new Subscribe(productIds), thisOrderBook);
                 return null;
             }
