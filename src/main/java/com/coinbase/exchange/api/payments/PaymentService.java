@@ -17,12 +17,10 @@ public class PaymentService {
     @Autowired
     GdaxExchange gdaxExchange;
 
-    // TODO untested
     public PaymentTypes getPaymentTypes() {
         return gdaxExchange.get(PAYMENT_METHODS_ENDPOINT, new ParameterizedTypeReference<PaymentTypes>(){});
     }
 
-    // TODO untested
     public CoinbaseAccounts getCoinbaseAccounts() {
         return gdaxExchange.get(COINBASE_ACCOUNTS_ENDPOINT, new ParameterizedTypeReference<CoinbaseAccounts>() {});
     }
