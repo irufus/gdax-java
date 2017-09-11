@@ -78,4 +78,26 @@ public class Account {
     public void setProfile_id(String profile_id) {
         this.profile_id = profile_id;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Account{" +
+               "id='" +
+               id +
+               '\'' +
+               ", currency='" +
+               currency +
+               '\'' +
+               ", balance=" +
+               balance +
+               ", available=" +
+               available +
+               ", hold=" +
+               hold +
+               ", profile_id='" +
+               profile_id +
+               '\'' +
+               '}';
+    }
 }
