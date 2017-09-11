@@ -5,6 +5,8 @@ package com.coinbase.exchange.api.payments;
  */
 public class Limit {
 
+    String type; // bank, fiat_account
+    String name; // Bank Account, Coinbase Account
     AccountLimit[] buy;
     AccountLimit[] instant_buy;
     AccountLimit[] sell;
