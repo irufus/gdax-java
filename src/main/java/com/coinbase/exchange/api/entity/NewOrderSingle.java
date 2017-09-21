@@ -61,4 +61,29 @@ public abstract class NewOrderSingle {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public String toString()
+    {
+        return "NewOrderSingle{" +
+               "client_oid='" +
+               client_oid +
+               '\'' +
+               ", type='" +
+               type +
+               '\'' +
+               ", side='" +
+               side +
+               '\'' +
+               ", product_id='" +
+               product_id +
+               '\'' +
+               ", stp='" +
+               stp +
+               '\'' +
+               ", funds='" +
+               funds +
+               '\'' +
+               '}';
+    }
 }

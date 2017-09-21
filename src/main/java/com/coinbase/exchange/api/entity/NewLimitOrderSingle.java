@@ -55,4 +55,34 @@ public class NewLimitOrderSingle extends NewOrderSingle {
     public void setSize(BigDecimal size) {
         this.size = size == null ? null : size.setScale(8, BigDecimal.ROUND_HALF_UP).toString();
     }
+
+    @Override
+    public String toString()
+    {
+        return "NewLimitOrderSingle{" +
+               "size='" +
+               size +
+               '\'' +
+               ", price='" +
+               price +
+               '\'' +
+               ", post_only=" +
+               post_only +
+               ", type='" +
+               getType() +
+               '\'' +
+               ", side='" +
+               getSide() +
+               '\'' +
+               ", product_id='" +
+               getProduct_id() +
+               '\'' +
+               ", stp='" +
+               getStp() +
+               '\'' +
+               ", funds='" +
+               getFunds() +
+               '\'' +
+               '}';
+    }
 }
