@@ -1,9 +1,13 @@
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'spring-boot'
+apply plugin: 'maven'
 
 group = 'robevans.uk'
 version = '1.0'
+project.archivesBaseName = 'gdax-java'
+project.applicationName = 'gdax-java'
+description = 'Client for the GDAX API'
 
 buildscript {
     repositories {
@@ -23,12 +27,6 @@ repositories {
     maven { url "https://repo.spring.io/release/"}
 
 }
-
-project.archivesBaseName = 'gdax-java'
-project.applicationName = 'gdax-java'
-
-group = 'irfus'
-description = 'Client for the GDAX API'
 
 dependencies {
     compile 'junit:junit:4.12'
