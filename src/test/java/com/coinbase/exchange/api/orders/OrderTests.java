@@ -102,6 +102,6 @@ public class OrderTests extends BaseTest {
     }
 
     private BigDecimal getAskPrice(MarketData marketData) {
-        return marketData.getAsks()[0][0].setScale(4, BigDecimal.ROUND_HALF_UP);
+        return marketData.getAsks().get(0).getPrice().setScale(4, BigDecimal.ROUND_HALF_UP);
     }
 }
