@@ -27,7 +27,7 @@ repositories {
 project.archivesBaseName = 'gdax-java'
 project.applicationName = 'gdax-java'
 
-group = 'irfus'
+group = 'irufus'
 description = 'Client for the GDAX API'
 
 dependencies {
