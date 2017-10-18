@@ -3,7 +3,7 @@ apply plugin: 'application'
 apply plugin: 'spring-boot'
 
 group = 'irufus'
-version = '0.8.1-SNAPSHOT'
+version = '0.8.2-SNAPSHOT'
 
 buildscript {
     repositories {
