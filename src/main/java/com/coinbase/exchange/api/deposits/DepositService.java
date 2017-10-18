@@ -20,12 +20,12 @@ public class DepositService {
     static final String COINBASE_PAYMENT = "/coinbase-account";
 
     @Autowired
-    GdaxExchange gdaxExchange;
+    GdaxExchange exchange;
 
     // TODO untested - needs coinbase payment method ID.
     public PaymentResponse depositViaPaymentMethod(BigDecimal amount, String currency, String paymentMethodId) {
         CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, paymentMethodId);
-        return gdaxExchange.post(DEPOSIT_ENDPOINT + PAYMENTS,
+        return exchange.post(DEPOSIT_ENDPOINT + PAYMENTS,
                 new ParameterizedTypeReference<PaymentResponse>(){},
                 coinbasePaymentRequest);
     }
@@ -33,7 +33,7 @@ public class DepositService {
     // TODO untested due to lack of a coinbase account Id
     public PaymentResponse coinbaseDeposit(BigDecimal amount, String currency, String coinbaseAccountId) {
         CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, coinbaseAccountId);
-        return gdaxExchange.post(DEPOSIT_ENDPOINT + COINBASE_PAYMENT,
+        return exchange.post(DEPOSIT_ENDPOINT + COINBASE_PAYMENT,
                 new ParameterizedTypeReference<PaymentResponse>(){},
                 coinbasePaymentRequest);
     }

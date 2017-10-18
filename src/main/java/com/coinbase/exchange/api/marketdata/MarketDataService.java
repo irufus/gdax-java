@@ -20,7 +20,11 @@ public class MarketDataService {
         String marketDataEndpoint = PRODUCT_ENDPOINT + "/" + productId + "/book";
         if(level != null && !level.equals(""))
             marketDataEndpoint += "?level=" + level;
-
        return exchange.get(marketDataEndpoint, new ParameterizedTypeReference<MarketData>(){});
+    }
+
+    public Trade[] getTrades(String productId) {
+        String tradesEndpoint = PRODUCT_ENDPOINT + "/" + productId + "/trades";
+        return exchange.get(tradesEndpoint, new ParameterizedTypeReference<Trade[]>(){});
     }
 }

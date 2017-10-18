@@ -13,7 +13,7 @@ buildscript {
 
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.3.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.4.RELEASE"
     }
 }
 
@@ -37,13 +37,25 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.6'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.6'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.8.6'
-    compile 'org.springframework.boot:spring-boot-starter-web:1.4.3.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-web:1.5.4.RELEASE'
     compile 'org.springframework:spring-context:4.3.4.RELEASE'
+    compile 'joda-time:joda-time:2.9.7'
 
     testCompile 'org.springframework:spring-test:4.3.5.RELEASE'
-    testCompile 'org.springframework.boot:spring-boot-test:1.4.3.RELEASE'
+    testCompile 'org.springframework.boot:spring-boot-test:1.5.4.RELEASE'
 }
 
 tasks.withType(Jar) {
     destinationDir = file("${rootDir}/build/")
+}
+
+// file willl be generated here: build/gdax-java-##.jar
+jar {
+    doFirst {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+    manifest {
+        attributes 'Main-Class': 'com.coinbase.exchange.api.GdaxApiApplication'
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
 }
