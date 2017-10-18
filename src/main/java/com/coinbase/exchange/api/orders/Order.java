@@ -173,4 +173,13 @@ public class Order {
     public void setSettled(Boolean settled) {
         this.settled = settled;
     }
+
+    public String toString() {
+        String orderString = getSide();
+        orderString += ": " + getProduct_id();
+        orderString += ": " + getPrice();
+        orderString += ": " + getSize();
+        return orderString;
+    }
+
 }
