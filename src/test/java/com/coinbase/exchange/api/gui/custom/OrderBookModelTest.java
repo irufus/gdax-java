@@ -12,13 +12,13 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by robevansuk on 31/03/2017.
  */
-public class MyTableModelTest {
+public class OrderBookModelTest {
 
-    MyTableModel testObject;
+    OrderBookModel testObject;
 
     @Before
     public void setup(){
-        testObject = new MyTableModel();
+        testObject = new OrderBookModel();
     }
 
     @Test

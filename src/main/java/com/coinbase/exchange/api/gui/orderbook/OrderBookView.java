@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.gui.orderbook;
 
-import com.coinbase.exchange.api.gui.custom.MyTableModel;
+import com.coinbase.exchange.api.gui.custom.OrderBookModel;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.marketdata.OrderItem;
@@ -26,9 +26,9 @@ import java.util.List;
  * Created by robevansuk on 10/03/2017.
  */
 @Component
-public class OrderBook extends JPanel {
+public class OrderBookView extends JPanel {
 
-    static final Logger log = LoggerFactory.getLogger(OrderBook.class);
+    static final Logger log = LoggerFactory.getLogger(OrderBookView.class);
     static String[] productIds = new String[]{"BTC-GBP", "ETH-BTC"}; // make this configurable.
 
     private boolean isAlive;
@@ -50,7 +50,7 @@ public class OrderBook extends JPanel {
     Map<String, Long> maxSequenceIds;
 
     @Autowired
-    public OrderBook(@Value("${gui.enabled}") boolean guiEnabled, MarketDataService marketDataService, WebsocketFeed websocketFeed) {
+    public OrderBookView(@Value("${gui.enabled}") boolean guiEnabled, MarketDataService marketDataService, WebsocketFeed websocketFeed) {
         super();
         if (guiEnabled) {
             this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -76,7 +76,7 @@ public class OrderBook extends JPanel {
             try {
                 SwingUtilities.invokeAndWait(() -> load());
             } catch (InterruptedException | InvocationTargetException e) {
-                log.error("Something went wrong whilst starting the OrderBook", e);
+                log.error("Something went wrong whilst starting the OrderBookView", e);
             }
         }
     }
@@ -86,12 +86,12 @@ public class OrderBook extends JPanel {
      * then submits a subscribe message to the server so that price updates are received.
      */
     public void load() {
-        OrderBook thisOrderBook = this;
+        OrderBookView thisOrderBook = this;
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             public Void doInBackground() {
 
-                log.info("*********** OrderBook.load()");
+                log.info("*********** OrderBookView.load()");
                 for (String productId : productIds) {
 
                     log.info("******** Getting the orderbook for: " + productId);
@@ -151,7 +151,7 @@ public class OrderBook extends JPanel {
     }
 
     private JTable initTable(List<OrderItem> marketData) {
-        MyTableModel model = new MyTableModel();
+        OrderBookModel model = new OrderBookModel();
 
         int index = 0;
         for (OrderItem item : marketData) {
@@ -173,8 +173,8 @@ public class OrderBook extends JPanel {
      * @param msg
      */
     public void updateOB(OrderBookMessage msg) {
-        log.info("OrderBook.updateOrderBook");
-        MyTableModel model = ((MyTableModel) tables.get(msg.getSide() + "_" + msg.getProduct_id()).getModel());
+        log.info("OrderBookView.updateOrderBook");
+        OrderBookModel model = ((OrderBookModel) tables.get(msg.getSide() + "_" + msg.getProduct_id()).getModel());
 
         model.incomingOrder(msg);
 
