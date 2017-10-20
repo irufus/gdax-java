@@ -87,8 +87,8 @@ public class MyTableModelTest {
         assertThat(testObject.getValueAt(firstRow, 2), equalTo("1"));
 
         OrderBookMessage message2 = new OrderBookMessage();
-        message2.setPrice(new BigDecimal(3.8));
-        message2.setSize(new BigDecimal(0.43400));
+        message2.setPrice(new BigDecimal("3.8"));
+        message2.setSize(new BigDecimal("0.43400"));
         message2.setSide("buy");
         message2.setType("limit");
 
@@ -108,8 +108,8 @@ public class MyTableModelTest {
         assertThat(testObject.getRowCount(), equalTo(1));
 
         OrderBookMessage message = new OrderBookMessage();
-        message.setPrice(new BigDecimal(3.8));
-        message.setSize(new BigDecimal(0.43400));
+        message.setPrice(new BigDecimal("3.8"));
+        message.setSize(new BigDecimal("0.43400"));
         message.setSide("sell");
 
         testObject.insertInto(message);
@@ -135,8 +135,8 @@ public class MyTableModelTest {
 
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
-        message.setPrice(new BigDecimal(1.0));
-        message.setSize(new BigDecimal(0.43400));
+        message.setPrice(new BigDecimal("1.0"));
+        message.setSize(new BigDecimal("0.43400"));
         message.setSide("sell");
 
         // insert the new order
@@ -162,8 +162,8 @@ public class MyTableModelTest {
 
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
-        message.setPrice(new BigDecimal(1.0));
-        message.setSize(new BigDecimal(0.43400));
+        message.setPrice(new BigDecimal("1.0"));
+        message.setSize(new BigDecimal("0.43400"));
         message.setSide("buy");
 
         // insert the new order
@@ -190,8 +190,8 @@ public class MyTableModelTest {
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
         message.setType("done");
-        message.setPrice(new BigDecimal(1.0));
-        message.setSize(new BigDecimal(0.43400));
+        message.setPrice(new BigDecimal("1.0"));
+        message.setSize(new BigDecimal("0.43400"));
         message.setSide("buy");
 
         // insert the new order
@@ -217,8 +217,8 @@ public class MyTableModelTest {
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
         message.setType("matched");
-        message.setPrice(new BigDecimal(1.0));
-        message.setSize(new BigDecimal(0.43400));
+        message.setPrice(new BigDecimal("1.0"));
+        message.setSize(new BigDecimal("0.43400"));
         message.setSide("buy");
 
         // insert the new order
@@ -245,8 +245,8 @@ public class MyTableModelTest {
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
         message.setType("matched");
-        message.setPrice(new BigDecimal(1.0));
-        message.setRemaining_size(new BigDecimal(0.43400));
+        message.setPrice(new BigDecimal("1.0"));
+        message.setRemaining_size(new BigDecimal("0.43400"));
         message.setSide("buy");
 
         // insert the new order
@@ -272,8 +272,8 @@ public class MyTableModelTest {
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
         message.setType("done");
-        message.setPrice(new BigDecimal(1.0));
-        message.setRemaining_size(new BigDecimal(0.43400));
+        message.setPrice(new BigDecimal("1.0"));
+        message.setRemaining_size(new BigDecimal("0.43400"));
         message.setSide("buy");
 
         // insert the new order
@@ -290,8 +290,8 @@ public class MyTableModelTest {
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
         message.setType("done");
-        message.setPrice(new BigDecimal(1.0));
-        message.setRemaining_size(new BigDecimal(0.43400));
+        message.setPrice(new BigDecimal("1.0"));
+        message.setRemaining_size(new BigDecimal("0.43400"));
         message.setSide("buy");
         message.setSequence(1L);
 
@@ -305,8 +305,8 @@ public class MyTableModelTest {
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
         message.setType("done");
-        message.setPrice(new BigDecimal(1.0));
-        message.setRemaining_size(new BigDecimal(0.43400));
+        message.setPrice(new BigDecimal("1.0"));
+        message.setRemaining_size(new BigDecimal("0.43400"));
         message.setSide("buy");
         message.setSequence(1L);
 
@@ -330,7 +330,7 @@ public class MyTableModelTest {
         OrderBookMessage message = new OrderBookMessage();
         message.setType("done");
         message.setPrice(new BigDecimal(1.0));
-        message.setRemaining_size(new BigDecimal(0.43400));
+        message.setRemaining_size(new BigDecimal("0.43400"));
         message.setSide("buy");
         message.setSequence(1L);
 
@@ -353,8 +353,8 @@ public class MyTableModelTest {
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
         message.setType("limit");
-        message.setPrice(new BigDecimal(1.0));
-        message.setRemaining_size(new BigDecimal(0.43400));
+        message.setPrice(new BigDecimal("1.0"));
+        message.setRemaining_size(new BigDecimal("0.43400"));
         message.setSide("buy");
         message.setSequence(1L);
 
@@ -369,8 +369,8 @@ public class MyTableModelTest {
         // create a new order
         OrderBookMessage message1 = new OrderBookMessage();
         message1.setType("limit");
-        message1.setPrice(new BigDecimal(1.0));
-        message1.setRemaining_size(new BigDecimal(0.43400));
+        message1.setPrice(new BigDecimal("1.0"));
+        message1.setRemaining_size(new BigDecimal("0.43400"));
         message1.setSide("buy");
         message1.setSequence(1L);
 
@@ -381,8 +381,8 @@ public class MyTableModelTest {
 
         OrderBookMessage message2 = new OrderBookMessage();
         message2.setType("limit");
-        message2.setPrice(new BigDecimal(1.1));
-        message2.setRemaining_size(new BigDecimal(0.43400));
+        message2.setPrice(new BigDecimal("1.1"));
+        message2.setRemaining_size(new BigDecimal("0.43400"));
         message2.setSide("buy");
         message2.setSequence(2L);
 
@@ -398,8 +398,8 @@ public class MyTableModelTest {
         // create a new order
         OrderBookMessage message1 = new OrderBookMessage();
         message1.setType("limit");
-        message1.setPrice(new BigDecimal(1.0));
-        message1.setRemaining_size(new BigDecimal(0.43400));
+        message1.setPrice(new BigDecimal("1.0"));
+        message1.setRemaining_size(new BigDecimal("0.43400"));
         message1.setSide("buy");
         message1.setSequence(1L);
 
@@ -411,8 +411,8 @@ public class MyTableModelTest {
         // third message will be received before 2nd message
         OrderBookMessage message3 = new OrderBookMessage();
         message3.setType("limit");
-        message3.setPrice(new BigDecimal(1.1));
-        message3.setRemaining_size(new BigDecimal(0.43400));
+        message3.setPrice(new BigDecimal("1.1"));
+        message3.setRemaining_size(new BigDecimal("0.43400"));
         message3.setSide("buy");
         message3.setSequence(3L);
 
@@ -425,8 +425,8 @@ public class MyTableModelTest {
         // 2nd message arrived late...
         OrderBookMessage message2 = new OrderBookMessage();
         message2.setType("limit");
-        message2.setPrice(new BigDecimal(1.3));
-        message2.setRemaining_size(new BigDecimal(0.43400));
+        message2.setPrice(new BigDecimal("1.3"));
+        message2.setRemaining_size(new BigDecimal("0.43400"));
         message2.setSide("buy");
         message2.setSequence(2L);
 

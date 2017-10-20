@@ -200,7 +200,7 @@ public class MyTableModel implements TableModel, TableModelListener {
         Comparator<OrderBookMessage> comparator = new Comparator<OrderBookMessage>(){
             @Override
             public int compare(OrderBookMessage o1, OrderBookMessage o2) {
-                return o1.getPrice().compareTo(o2.getPrice()) * -1;
+                return o1.getPrice().compareTo(o2.getPrice()) * -1; // reverse order by price
             }
         };
 
@@ -228,7 +228,7 @@ public class MyTableModel implements TableModel, TableModelListener {
             if (msg.getType().equals("done") || msg.getType().equals("matched") || msg.getType().equals("invert")) {
 
                 if (msg.getRemaining_size()!=null){
-                    newOrderSize = msg.getRemaining_size().negate();
+                    newOrderSize = msg.getRemaining_size();
                 } else {
                     if (msg.getSize() != null) {
                         newOrderSize = getOrderSize(msg).negate().add(currentSize);
