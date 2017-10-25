@@ -1,5 +1,7 @@
 package com.coinbase.exchange.api.payments;
 
+import java.util.Arrays;
+
 /**
  * Created by robevansuk on 16/02/2017.
  */
@@ -51,5 +53,26 @@ public class Limit {
 
     public void setDeposit(AccountLimit[] deposit) {
         this.deposit = deposit;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Limit{" +
+               "type='" +
+               type +
+               '\'' +
+               ", name='" +
+               name +
+               '\'' +
+               ", buy=" +
+               Arrays.toString(buy) +
+               ", instant_buy=" +
+               Arrays.toString(instant_buy) +
+               ", sell=" +
+               Arrays.toString(sell) +
+               ", deposit=" +
+               Arrays.toString(deposit) +
+               '}';
     }
 }

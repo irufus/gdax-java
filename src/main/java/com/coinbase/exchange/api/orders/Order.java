@@ -5,20 +5,21 @@ package com.coinbase.exchange.api.orders;
  */
 public class Order
 {
-    String id;
-    String size;
-    String price;
-    String product_id;
-    String side;
-    String stp;
-    String type;
-    String time_in_force;
-    String post_only;
-    String created_at;
-    String fill_fees;
-    String filled_size;
-    String executed_value;
-    String status;
+    private String id;
+    private String size;
+    private String price;
+    private String product_id;
+    private String side;
+    private String stp;
+    private String type;
+    private String time_in_force;
+    private String post_only;
+    private String created_at;
+    private String fill_fees;
+    private String filled_size;
+    private String executed_value;
+    private String status;
+    private Boolean settled;
 
     public Order()
     {
@@ -42,8 +43,6 @@ public class Order
         this.status = status;
         this.settled = settled;
     }
-
-    Boolean settled;
 
     public Order(OrderBuilder builder)
     {
@@ -69,16 +68,6 @@ public class Order
         this.id = id;
     }
 
-    public String getPrice()
-    {
-        return price;
-    }
-
-    public void setPrice(String price)
-    {
-        this.price = price;
-    }
-
     public String getSize()
     {
         return size;
@@ -87,26 +76,6 @@ public class Order
     public void setSize(String size)
     {
         this.size = size;
-    }
-
-    public String getProduct_id()
-    {
-        return product_id;
-    }
-
-    public void setProduct_id(String product_id)
-    {
-        this.product_id = product_id;
-    }
-
-    public String getSide()
-    {
-        return side;
-    }
-
-    public void setSide(String side)
-    {
-        this.side = side;
     }
 
     public String getStp()
@@ -199,9 +168,39 @@ public class Order
         this.status = status;
     }
 
+    public String getSide()
+    {
+        return side;
+    }
+
+    public void setSide(String side)
+    {
+        this.side = side;
+    }
+
     public Boolean getSettled()
     {
         return settled;
+    }
+
+    public String getProduct_id()
+    {
+        return product_id;
+    }
+
+    public String getPrice()
+    {
+        return price;
+    }
+
+    public void setPrice(String price)
+    {
+        this.price = price;
+    }
+
+    public void setProduct_id(String product_id)
+    {
+        this.product_id = product_id;
     }
 
     public void setSettled(Boolean settled)
@@ -210,16 +209,30 @@ public class Order
     }
 
     @Override
-    public String toString()
-    {
-        return "Order{" +
-               getSide() +
-               " " +
-               getSize() +
-               " of " +
-               getProduct_id() +
-               " @" +
-               getPrice() +
-               '}';
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append(type).append("Order{").append(side).append(" ");
+        if ("market".equals(type)) {
+            buf.append(settled).append(" of ").append(product_id).append(" @").append(price);
+        } else { // limit, stop
+
+            buf.append("id='").append(id).append('\'')
+               .append(", size='").append(size).append('\'')
+               .append(", price='").append(price).append('\'')
+               .append(", product_id='").append(product_id).append('\'')
+               .append(", side='").append(side).append('\'')
+               .append(", stp='").append(stp).append('\'')
+               .append(", type='").append(type).append('\'')
+               .append(", time_in_force='").append(time_in_force).append('\'')
+               .append(", post_only='").append(post_only).append('\'')
+               .append(", created_at='").append(created_at).append('\'')
+               .append(", fill_fees='").append(fill_fees).append('\'')
+               .append(", filled_size='").append(filled_size).append('\'')
+               .append(", executed_value='").append(executed_value).append('\'')
+               .append(", status='").append(status).append('\'')
+               .append(", settled=").append(settled);
+        }
+        buf.append("}");
+        return buf.toString();
     }
 }

@@ -40,4 +40,17 @@ public class AccountLimit {
     public void setRemaining(Amount remaining) {
         this.remaining = remaining;
     }
+
+    @Override
+    public String toString()
+    {
+        return "AccountLimit{" +
+               "period_in_days=" +
+               period_in_days +
+               ", total=" +
+               total +
+               ", remaining=" +
+               remaining +
+               '}';
+    }
 }
