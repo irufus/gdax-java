@@ -1,7 +1,7 @@
 package com.coinbase.exchange.api.websocketfeed;
 
 import com.coinbase.exchange.api.exchange.Signature;
-import com.coinbase.exchange.api.gui.orderbook.OrderBook;
+import com.coinbase.exchange.api.gui.orderbook.OrderBookView;
 import com.coinbase.exchange.api.websocketfeed.message.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -115,7 +115,7 @@ public class WebsocketFeed {
     }
 
 
-    public void subscribe(Subscribe msg, OrderBook orderBook) {
+    public void subscribe(Subscribe msg, OrderBookView orderBook) {
         String jsonSubscribeMessage = signObject(msg);
 
         addMessageHandler(json -> {

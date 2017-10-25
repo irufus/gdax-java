@@ -3,8 +3,8 @@ apply plugin: 'application'
 apply plugin: 'spring-boot'
 apply plugin: 'maven'
 
-group = 'robevans.uk'
-version = '1.0'
+group = 'irufus'
+version = '0.8.2-SNAPSHOT'
 project.archivesBaseName = 'gdax-java'
 project.applicationName = 'gdax-java'
 description = 'Client for the GDAX API'
@@ -47,7 +47,7 @@ tasks.withType(Jar) {
     destinationDir = file("${rootDir}/build/")
 }
 
-// file willl be generated here: build/gdax-java-1.0.jar
+// file will be generated here: build/gdax-java-##.jar
 jar {
     doFirst {
         from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }

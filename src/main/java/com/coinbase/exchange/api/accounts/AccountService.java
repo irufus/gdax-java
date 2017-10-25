@@ -24,6 +24,14 @@ public class AccountService {
         return exchange.get(ACCOUNTS_ENDPOINT, new ParameterizedTypeReference<Account[]>(){});
     }
 
+    public Account[] getPagedAccounts(String beforeOrAfter, Integer pageNumber, Integer limit){
+        return exchange.pagedGet(ACCOUNTS_ENDPOINT,
+                new ParameterizedTypeReference<Account[]>(){},
+                beforeOrAfter,
+                pageNumber,
+                limit);
+    }
+
     public Account getAccount(String id) {
         return exchange.get(ACCOUNTS_ENDPOINT + "/" + id, new ParameterizedTypeReference<Account>() {});
     }

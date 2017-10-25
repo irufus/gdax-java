@@ -17,6 +17,7 @@ public class ProductService {
 
     public static final String PRODUCTS_ENDPOINT = "/products";
 
+    // no paged products necessary
     public Product[] getProducts() {
         return exchange.get(PRODUCTS_ENDPOINT, new ParameterizedTypeReference<Product[]>(){});
     }

@@ -39,6 +39,9 @@ public class AccountsTest extends BaseTest {
         assertTrue(history.length >=0); // anything but null/error.
     }
 
+    /**
+     * this test only works if you have open orders in the sandbox where your funds are held.
+     */
     @Test
     public void canGetAccountHolds() {
         Account[] accounts = accountService.getAccounts();
