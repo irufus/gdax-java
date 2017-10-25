@@ -1,10 +1,14 @@
 package com.coinbase.exchange.api.payments;
 
+import java.util.Arrays;
+
 /**
  * Created by robevansuk on 16/02/2017.
  */
 public class Limit {
 
+    String type; // bank, fiat_account
+    String name; // Bank Account, Coinbase Account
     AccountLimit[] buy;
     AccountLimit[] instant_buy;
     AccountLimit[] sell;
@@ -49,5 +53,26 @@ public class Limit {
 
     public void setDeposit(AccountLimit[] deposit) {
         this.deposit = deposit;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Limit{" +
+               "type='" +
+               type +
+               '\'' +
+               ", name='" +
+               name +
+               '\'' +
+               ", buy=" +
+               Arrays.toString(buy) +
+               ", instant_buy=" +
+               Arrays.toString(instant_buy) +
+               ", sell=" +
+               Arrays.toString(sell) +
+               ", deposit=" +
+               Arrays.toString(deposit) +
+               '}';
     }
 }

@@ -1,9 +1,13 @@
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'spring-boot'
+apply plugin: 'maven'
 
 group = 'irufus'
 version = '0.8.2-SNAPSHOT'
+project.archivesBaseName = 'gdax-java'
+project.applicationName = 'gdax-java'
+description = 'Client for the GDAX API'
 
 buildscript {
     repositories {
@@ -24,12 +28,6 @@ repositories {
 
 }
 
-project.archivesBaseName = 'gdax-java'
-project.applicationName = 'gdax-java'
-
-group = 'irufus'
-description = 'Client for the GDAX API'
-
 dependencies {
     compile 'junit:junit:4.12'
     compile 'com.google.code.gson:gson:2.8.0'
@@ -49,7 +47,7 @@ tasks.withType(Jar) {
     destinationDir = file("${rootDir}/build/")
 }
 
-// file willl be generated here: build/gdax-java-##.jar
+// file will be generated here: build/gdax-java-##.jar
 jar {
     doFirst {
         from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }

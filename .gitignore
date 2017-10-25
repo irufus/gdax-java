@@ -6,3 +6,4 @@ gdax.properties
 *.log
 classes/
 application*.yml
+lib/

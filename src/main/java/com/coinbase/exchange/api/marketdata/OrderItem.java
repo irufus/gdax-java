@@ -69,4 +69,20 @@ public class OrderItem implements Comparable {
         }
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        return "OrderItem{" +
+               "price=" +
+               price +
+               ", size=" +
+               size +
+               ", orderId='" +
+               orderId +
+               '\'' +
+               ", num=" +
+               num +
+               '}';
+    }
 }

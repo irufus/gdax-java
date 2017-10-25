@@ -52,4 +52,22 @@ public class PaymentResponse {
     public void setPayout_at(String payout_at) {
         this.payout_at = payout_at;
     }
+
+    @Override
+    public String toString()
+    {
+        return "PaymentResponse{" +
+               "id='" +
+               id +
+               '\'' +
+               ", amount=" +
+               amount +
+               ", currency='" +
+               currency +
+               '\'' +
+               ", payout_at='" +
+               payout_at +
+               '\'' +
+               '}';
+    }
 }

@@ -1,5 +1,7 @@
 package com.coinbase.exchange.api.entity;
 
+import java.math.BigDecimal;
+
 /**
  * Created by irufus on 2/25/15.
  */
@@ -48,8 +50,8 @@ public abstract class NewOrderSingle {
         return funds;
     }
 
-    public void setFunds(String funds) {
-        this.funds = funds;
+    public void setFunds(BigDecimal funds) {
+        this.funds = funds == null ? null : funds.setScale(8, BigDecimal.ROUND_HALF_UP).toString();
     }
 
     public String getType() {
@@ -58,5 +60,30 @@ public abstract class NewOrderSingle {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "NewOrderSingle{" +
+               "client_oid='" +
+               client_oid +
+               '\'' +
+               ", type='" +
+               type +
+               '\'' +
+               ", side='" +
+               side +
+               '\'' +
+               ", product_id='" +
+               product_id +
+               '\'' +
+               ", stp='" +
+               stp +
+               '\'' +
+               ", funds='" +
+               funds +
+               '\'' +
+               '}';
     }
 }

@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.deposits;
 
+import com.coinbase.exchange.api.entity.PaymentRequest;
 import com.coinbase.exchange.api.exchange.GdaxExchange;
 import com.coinbase.exchange.api.entity.CoinbasePaymentRequest;
 import com.coinbase.exchange.api.entity.PaymentResponse;
@@ -22,15 +23,13 @@ public class DepositService {
     @Autowired
     GdaxExchange exchange;
 
-    // TODO untested - needs coinbase payment method ID.
     public PaymentResponse depositViaPaymentMethod(BigDecimal amount, String currency, String paymentMethodId) {
-        CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, paymentMethodId);
+        PaymentRequest paymentRequest = new PaymentRequest(amount, currency, paymentMethodId);
         return exchange.post(DEPOSIT_ENDPOINT + PAYMENTS,
                 new ParameterizedTypeReference<PaymentResponse>(){},
-                coinbasePaymentRequest);
+                paymentRequest);
     }
 
-    // TODO untested due to lack of a coinbase account Id
     public PaymentResponse coinbaseDeposit(BigDecimal amount, String currency, String coinbaseAccountId) {
         CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, coinbaseAccountId);
         return exchange.post(DEPOSIT_ENDPOINT + COINBASE_PAYMENT,
