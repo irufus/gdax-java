@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by robevansuk on 25/01/2017.
@@ -20,51 +23,43 @@ public class AccountService {
 
     public static final String ACCOUNTS_ENDPOINT = "/accounts";
 
-    public Account[] getAccounts(){
-        return exchange.get(ACCOUNTS_ENDPOINT, new ParameterizedTypeReference<Account[]>(){});
-    }
-
-    public Account[] getPagedAccounts(String beforeOrAfter, Integer pageNumber, Integer limit){
-        return exchange.pagedGet(ACCOUNTS_ENDPOINT,
-                new ParameterizedTypeReference<Account[]>(){},
-                beforeOrAfter,
-                pageNumber,
-                limit);
+    public List<Account> getAccounts(){
+        return exchange.getAsList(ACCOUNTS_ENDPOINT, new ParameterizedTypeReference<Account[]>(){});
     }
 
     public Account getAccount(String id) {
         return exchange.get(ACCOUNTS_ENDPOINT + "/" + id, new ParameterizedTypeReference<Account>() {});
     }
 
-    public AccountHistory[] getAccountHistory(String accountId) {
+    public List<AccountHistory> getAccountHistory(String accountId) {
         String accountHistoryEndpoint = ACCOUNTS_ENDPOINT + "/" + accountId + "/ledger";
-        return exchange.get(accountHistoryEndpoint, new ParameterizedTypeReference<AccountHistory[]>(){});
+        return exchange.getAsList(accountHistoryEndpoint, new ParameterizedTypeReference<AccountHistory[]>(){});
     }
 
-    public AccountHistory[] getPagedAccountHistory(String accountId,
+    public List<AccountHistory> getPagedAccountHistory(String accountId,
                                                        String beforeOrAfter,
                                                        Integer pageNumber,
                                                        Integer limit) {
 
         String accountHistoryEndpoint = ACCOUNTS_ENDPOINT + "/" + accountId + "/ledger";
-        return exchange.pagedGet(accountHistoryEndpoint,
+        return exchange.pagedGetAsList(accountHistoryEndpoint,
                 new ParameterizedTypeReference<AccountHistory[]>(){},
                 beforeOrAfter,
                 pageNumber,
                 limit);
     }
 
-    public Hold[] getHolds(String accountId) {
+    public List<Hold> getHolds(String accountId) {
         String holdsEndpoint = ACCOUNTS_ENDPOINT + "/" + accountId + "/holds";
-        return exchange.get(holdsEndpoint, new ParameterizedTypeReference<Hold[]>(){});
+        return exchange.getAsList(holdsEndpoint, new ParameterizedTypeReference<Hold[]>(){});
     }
 
-    public Hold[] getPagedHolds(String accountId,
+    public List<Hold> getPagedHolds(String accountId,
                                     String beforeOrAfter,
                                     Integer pageNumber,
                                     Integer limit) {
         String holdsEndpoint = ACCOUNTS_ENDPOINT + "/" + accountId + "/holds";
-        return exchange.pagedGet(holdsEndpoint,
+        return exchange.pagedGetAsList(holdsEndpoint,
                 new ParameterizedTypeReference<Hold[]>(){},
                 beforeOrAfter,
                 pageNumber,

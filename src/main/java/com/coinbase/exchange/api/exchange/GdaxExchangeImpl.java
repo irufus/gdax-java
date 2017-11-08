@@ -14,6 +14,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.http.HttpMethod.GET;
 
@@ -64,6 +66,13 @@ public class GdaxExchangeImpl implements GdaxExchange {
     }
 
     @Override
+    public <T> List<T> getAsList(String resourcePath, ParameterizedTypeReference<T[]> responseType) {
+       T[] result = get(resourcePath, responseType);
+
+       return result == null ? Arrays.asList() : Arrays.asList(result);
+    }
+
+    @Override
     public <T> T pagedGet(String resourcePath,
                           ParameterizedTypeReference<T> responseType,
                           String beforeOrAfter,
@@ -71,6 +80,16 @@ public class GdaxExchangeImpl implements GdaxExchange {
                           Integer limit) {
         resourcePath += "?" + beforeOrAfter + "=" + pageNumber + "&limit=" + limit;
         return get(resourcePath, responseType);
+    }
+
+    @Override
+    public <T> List<T> pagedGetAsList(String resourcePath,
+                          ParameterizedTypeReference<T[]> responseType,
+                          String beforeOrAfter,
+                          Integer pageNumber,
+                          Integer limit) {
+        T[] result = pagedGet(resourcePath, responseType, beforeOrAfter, pageNumber, limit );
+        return result == null ? Arrays.asList() : Arrays.asList(result);
     }
 
     @Override

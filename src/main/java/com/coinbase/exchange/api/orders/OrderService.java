@@ -8,6 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
 /**
  * Created by robevansuk on 03/02/2017.
  */
@@ -19,36 +24,12 @@ public class OrderService {
 
     public static final String ORDERS_ENDPOINT = "/orders";
 
-    public Hold[] getAccountHolds(String accountId) {
-        return exchange.get(ORDERS_ENDPOINT + "/" + accountId + "/holds",
-                new ParameterizedTypeReference<Hold[]>(){});
+    public List<Hold> getHolds(String accountId) {
+        return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/holds", new ParameterizedTypeReference<Hold[]>(){});
     }
 
-    public Hold[] getPagedAccountHolds(String accountId,
-                              String beforeOrAfter,
-                              Integer pageNumber,
-                              Integer limit) {
-        return exchange.pagedGet(ORDERS_ENDPOINT + "/" + accountId + "/holds",
-                new ParameterizedTypeReference<Hold[]>(){},
-                beforeOrAfter,
-                pageNumber,
-                limit);
-    }
-
-    public Order[] getAccountOpenOrders(String accountId) {
-        return exchange.get(ORDERS_ENDPOINT + "/" + accountId + "/orders",
-                new ParameterizedTypeReference<Order[]>(){});
-    }
-
-    public Order[] getPagedAccountOpenOrders(String accountId,
-                                      String beforeOrAfter,
-                                      Integer pageNumber,
-                                      Integer limit) {
-        return exchange.pagedGet(ORDERS_ENDPOINT + "/" + accountId + "/orders",
-                new ParameterizedTypeReference<Order[]>(){},
-                beforeOrAfter,
-                pageNumber,
-                limit);
+    public List<Order> getOpenOrders(String accountId) {
+        return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/orders", new ParameterizedTypeReference<Order[]>(){});
     }
 
     public Order getOrder(String orderId) {
@@ -64,41 +45,17 @@ public class OrderService {
         return exchange.delete(deleteEndpoint, new ParameterizedTypeReference<String>(){});
     }
 
-    public Order[] getOpenOrders() {
-        return exchange.get(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){});
+    public List<Order> getOpenOrders() {
+        return exchange.getAsList(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){});
     }
 
-    public Order[] getPagedOpenOrders(String beforeOrAfter,
-                                 Integer pageNumber,
-                                 Integer limit) {
-        return exchange.pagedGet(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){},
-                beforeOrAfter,
-                pageNumber,
-                limit);
+    public List<Order> cancelAllOpenOrders() {
+        return Arrays.asList(exchange.delete(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){}));
     }
 
-
-    /**
-     * haven't paged this - seems unnecessary?
-     * @return
-     */
-    public Order[] cancelAllOpenOrders() {
-        return exchange.delete(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){});
-    }
-
-    public Fill[] getAllFills() {
+    public List<Fill> getAllFills() {
         String fillsEndpoint = "/fills";
-        return exchange.get(fillsEndpoint, new ParameterizedTypeReference<Fill[]>(){});
-    }
-
-    public Fill[] getPagedFills(String beforeOrAfter,
-                                Integer pageNumber,
-                                Integer limit) {
-        String fillsEndpoint = "/fills";
-        return exchange.pagedGet(fillsEndpoint, new ParameterizedTypeReference<Fill[]>(){},
-                beforeOrAfter,
-                pageNumber,
-                limit);
+        return exchange.getAsList(fillsEndpoint, new ParameterizedTypeReference<Fill[]>(){});
     }
 }
 

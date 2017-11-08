@@ -2,9 +2,10 @@ package com.coinbase.exchange.api.products;
 
 import com.coinbase.exchange.api.BaseTest;
 import com.coinbase.exchange.api.entity.Product;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -18,7 +19,7 @@ public class ProductsTest extends BaseTest {
 
     @Test
     public void canGetProducts() {
-        Product[] products = productService.getProducts();
-        assertTrue(products.length >= 0);
+        List<Product> products = productService.getProducts();
+        assertTrue(products.size() >= 0);
     }
 }

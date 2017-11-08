@@ -1,5 +1,7 @@
 package com.coinbase.exchange.api;
 
+import com.coinbase.exchange.api.accounts.Account;
+import com.coinbase.exchange.api.accounts.AccountService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
