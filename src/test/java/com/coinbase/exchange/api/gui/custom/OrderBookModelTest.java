@@ -34,11 +34,11 @@ public class OrderBookModelTest {
         testObject.setValueAt("1.0", 0, 0);
         testObject.setValueAt("1.0", 0, 1);
         testObject.setValueAt("1", 0, 2);
+
         String testResult = ((String)testObject.getValueAt(0,0));
 
         assertThat(testObject.getRowCount(), equalTo(1));
         assertThat(testResult, equalTo("1.0"));
-
         OrderBookMessage message1 = new OrderBookMessage();
         message1.setType("limit");
         message1.setSide("buy");
@@ -52,12 +52,12 @@ public class OrderBookModelTest {
         assertThat(testObject.getValueAt(firstRow, 0), equalTo("1.50000"));
         assertThat(testObject.getValueAt(firstRow, 1), equalTo("3.00000"));
         assertThat(testObject.getValueAt(firstRow, 2), equalTo("1"));
-
         OrderBookMessage message2 = new OrderBookMessage();
         message2.setType("limit");
         message2.setSide("buy");
         message2.setPrice(new BigDecimal(1.5));
         message2.setSize(new BigDecimal(2.200));
+
         testObject.insertInto(message2);
 
         assertThat(testObject.getRowCount(), equalTo(2));
@@ -69,10 +69,11 @@ public class OrderBookModelTest {
     @Test
     public void shouldInsertBuyOrderAsNewRowWhenPriceIsUnique(){
         testObject.setValueAt("1.0", 0, 0);
+
         String testResult = ((String)testObject.getValueAt(0,0));
+
         assertThat(testResult, equalTo("1.0"));
         assertThat(testObject.getRowCount(), equalTo(1));
-
         OrderBookMessage message1 = new OrderBookMessage();
         message1.setType("limit");
         message1.setSide("buy");
@@ -103,7 +104,9 @@ public class OrderBookModelTest {
     @Test
     public void shouldInsertSellOrderAsNewRowWhenPriceIsUnique(){
         testObject.setValueAt("1.00000", 0, 0);
+
         String testResult = ((String)testObject.getValueAt(0,0));
+
         assertThat(testResult, equalTo("1.00000"));
         assertThat(testObject.getRowCount(), equalTo(1));
 
@@ -132,7 +135,6 @@ public class OrderBookModelTest {
         assertThat(((String)testObject.getValueAt(firstRow, 1)), equalTo("0.87655"));
         assertThat(((String)testObject.getValueAt(firstRow, 2)), equalTo("1"));
         assertThat(testObject.getRowCount(), equalTo(1));
-
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
         message.setPrice(new BigDecimal("1.0"));
@@ -168,7 +170,7 @@ public class OrderBookModelTest {
 
         // insert the new order
         testObject.insertInto(message);
-        int lastRow = testObject.getRowCount() - 1;
+
         // item should appear at the top of the list since it's a new highest bidder/buy order
         assertThat(testObject.getValueAt(0, 0), equalTo("1.00000"));
         assertThat(testObject.getValueAt(0, 1), equalTo("1.31055"));
@@ -206,9 +208,11 @@ public class OrderBookModelTest {
     @Test
     public void shouldReduceQtyByOneForMatchedOrder(){
         int firstRow = 0;
+
         testObject.setValueAt("1.00000", firstRow, 0);
         testObject.setValueAt("0.87655",firstRow, 1);
         testObject.setValueAt("5",firstRow, 2);
+
         assertThat(((String)testObject.getValueAt(firstRow, 0)), equalTo("1.00000"));
         assertThat(((String)testObject.getValueAt(firstRow, 1)), equalTo("0.87655"));
         assertThat(((String)testObject.getValueAt(firstRow, 2)), equalTo("5"));
@@ -251,6 +255,7 @@ public class OrderBookModelTest {
 
         // insert the new order
         testObject.insertInto(message);
+
         // item should appear at the top of the list since it's a new highest bidder/buy order
         assertThat(testObject.getValueAt(0, 0), equalTo("1.00000"));
         assertThat(testObject.getValueAt(0, 1), equalTo("0.43400"));
@@ -261,9 +266,11 @@ public class OrderBookModelTest {
     @Test
     public void shouldReduceQtyByOneForDoneOrderWithRemainingSize(){
         int firstRow = 0;
+
         testObject.setValueAt("1.00000", firstRow, 0);
         testObject.setValueAt("0.87655",firstRow, 1);
         testObject.setValueAt("5",firstRow, 2);
+
         assertThat(((String)testObject.getValueAt(firstRow, 0)), equalTo("1.00000"));
         assertThat(((String)testObject.getValueAt(firstRow, 1)), equalTo("0.87655"));
         assertThat(((String)testObject.getValueAt(firstRow, 2)), equalTo("5"));
@@ -278,6 +285,7 @@ public class OrderBookModelTest {
 
         // insert the new order
         testObject.insertInto(message);
+
         // item should appear at the top of the list since it's a new highest bidder/buy order
         assertThat(testObject.getValueAt(0, 0), equalTo("1.00000"));
         assertThat(testObject.getValueAt(0, 1), equalTo("0.43400"));

@@ -17,6 +17,9 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -46,59 +49,80 @@ public class OrderTests extends BaseTest {
     /**
      * Not Strictly the best test but tests placing the order and
      * then cancelling it without leaving a mess.
+     * Note: You'll need credit available
      */
     @Test
     public void canMakeLimitOrderAndGetTheOrderAndCancelIt() {
-        String product = "BTC-USD";
-        MarketData marketData = getMarketDataOrderBook(product);
+        List<Account> accounts = accountService.getAccounts();
+        Optional<Account> accountsWithMoreThanZeroCoinsAvailable = accounts.stream()
+                .filter(account -> account.getBalance().compareTo(BigDecimal.ONE) > 0)
+                .findFirst();
+
+        assertTrue(accountsWithMoreThanZeroCoinsAvailable.isPresent());
+
+        String productId;
+        if (accountsWithMoreThanZeroCoinsAvailable.get().equals("BTC")) {
+            productId = accountsWithMoreThanZeroCoinsAvailable.get().getCurrency() + "-USD";
+        } else {
+            productId = accountsWithMoreThanZeroCoinsAvailable.get().getCurrency() + "-BTC";
+        }
+
+        MarketData marketData = getMarketDataOrderBook(productId);
+
         assertTrue(marketData != null);
 
         BigDecimal price = getAskPrice(marketData).setScale(8, BigDecimal.ROUND_HALF_UP);
-        BigDecimal size = new BigDecimal(0.01).setScale(8, BigDecimal.ROUND_HALF_UP);
+        BigDecimal size = new BigDecimal("0.01").setScale(8, BigDecimal.ROUND_HALF_UP);
 
-        NewLimitOrderSingle limitOrder = new NewLimitOrderSingle();
-        limitOrder.setProduct_id("BTC-USD");
-        limitOrder.setSide("buy");
-        limitOrder.setType("limit");
-        limitOrder.setPrice(price);
-        limitOrder.setSize(size);
+        NewLimitOrderSingle limitOrder = getNewLimitOrderSingle(productId, price, size);
 
         Order order = orderService.createOrder(limitOrder);
 
-        assertTrue(order!=null);
-        assertEquals("BTC-USD", order.getProduct_id());
+        assertTrue(order != null);
+        assertEquals(productId, order.getProduct_id());
         assertEquals(size, new BigDecimal(order.getSize()).setScale(8, BigDecimal.ROUND_HALF_UP));
         assertEquals(price, new BigDecimal(order.getPrice()).setScale(8, BigDecimal.ROUND_HALF_UP));
-        assertEquals("buy", order.getSide());
         assertEquals("limit", order.getType());
 
         orderService.cancelOrder(order.getId());
-        Order[] orders = orderService.getOpenOrders();
-        for (Order o : orders) {
-            assertTrue(o.getId() != order.getId());
-        }
+        List<Order> orders = orderService.getOpenOrders();
+        orders.stream().forEach(o -> assertTrue(o.getId() != order.getId()));
     }
 
     @Test
     public void cancelAllOrders() {
-        Order[] cancelledOrders = orderService.cancelAllOpenOrders();
-        assertTrue(cancelledOrders.length >=0);
+        List<Order> cancelledOrders = orderService.cancelAllOpenOrders();
+        assertTrue(cancelledOrders.size() >=0);
     }
 
     @Test
     public void getAllOpenOrders() {
-        Order[] openOrders = orderService.getOpenOrders();
-        assertTrue(openOrders.length >= 0);
+        List<Order> openOrders = orderService.getOpenOrders();
+        assertTrue(openOrders.size() >= 0);
     }
 
     @Test
     public void getFills() {
-        Fill[] fills = orderService.getAllFills();
-        assertTrue(fills.length >= 0);
+        List<Fill> fills = orderService.getAllFills();
+        assertTrue(fills.size() >= 0);
     }
 
     private MarketData getMarketDataOrderBook(String product) {
         return marketDataService.getMarketDataOrderBook(product, "1");
+    }
+
+    private NewLimitOrderSingle getNewLimitOrderSingle(String productId, BigDecimal price, BigDecimal size) {
+        NewLimitOrderSingle limitOrder = new NewLimitOrderSingle();
+        limitOrder.setProduct_id(productId);
+        if (productId.contains("-BTC")) {
+            limitOrder.setSide("sell");
+        } else {
+            limitOrder.setSide("buy");
+        }
+        limitOrder.setType("limit");
+        limitOrder.setPrice(price);
+        limitOrder.setSize(size);
+        return limitOrder;
     }
 
     private BigDecimal getAskPrice(MarketData marketData) {

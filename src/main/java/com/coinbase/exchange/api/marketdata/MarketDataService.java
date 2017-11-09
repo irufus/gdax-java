@@ -5,6 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
+
 /**
  * Created by robevansuk on 07/02/2017.
  */
@@ -23,8 +29,8 @@ public class MarketDataService {
        return exchange.get(marketDataEndpoint, new ParameterizedTypeReference<MarketData>(){});
     }
 
-    public Trade[] getTrades(String productId) {
+    public List<Trade> getTrades(String productId) {
         String tradesEndpoint = PRODUCT_ENDPOINT + "/" + productId + "/trades";
-        return exchange.get(tradesEndpoint, new ParameterizedTypeReference<Trade[]>(){});
+        return exchange.getAsList(tradesEndpoint, new ParameterizedTypeReference<Trade[]>(){});
     }
 }

@@ -22,7 +22,13 @@ public class DepositService {
     @Autowired
     GdaxExchange exchange;
 
-    // TODO untested - needs coinbase payment method ID.
+    /**
+     * can't realistically test this but it should work as is.
+     * @param amount
+     * @param currency
+     * @param paymentMethodId
+     * @return
+     */
     public PaymentResponse depositViaPaymentMethod(BigDecimal amount, String currency, String paymentMethodId) {
         CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, paymentMethodId);
         return exchange.post(DEPOSIT_ENDPOINT + PAYMENTS,
@@ -30,7 +36,13 @@ public class DepositService {
                 coinbasePaymentRequest);
     }
 
-    // TODO untested due to lack of a coinbase account Id
+    /**
+     * can't realistically test this but it should work as is.
+     * @param amount
+     * @param currency
+     * @param coinbaseAccountId
+     * @return
+     */
     public PaymentResponse coinbaseDeposit(BigDecimal amount, String currency, String coinbaseAccountId) {
         CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, coinbaseAccountId);
         return exchange.post(DEPOSIT_ENDPOINT + COINBASE_PAYMENT,
