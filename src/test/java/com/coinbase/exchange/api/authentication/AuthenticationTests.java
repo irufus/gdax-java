@@ -3,6 +3,7 @@ package com.coinbase.exchange.api.authentication;
 import com.coinbase.exchange.api.BaseTest;
 import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +21,7 @@ public class AuthenticationTests extends BaseTest {
     AccountService accountService;
 
     // ensure a basic request can be made. Not a great test. Improve.
+    @Ignore
     @Test
     public void simpleAuthenticationTest(){
         List<Account> accounts = accountService.getAccounts();

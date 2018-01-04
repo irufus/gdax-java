@@ -19,12 +19,14 @@ public class AccountsTest extends BaseTest {
     @Autowired
     AccountService accountService;
 
+    @Ignore
     @Test
     public void canGetAccounts() {
         List<Account> accounts  = accountService.getAccounts();
         assertTrue(accounts.size() >= 0);
     }
 
+    @Ignore
     @Test
     public void getAccount() {
         List<Account> accounts  = accountService.getAccounts();
@@ -32,6 +34,7 @@ public class AccountsTest extends BaseTest {
         assertTrue(account != null);
     }
 
+    @Ignore
     @Test
     public void canGetAccountHistory() {
         List<Account> accounts = accountService.getAccounts();
@@ -39,6 +42,7 @@ public class AccountsTest extends BaseTest {
         assertTrue(history.size() >=0); // anything but null/error.
     }
 
+    @Ignore
     @Test
     public void canGetAccountHolds() {
         List<Account> accounts = accountService.getAccounts();
@@ -50,6 +54,7 @@ public class AccountsTest extends BaseTest {
         }
     }
 
+    @Ignore
     @Test
     public void canGetPagedAccountHistory() {
         List<Account> accounts = accountService.getAccounts();

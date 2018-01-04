@@ -26,7 +26,7 @@ import static org.springframework.http.HttpMethod.GET;
 @Component
 public class GdaxExchangeImpl implements GdaxExchange {
 
-    static Logger log = Logger.getLogger(GdaxExchangeImpl.class.getName());
+    static Logger log = Logger.getLogger(GdaxExchangeImpl.class);
 
     String publicKey;
     String passphrase;

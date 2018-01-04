@@ -2,6 +2,7 @@ package com.coinbase.exchange.api.products;
 
 import com.coinbase.exchange.api.BaseTest;
 import com.coinbase.exchange.api.entity.Product;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,6 +18,7 @@ public class ProductsTest extends BaseTest {
     @Autowired
     ProductService productService;
 
+    @Ignore
     @Test
     public void canGetProducts() {
         List<Product> products = productService.getProducts();
