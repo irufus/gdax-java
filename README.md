@@ -1,6 +1,6 @@
 # Simplification
 
-gdax-java was intended to become a java GUI app.  The intent of this fork is to turn it into a server side service that can feed a MongoDB database and can return market state information (ie. current bids, ask, orders). The first step is to reduce dependancies that are large or could be handled by Java 8+.
+gdax-java was intended to become a java GUI app.  The intent of this fork is to turn it into a server side service that can feed a MongoDB database and can return market state information (ie. current bids, ask, orders). The first step is to reduce dependencies that are large or could be handled by Java 8+.
 
 # gdax-java
 
