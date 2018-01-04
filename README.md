@@ -1,6 +1,8 @@
-# gdax-java
+# Simplification
 
-[![Join the chat at https://gitter.im/irufus/gdax-java](https://badges.gitter.im/irufus/gdax-java.svg)](https://gitter.im/irufus/gdax-java?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+gdax-java was intended to become a java GUI app.  The intent of this fork is to turn it into a server side service that can feed a MongoDB database and can return market state information (ie. current bids, ask, orders). The first step is to reduce dependancies that are large or could be handled by Java 8+.
+
+# gdax-java
 
 Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
 
@@ -35,7 +37,17 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
     
 # In Development
 
-Desktop client GUI. Check the issues on the repo for open items to work on. Please join the gitter channel if you have any questions. Support always welcome.
+- Currently
+    - remove joda time in favor of Java 8's java.time api.
+    - Look at removing spring framework in place of a configuration and URL api or custom classes.
+    - Look for and fix unused/redundant/flawed code.
+    - Add JAR shading to build
+
+- Next Steps
+    - Add MongoDB Client and operations.
+    - Add state system.
+    - Verify that IO operations are Asynchronous.
+	- Add FIX for bidding.
 
 # Usage
 --------
