@@ -21,6 +21,6 @@ public class ProductService {
 
     // no paged products necessary
     public List<Product> getProducts() {
-        return exchange.getAsList(PRODUCTS_ENDPOINT, new ParameterizedTypeReference<Product[]>(){});
+        return exchange.getAsList(PRODUCTS_ENDPOINT, Product[].class);
     }
 }

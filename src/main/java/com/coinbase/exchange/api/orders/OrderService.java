@@ -16,10 +16,10 @@ import static java.util.stream.Collectors.toList;
 /**
  * Created by robevansuk on 03/02/2017.
  */
-@Component
+
 public class OrderService {
 
-    @Autowired
+
     GdaxExchange exchange;
 
     public static final String ORDERS_ENDPOINT = "/orders";
@@ -33,11 +33,11 @@ public class OrderService {
     }
 
     public Order getOrder(String orderId) {
-        return exchange.get(ORDERS_ENDPOINT + "/" + orderId,new ParameterizedTypeReference<Order>(){});
+        return exchange.get(ORDERS_ENDPOINT + "/" + orderId, Order.class);
     }
 
     public Order createOrder(NewOrderSingle order) {
-        return exchange.post(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order>(){}, order);
+        return exchange.post(ORDERS_ENDPOINT, Order.class, order);
     }
 
     public String cancelOrder(String orderId) {

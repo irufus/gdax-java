@@ -17,7 +17,6 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class MarketDataService {
 
-    @Autowired
     GdaxExchange exchange;
 
     public static final String PRODUCT_ENDPOINT = "/products";
@@ -26,11 +25,11 @@ public class MarketDataService {
         String marketDataEndpoint = PRODUCT_ENDPOINT + "/" + productId + "/book";
         if(level != null && !level.equals(""))
             marketDataEndpoint += "?level=" + level;
-       return exchange.get(marketDataEndpoint, new ParameterizedTypeReference<MarketData>(){});
+       return exchange.get(marketDataEndpoint, MarketData.class);
     }
 
     public List<Trade> getTrades(String productId) {
         String tradesEndpoint = PRODUCT_ENDPOINT + "/" + productId + "/trades";
-        return exchange.getAsList(tradesEndpoint, new ParameterizedTypeReference<Trade[]>(){});
+        return exchange.getAsList(tradesEndpoint, Trade[].class);
     }
 }

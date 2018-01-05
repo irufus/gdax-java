@@ -19,11 +19,11 @@ public class ReportService {
     // TODO untested
     public ReportResponse createReport(String type, String startDate, String endDate){
         ReportRequest reportRequest = new ReportRequest(type, startDate, endDate);
-        return gdaxExchange.post(REPORTS_ENDPOINT, new ParameterizedTypeReference<ReportResponse>(){}, reportRequest);
+        return gdaxExchange.post(REPORTS_ENDPOINT, ReportResponse.class, reportRequest);
     }
 
     // TODO untested
     public ReportResponse getReportStatus(String id) {
-        return gdaxExchange.get(REPORTS_ENDPOINT + "/" + id, new ParameterizedTypeReference<ReportResponse>(){});
+        return gdaxExchange.get(REPORTS_ENDPOINT + "/" + id, ReportResponse.class);
     }
 }

@@ -3,12 +3,11 @@ package com.coinbase.exchange.api;
 import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Created by robevansuk on 20/01/2017.
  */
-@SpringBootApplication
+
 public class GdaxApiApplication {
     public static final String SYSTEM_PROPERTY_JAVA_AWT_HEADLESS = "java.awt.headless";
 

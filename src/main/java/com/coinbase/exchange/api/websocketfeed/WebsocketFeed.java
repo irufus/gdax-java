@@ -20,15 +20,12 @@ import java.time.Instant;
  * <p>
  * >Jiji Sasidharan
  */
-@Component
-@ClientEndpoint
 public class WebsocketFeed {
 
     static Logger log = LoggerFactory.getLogger(WebsocketFeed.class);
 
     Signature signature;
 
-    Session userSession = null;
     MessageHandler messageHandler;
 
     String websocketUrl;
@@ -36,7 +33,6 @@ public class WebsocketFeed {
     String key;
     boolean guiEnabled;
 
-    @Autowired
     public WebsocketFeed(@Value("${websocket.baseUrl}") String websocketUrl,
                          @Value("${gdax.key}") String key,
                          @Value("${gdax.passphrase}") String passphrase,
@@ -183,7 +179,7 @@ public class WebsocketFeed {
         jsonObj.setKey(key);
         jsonObj.setTimestamp(timestamp);
         jsonObj.setPassphrase(passphrase);
-        jsonObj.setSignature(signature.generate("", "GET", jsonString, timestamp));
+        jsonObj.setSignature(Signature.generate("", "GET", jsonString, timestamp));
 
         return gson.toJson(jsonObj);
     }

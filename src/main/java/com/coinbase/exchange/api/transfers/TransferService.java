@@ -22,7 +22,7 @@ public class TransferService {
     GdaxExchange gdaxExchange;
 
     /**
-     * TODO untested due to lack of a coinbaseaccountID to test with.
+     * TODO: untested due to lack of a coinbaseaccountID to test with.
      * @param type
      * @param amount
      * @param coinbaseAccountId
@@ -30,7 +30,7 @@ public class TransferService {
      */
     public String transfer(String type, BigDecimal amount, String coinbaseAccountId) {
         return gdaxExchange.post(TRANSFER_ENDPOINT,
-                new ParameterizedTypeReference<String>(){},
+                String.class,
                 new Transfer(type, amount, coinbaseAccountId));
     }
 

@@ -4,17 +4,14 @@ import com.coinbase.exchange.api.config.GdaxInstanceVariables;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 
+import java.io.CharArrayWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Arrays;
@@ -32,55 +29,31 @@ public class GdaxExchangeImpl implements GdaxExchange {
     String passphrase;
     String baseUrl;
 
-    Signature signature;
+    Gson gson = new Gson();
 
 
     public GdaxExchangeImpl(Signature signature) {
         this.publicKey = GdaxInstanceVariables.key;
         this.passphrase = GdaxInstanceVariables.passphrase;
         this.baseUrl = GdaxInstanceVariables.baseUrl;
-        this.signature = signature;
     }
 
     @Override
     public <T> T get(String resourcePath, Class<T> responseType) {
-        try {
-            URL url = new URL(this.baseUrl + resourcePath);
-            String timestamp = Instant.now().getEpochSecond() + "";
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("accept", "application/json");
-            conn.setRequestProperty("content-type", "application/json");
-            conn.setRequestProperty("CB-ACCESS-KEY", publicKey);
-            conn.setRequestProperty("CB-ACCESS-SIGN", signature.generate(resourcePath, "GET", "", timestamp));
-            conn.setRequestProperty("CB-ACCESS-TIMESTAMP", timestamp);
-            conn.setRequestProperty("CB-ACCESS-PASSPHRASE", passphrase);
-            conn.setDoInput(true);
-            InputStream is = conn.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            conn.connect();
-            Gson gson = new Gson();
-            return gson.fromJson(isr.)
-        } catch (HttpClientErrorException ex) {
-            log.error("GET request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        GdaxReturnValue value = generateRequest(resourcePath, "GET", "");
+        return gson.fromJson(value.getGdaxValue(), responseType);
     }
 
     @Override
-    public <T> List<T> getAsList(String resourcePath, ParameterizedTypeReference<T[]> responseType) {
-       T[] result = get(resourcePath, responseType);
-
-       return result == null ? Arrays.asList() : Arrays.asList(result);
+    public <T> List<T> getAsList(String resourcePath, Class<T[]> responseType) {
+        GdaxReturnValue value = generateRequest(resourcePath, "GET", "");
+        T[] result = gson.fromJson(value.getGdaxValue(), responseType);
+        return result == null ? Arrays.asList() : Arrays.asList(result);
     }
 
     @Override
     public <T> T pagedGet(String resourcePath,
-                          ParameterizedTypeReference<T> responseType,
+                          Class<T> responseType,
                           String beforeOrAfter,
                           Integer pageNumber,
                           Integer limit) {
@@ -90,78 +63,83 @@ public class GdaxExchangeImpl implements GdaxExchange {
 
     @Override
     public <T> List<T> pagedGetAsList(String resourcePath,
-                          ParameterizedTypeReference<T[]> responseType,
-                          String beforeOrAfter,
-                          Integer pageNumber,
-                          Integer limit) {
+                                      Class<T[]> responseType,
+                                      String beforeOrAfter,
+                                      Integer pageNumber,
+                                      Integer limit) {
         T[] result = pagedGet(resourcePath, responseType, beforeOrAfter, pageNumber, limit );
         return result == null ? Arrays.asList() : Arrays.asList(result);
     }
 
     @Override
-    public <T> T delete(String resourcePath, ParameterizedTypeReference<T> responseType) {
+    public <T> T delete(String resourcePath, Class<T> responseType) {
+        GdaxReturnValue value = generateRequest(resourcePath, "DELETE", "");
+        return gson.fromJson(value.getGdaxValue(), responseType);
+    }
+
+    @Override
+    public <T> T post(String resourcePath,  Class<T> responseType, String jsonObj) {
+        GdaxReturnValue value = generateRequest(resourcePath, "POST", jsonObj);
+        return gson.fromJson(value.getGdaxValue(), responseType);
+    }
+
+    public GdaxReturnValue generateRequest(String resourcePath, String method, String jsonBody) {
+        GdaxReturnValue retVal = null;
+        String timestamp = new Long(Instant.now().getEpochSecond()).toString();
+        URL url = null;
+        HttpURLConnection conn = null;
+        boolean isPost = method.equals("POST");
         try {
-            ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
-                HttpMethod.DELETE,
-                securityHeaders(resourcePath, "DELETE", ""),
-                responseType);
-            return response.getBody();
-        } catch (HttpClientErrorException ex) {
-            log.error("DELETE request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
+            url = new URL(this.baseUrl + resourcePath);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod(method);
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            log.error("POST request Failed for '" + resourcePath);
         }
-        return null;
-    }
-
-    @Override
-    public <T, R> T post(String resourcePath,  ParameterizedTypeReference<T> responseType, R jsonObj) {
-        Gson gson = new Gson();
-        String jsonBody = gson.toJson(jsonObj);
-
+        conn.setDoInput(true);
+        conn.setRequestProperty("accept", "application/json");
+        conn.setRequestProperty("content-type", "application/json");
+        conn.setRequestProperty("CB-ACCESS-KEY", publicKey);
+        conn.setRequestProperty("CB-ACCESS-SIGN", Signature.generate(resourcePath, method, jsonBody, timestamp));
+        conn.setRequestProperty("CB-ACCESS-TIMESTAMP", timestamp);
+        conn.setRequestProperty("CB-ACCESS-PASSPHRASE", passphrase);
+        if(isPost) {
+            conn.setDoOutput(true);
+            try {
+                conn.connect();
+                OutputStreamWriter sender = new OutputStreamWriter(conn.getOutputStream());
+                sender.write(jsonBody);
+                sender.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         try {
-            ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
-                    HttpMethod.POST,
-                    securityHeaders(resourcePath, "POST", jsonBody),
-                    responseType);
-            return response.getBody();
-        } catch (HttpClientErrorException ex) {
-            log.error("POST request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
+            if (!isPost) {
+                conn.connect();
+            }
+            InputStreamReader isr = new InputStreamReader(conn.getInputStream());
+            CharArrayWriter caw = new CharArrayWriter();
+            char[] buff = new char[512];
+            int len;
+            while((len = isr.read(buff)) != -1) {
+                caw.write(buff, 0, len);
+            }
+            String json = caw.toString();
+            caw.close();
+            isr.close();
+            retVal = new GdaxReturnValue(json,
+                    conn.getResponseCode(),
+                    conn.getHeaderFields());
+            isr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return null;
-    }
-
-    @Override
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    @Override
-    public HttpEntity<String> securityHeaders(HttpURLConnection conn, String endpoint, String method, String jsonBody) {
-        HttpHeaders headers = new HttpHeaders();
-
-        String timestamp = Instant.now().getEpochSecond() + "";
-        String resource = endpoint.replace(getBaseUrl(), "");
-
-        headers.add("accept", "application/json");
-        headers.add("content-type", "application/json");
-        headers.add("CB-ACCESS-KEY", publicKey);
-        headers.add("CB-ACCESS-SIGN", signature.generate(resource, method, jsonBody, timestamp));
-        headers.add("CB-ACCESS-TIMESTAMP", timestamp);
-        headers.add("CB-ACCESS-PASSPHRASE", passphrase);
-
-        curlRequest(method, jsonBody, headers, resource);
-
-        return new HttpEntity<>(jsonBody, headers);
-    }
-
-    private void curlRequest(String method, String jsonBody, HttpHeaders headers, String resource) {
-        String curlTest = "curl ";
-        for (String key : headers.keySet()){
-            curlTest +=  "-H '" + key + ":" + headers.get(key).get(0) + "' ";
-        }
-        if (!jsonBody.equals(""))
-            curlTest += "-d '" + jsonBody + "' ";
-
-        curlTest += "-X " + method + " " + getBaseUrl() + resource;
-        log.debug(curlTest);
+        conn.disconnect();
+        return retVal;
     }
 }
