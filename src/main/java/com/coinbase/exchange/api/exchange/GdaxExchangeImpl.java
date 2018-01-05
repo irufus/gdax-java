@@ -1,32 +1,32 @@
 package com.coinbase.exchange.api.exchange;
 
+import com.coinbase.exchange.api.config.GdaxInstanceVariables;
 import com.google.gson.Gson;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.springframework.http.HttpMethod.GET;
 
 
 /**
  * Created by irufus on 2/25/15.
  */
-@Component
 public class GdaxExchangeImpl implements GdaxExchange {
 
-    static Logger log = Logger.getLogger(GdaxExchangeImpl.class);
+    static Logger log = LoggerFactory.getLogger(GdaxExchangeImpl.class);
 
     String publicKey;
     String passphrase;
@@ -34,33 +34,39 @@ public class GdaxExchangeImpl implements GdaxExchange {
 
     Signature signature;
 
-    RestTemplate restTemplate;
 
-    @Autowired
-    public GdaxExchangeImpl(@Value("${gdax.key}") String publicKey,
-                            @Value("${gdax.passphrase}") String passphrase,
-                            @Value("${gdax.api.baseUrl}") String baseUrl,
-                            Signature signature,
-                            RestTemplate restTemplate) {
-        this.publicKey = publicKey;
-        this.passphrase = passphrase;
-        this.baseUrl = baseUrl;
+    public GdaxExchangeImpl(Signature signature) {
+        this.publicKey = GdaxInstanceVariables.key;
+        this.passphrase = GdaxInstanceVariables.passphrase;
+        this.baseUrl = GdaxInstanceVariables.baseUrl;
         this.signature = signature;
-        this.restTemplate = restTemplate;
     }
 
     @Override
-    public <T> T get(String resourcePath, ParameterizedTypeReference<T> responseType) {
+    public <T> T get(String resourcePath, Class<T> responseType) {
         try {
-            ResponseEntity<T> responseEntity = restTemplate.exchange(getBaseUrl() + resourcePath,
-                    GET,
-                    securityHeaders(resourcePath,
-                    "GET",
-                     ""),
-                    responseType);
-            return responseEntity.getBody();
+            URL url = new URL(this.baseUrl + resourcePath);
+            String timestamp = Instant.now().getEpochSecond() + "";
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("accept", "application/json");
+            conn.setRequestProperty("content-type", "application/json");
+            conn.setRequestProperty("CB-ACCESS-KEY", publicKey);
+            conn.setRequestProperty("CB-ACCESS-SIGN", signature.generate(resourcePath, "GET", "", timestamp));
+            conn.setRequestProperty("CB-ACCESS-TIMESTAMP", timestamp);
+            conn.setRequestProperty("CB-ACCESS-PASSPHRASE", passphrase);
+            conn.setDoInput(true);
+            InputStream is = conn.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            conn.connect();
+            Gson gson = new Gson();
+            return gson.fromJson(isr.)
         } catch (HttpClientErrorException ex) {
             log.error("GET request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -129,7 +135,7 @@ public class GdaxExchangeImpl implements GdaxExchange {
     }
 
     @Override
-    public HttpEntity<String> securityHeaders(String endpoint, String method, String jsonBody) {
+    public HttpEntity<String> securityHeaders(HttpURLConnection conn, String endpoint, String method, String jsonBody) {
         HttpHeaders headers = new HttpHeaders();
 
         String timestamp = Instant.now().getEpochSecond() + "";
