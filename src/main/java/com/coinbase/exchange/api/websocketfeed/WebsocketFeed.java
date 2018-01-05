@@ -3,8 +3,6 @@ package com.coinbase.exchange.api.websocketfeed;
 import com.coinbase.exchange.api.exchange.Signature;
 import com.coinbase.exchange.api.gui.orderbook.OrderBookView;
 import com.coinbase.exchange.api.websocketfeed.message.*;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.websocket.*;
-import java.io.IOException;
 import java.net.URI;
 import java.time.Instant;
 
@@ -123,53 +120,44 @@ public class WebsocketFeed {
             SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
                 @Override
                 public Void doInBackground() {
-                    OrderBookMessage message = getObject(json, new TypeReference<OrderBookMessage>() {});
+                    OrderBookMessage message = getObject(json, OrderBookMessage.class);
 
-                    String type = message.getType();
-
-                    if (type.equals("heartbeat"))
-                    {
-                        log.info("heartbeat");
-                        orderBook.heartBeat(getObject(json, new TypeReference<HeartBeat>() {}));
-                    }
-                    else if (type.equals("received"))
-                    {
-                        // received orders are not necessarily live orders - so I'm ignoring these msgs as they're
-                        // subject to change.
-                        log.info("order received {}", json);
-
-                    }
-                    else if (type.equals("open"))
-                    {
-                        log.info("Order opened: " + json );
-                        orderBook.updateOrderBook(getObject(json, new TypeReference<OrderOpenOrderBookMessage>() {}));
-                    }
-                    else if (type.equals("done"))
-                    {
-                        log.info("Order done: " + json);
-                        if (!message.getReason().equals("filled")) {
-                            OrderBookMessage doneOrder = getObject(json, new TypeReference<OrderDoneOrderBookMessage>() {});
-                            orderBook.updateOrderBook(doneOrder);
-                        }
-                    }
-                    else if (type.equals("match"))
-                    {
-                        log.info("Order matched: " + json);
-                        OrderBookMessage matchedOrder = getObject(json, new TypeReference<OrderMatchOrderBookMessage>(){});
-                        orderBook.updateOrderBook(matchedOrder);
-                    }
-                    else if (type.equals("change"))
-                    {
-                        // TODO - possibly need to provide implementation for this to work in real time.
-                         log.info("Order Changed {}", json);
-                        // orderBook.updateOrderBookWithChange(getObject(json, new TypeReference<OrderChangeOrderBookMessage>(){}));
-                    }
-                    else
-                    {
-                        // Not sure this is required unless I'm attempting to place orders
-                        // ERROR
-                        log.error("Error {}", json);
-                        // orderBook.orderBookError(getObject(json, new TypeReference<ErrorOrderBookMessage>(){}));
+                    switch (message.getType()){
+                        case "heartbeat":
+                            log.info("heartbeat");
+                            orderBook.heartBeat(getObject(json, HeartBeat.class));
+                            break;
+                        case "received":
+                            // received orders are not necessarily live orders - so I'm ignoring these msgs as they're
+                            // subject to change.
+                            log.info("order received {}", json);
+                            break;
+                        case "open":
+                            log.info("Order opened: " + json );
+                            orderBook.updateOrderBook(getObject(json, OrderOpenOrderBookMessage.class));
+                            break;
+                        case "done":
+                            log.info("Order done: " + json);
+                            if (!message.getReason().equals("filled")) {
+                                OrderBookMessage doneOrder = getObject(json, OrderDoneOrderBookMessage.class);
+                                orderBook.updateOrderBook(doneOrder);
+                            }
+                            break;
+                        case "match":
+                            log.info("Order matched: " + json);
+                            OrderBookMessage matchedOrder = getObject(json, OrderMatchOrderBookMessage.class);
+                            orderBook.updateOrderBook(matchedOrder);
+                            break;
+                        case "change":
+                            // TODO - possibly need to provide implementation for this to work in real time.
+                            log.info("Order Changed {}", json);
+                            // orderBook.updateOrderBookWithChange(getObject(json, OrderChangeOrderBookMessage.class));
+                            break;
+                        default:
+                            // Not sure this is required unless I'm attempting to place orders
+                            // ERROR
+                            log.error("Error {}", json);
+                            // orderBook.orderBookError(getObject(json, ErrorOrderBookMessage.class));
                     }
                     return null;
                 }
@@ -200,14 +188,9 @@ public class WebsocketFeed {
         return gson.toJson(jsonObj);
     }
 
-    public <T> T getObject(String json, TypeReference<T> type) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(json, type);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public <T> T getObject(String json, Class<T> type) {
+            Gson gson = new Gson();
+            return gson.fromJson(json, type);
     }
 
     /**
@@ -216,6 +199,6 @@ public class WebsocketFeed {
      * @author Jiji_Sasidharan
      */
     public interface MessageHandler {
-        public void handleMessage(String message);
+        void handleMessage(String message);
     }
 }
