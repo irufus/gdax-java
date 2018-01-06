@@ -47,7 +47,7 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
     - Create test instances for non-network functions.
     - Create handler for websockets as it currently throws all data away.
     - Look for and fix/clean code.
-    - [X]Add JAR shading to build
+    - [X] Add JAR shading to build
     - Modify License to show changes
 
 - Next Steps
