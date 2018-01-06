@@ -41,13 +41,19 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
     - [x] Remove joda time in favor of Java 8's java.time api.
     - [x] Currently their are two json parsers remove one.
     - [x] Fix logging.
-    - Look at removing spring framework in place of a configuration and URL api or custom classes.
+    - [x] Look at removing spring framework in place of a configuration and URL api or custom classes.
+    - Convert all instance variables and static variables to configs.
+    - Turn instance config into a file readable config
+    - Create test instances for non-network functions.
+    - Create handler for websockets as it currently throws all data away.
     - Look for and fix/clean code.
-    - Add JAR shading to build
+    - [X]Add JAR shading to build
+    - Modify License to show changes
 
 - Next Steps
     - Add MongoDB Client and operations.
     - Add state system.
+    - Add Travis script
     - Verify that IO operations are Asynchronous or threaded.
 	- Add FIX for bidding.
 

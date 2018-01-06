@@ -1,14 +1,10 @@
 package com.coinbase.exchange.api.websocketfeed;
 
 import com.coinbase.exchange.api.exchange.Signature;
-import com.coinbase.exchange.api.gui.orderbook.OrderBookView;
 import com.coinbase.exchange.api.websocketfeed.message.*;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.websocket.*;
@@ -24,25 +20,20 @@ public class WebsocketFeed {
 
     static Logger log = LoggerFactory.getLogger(WebsocketFeed.class);
 
-    Signature signature;
-
     MessageHandler messageHandler;
 
     String websocketUrl;
     String passphrase;
     String key;
+    Session userSession;
     boolean guiEnabled;
 
-    public WebsocketFeed(@Value("${websocket.baseUrl}") String websocketUrl,
-                         @Value("${gdax.key}") String key,
-                         @Value("${gdax.passphrase}") String passphrase,
-                         @Value("${gui.enabled}") boolean guiEnabled,
-                         Signature signature) {
+    public WebsocketFeed(String websocketUrl,
+                         String key,
+                         String passphrase) {
         this.key = key;
         this.passphrase = passphrase;
         this.websocketUrl = websocketUrl;
-        this.signature = signature;
-        this.guiEnabled = guiEnabled;
 
         if (guiEnabled) {
             try {
@@ -98,17 +89,12 @@ public class WebsocketFeed {
         this.messageHandler = msgHandler;
     }
 
-    /**
-     * Send a message.
-     *
-     * @param message
-     */
-    public void sendMessage(String message) {
-        this.userSession.getAsyncRemote().sendText(message);
+    public void sendMessage(String msg) {
+        userSession.getAsyncRemote().sendText(msg);
     }
 
 
-    public void subscribe(Subscribe msg, OrderBookView orderBook) {
+    public void subscribe(Subscribe msg) {
         String jsonSubscribeMessage = signObject(msg);
 
         addMessageHandler(json -> {
@@ -117,11 +103,11 @@ public class WebsocketFeed {
                 @Override
                 public Void doInBackground() {
                     OrderBookMessage message = getObject(json, OrderBookMessage.class);
-
+                    //TODO: need to have a message handler
                     switch (message.getType()){
                         case "heartbeat":
                             log.info("heartbeat");
-                            orderBook.heartBeat(getObject(json, HeartBeat.class));
+                            getObject(json, HeartBeat.class);
                             break;
                         case "received":
                             // received orders are not necessarily live orders - so I'm ignoring these msgs as they're
@@ -130,19 +116,17 @@ public class WebsocketFeed {
                             break;
                         case "open":
                             log.info("Order opened: " + json );
-                            orderBook.updateOrderBook(getObject(json, OrderOpenOrderBookMessage.class));
+                            getObject(json, OrderOpenOrderBookMessage.class);
                             break;
                         case "done":
                             log.info("Order done: " + json);
                             if (!message.getReason().equals("filled")) {
                                 OrderBookMessage doneOrder = getObject(json, OrderDoneOrderBookMessage.class);
-                                orderBook.updateOrderBook(doneOrder);
                             }
                             break;
                         case "match":
                             log.info("Order matched: " + json);
                             OrderBookMessage matchedOrder = getObject(json, OrderMatchOrderBookMessage.class);
-                            orderBook.updateOrderBook(matchedOrder);
                             break;
                         case "change":
                             // TODO - possibly need to provide implementation for this to work in real time.

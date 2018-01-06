@@ -5,25 +5,20 @@ import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
 import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.NewLimitOrderSingle;
-import com.coinbase.exchange.api.entity.Product;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.products.ProductService;
-//import org.apache.log4j.Logger;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+//import org.apache.log4j.Logger;
 
 /**
  * Created by Ishmael (sakamura@gmail.com) on 6/18/2016.
@@ -32,16 +27,12 @@ public class OrderTests extends BaseTest {
 
     //static final Logger log = Logger.getLogger(OrderTests.class);
 
-    @Autowired
     ProductService productService;
 
-    @Autowired
     AccountService accountService;
 
-    @Autowired
     MarketDataService marketDataService;
 
-    @Autowired
     OrderService orderService;
 
     // accounts: BTC, USD, GBP, EUR, CAD

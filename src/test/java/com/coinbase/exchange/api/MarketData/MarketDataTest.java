@@ -5,7 +5,6 @@ import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertTrue;
 
@@ -14,7 +13,6 @@ import static org.junit.Assert.assertTrue;
  */
 public class MarketDataTest extends BaseTest {
 
-    @Autowired
     MarketDataService marketDataService;
 
     @Ignore

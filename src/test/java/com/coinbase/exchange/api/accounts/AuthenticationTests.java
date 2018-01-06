@@ -1,11 +1,8 @@
-package com.coinbase.exchange.api.authentication;
+package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.BaseTest;
-import com.coinbase.exchange.api.accounts.Account;
-import com.coinbase.exchange.api.accounts.AccountService;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -17,7 +14,6 @@ import static junit.framework.TestCase.assertTrue;
  */
 public class AuthenticationTests extends BaseTest {
 
-    @Autowired
     AccountService accountService;
 
     // ensure a basic request can be made. Not a great test. Improve.

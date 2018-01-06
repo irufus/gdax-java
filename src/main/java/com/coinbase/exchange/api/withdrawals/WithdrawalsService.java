@@ -1,18 +1,16 @@
 package com.coinbase.exchange.api.withdrawals;
 
-import com.coinbase.exchange.api.exchange.GdaxExchange;
 import com.coinbase.exchange.api.entity.PaymentRequest;
 import com.coinbase.exchange.api.entity.PaymentResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
+import com.coinbase.exchange.api.exchange.GdaxExchange;
+import com.google.gson.Gson;
 
 import java.math.BigDecimal;
 
 /**
  * Created by robevansuk on 16/02/2017.
  */
-@Component
+
 public class WithdrawalsService {
 
     static final String WITHDRAWALS_ENDPOINT = "/withdrawals";
@@ -21,7 +19,6 @@ public class WithdrawalsService {
     static final String CRYPTO = "/crypto";
 
 
-    @Autowired
     GdaxExchange gdaxExchange;
 
     // TODO untested - needs a payment method id.
@@ -44,8 +41,9 @@ public class WithdrawalsService {
                                            String cryptoAccount,
                                            String withdrawalType) {
         PaymentRequest withdrawalRequest = new PaymentRequest(amount, currency, cryptoAccount);
+        Gson gson = new Gson();
         return gdaxExchange.post(WITHDRAWALS_ENDPOINT+ withdrawalType,
-                new ParameterizedTypeReference<PaymentResponse>() {},
-                withdrawalRequest);
+                PaymentResponse.class,
+                gson.toJson(withdrawalRequest));
     }
 }

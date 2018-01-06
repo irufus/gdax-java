@@ -1,20 +1,12 @@
 package com.coinbase.exchange.api.marketdata;
 
 import com.coinbase.exchange.api.exchange.GdaxExchange;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Created by robevansuk on 07/02/2017.
  */
-@Component
 public class MarketDataService {
 
     GdaxExchange exchange;

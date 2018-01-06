@@ -1,9 +1,7 @@
 package com.coinbase.exchange.api.transfers;
 
 import com.coinbase.exchange.api.exchange.GdaxExchange;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
+import com.google.gson.Gson;
 
 import java.math.BigDecimal;
 
@@ -13,12 +11,11 @@ import java.math.BigDecimal;
  *
  * Created by robevansuk on 15/02/2017.
  */
-@Component
+
 public class TransferService {
 
     static final String TRANSFER_ENDPOINT = "/transfers";
 
-    @Autowired
     GdaxExchange gdaxExchange;
 
     /**
@@ -29,9 +26,10 @@ public class TransferService {
      * @return
      */
     public String transfer(String type, BigDecimal amount, String coinbaseAccountId) {
+        Gson gson = new Gson();
         return gdaxExchange.post(TRANSFER_ENDPOINT,
                 String.class,
-                new Transfer(type, amount, coinbaseAccountId));
+                gson.toJson(new Transfer(type, amount, coinbaseAccountId)));
     }
 
 }

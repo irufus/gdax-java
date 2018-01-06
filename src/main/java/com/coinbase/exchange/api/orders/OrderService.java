@@ -4,14 +4,10 @@ import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.Hold;
 import com.coinbase.exchange.api.entity.NewOrderSingle;
 import com.coinbase.exchange.api.exchange.GdaxExchange;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
+import com.google.gson.Gson;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Created by robevansuk on 03/02/2017.
@@ -25,11 +21,11 @@ public class OrderService {
     public static final String ORDERS_ENDPOINT = "/orders";
 
     public List<Hold> getHolds(String accountId) {
-        return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/holds", new ParameterizedTypeReference<Hold[]>(){});
+        return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/holds", Hold[].class);
     }
 
     public List<Order> getOpenOrders(String accountId) {
-        return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/orders", new ParameterizedTypeReference<Order[]>(){});
+        return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/orders", Order[].class);
     }
 
     public Order getOrder(String orderId) {
@@ -37,25 +33,26 @@ public class OrderService {
     }
 
     public Order createOrder(NewOrderSingle order) {
-        return exchange.post(ORDERS_ENDPOINT, Order.class, order);
+        Gson gson = new Gson();
+        return exchange.post(ORDERS_ENDPOINT, Order.class, gson.toJson(order));
     }
 
     public String cancelOrder(String orderId) {
         String deleteEndpoint = ORDERS_ENDPOINT + "/" + orderId;
-        return exchange.delete(deleteEndpoint, new ParameterizedTypeReference<String>(){});
+        return exchange.delete(deleteEndpoint, String.class);
     }
 
     public List<Order> getOpenOrders() {
-        return exchange.getAsList(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){});
+        return exchange.getAsList(ORDERS_ENDPOINT, Order[].class);
     }
 
     public List<Order> cancelAllOpenOrders() {
-        return Arrays.asList(exchange.delete(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){}));
+        return Arrays.asList(exchange.delete(ORDERS_ENDPOINT, Order[].class));
     }
 
     public List<Fill> getAllFills() {
         String fillsEndpoint = "/fills";
-        return exchange.getAsList(fillsEndpoint, new ParameterizedTypeReference<Fill[]>(){});
+        return exchange.getAsList(fillsEndpoint, Fill[].class);
     }
 }
 
