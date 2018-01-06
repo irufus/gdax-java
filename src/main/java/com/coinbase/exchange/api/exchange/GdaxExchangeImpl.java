@@ -1,80 +1,59 @@
 package com.coinbase.exchange.api.exchange;
 
+import com.coinbase.exchange.api.config.GdaxInstanceVariables;
 import com.google.gson.Gson;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.CharArrayWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.springframework.http.HttpMethod.GET;
 
 
 /**
  * Created by irufus on 2/25/15.
  */
-@Component
 public class GdaxExchangeImpl implements GdaxExchange {
 
-    static Logger log = Logger.getLogger(GdaxExchangeImpl.class.getName());
+    static Logger log = LoggerFactory.getLogger(GdaxExchangeImpl.class);
 
-    String publicKey;
-    String passphrase;
-    String baseUrl;
+    private String publicKey;
+    private String passphrase;
+    private String baseUrl;
 
-    Signature signature;
+    Gson gson = new Gson();
 
-    RestTemplate restTemplate;
 
-    @Autowired
-    public GdaxExchangeImpl(@Value("${gdax.key}") String publicKey,
-                            @Value("${gdax.passphrase}") String passphrase,
-                            @Value("${gdax.api.baseUrl}") String baseUrl,
-                            Signature signature,
-                            RestTemplate restTemplate) {
-        this.publicKey = publicKey;
-        this.passphrase = passphrase;
-        this.baseUrl = baseUrl;
-        this.signature = signature;
-        this.restTemplate = restTemplate;
+    public GdaxExchangeImpl(Signature signature) {
+        this.publicKey = GdaxInstanceVariables.key;
+        this.passphrase = GdaxInstanceVariables.passphrase;
+        this.baseUrl = GdaxInstanceVariables.baseUrl;
     }
 
     @Override
-    public <T> T get(String resourcePath, ParameterizedTypeReference<T> responseType) {
-        try {
-            ResponseEntity<T> responseEntity = restTemplate.exchange(getBaseUrl() + resourcePath,
-                    GET,
-                    securityHeaders(resourcePath,
-                    "GET",
-                     ""),
-                    responseType);
-            return responseEntity.getBody();
-        } catch (HttpClientErrorException ex) {
-            log.error("GET request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
-        }
-        return null;
+    public <T> T get(String resourcePath, Class<T> responseType) {
+        GdaxReturnValue value = makeRequest(resourcePath, "GET", "");
+        return gson.fromJson(value.getGdaxValue(), responseType);
     }
 
     @Override
-    public <T> List<T> getAsList(String resourcePath, ParameterizedTypeReference<T[]> responseType) {
-       T[] result = get(resourcePath, responseType);
-
-       return result == null ? Arrays.asList() : Arrays.asList(result);
+    public <T> List<T> getAsList(String resourcePath, Class<T[]> responseType) {
+        GdaxReturnValue value = makeRequest(resourcePath, "GET", "");
+        T[] result = gson.fromJson(value.getGdaxValue(), responseType);
+        return result == null ? Arrays.asList() : Arrays.asList(result);
     }
 
     @Override
     public <T> T pagedGet(String resourcePath,
-                          ParameterizedTypeReference<T> responseType,
+                          Class<T> responseType,
                           String beforeOrAfter,
                           Integer pageNumber,
                           Integer limit) {
@@ -84,78 +63,86 @@ public class GdaxExchangeImpl implements GdaxExchange {
 
     @Override
     public <T> List<T> pagedGetAsList(String resourcePath,
-                          ParameterizedTypeReference<T[]> responseType,
-                          String beforeOrAfter,
-                          Integer pageNumber,
-                          Integer limit) {
+                                      Class<T[]> responseType,
+                                      String beforeOrAfter,
+                                      Integer pageNumber,
+                                      Integer limit) {
         T[] result = pagedGet(resourcePath, responseType, beforeOrAfter, pageNumber, limit );
         return result == null ? Arrays.asList() : Arrays.asList(result);
     }
 
     @Override
-    public <T> T delete(String resourcePath, ParameterizedTypeReference<T> responseType) {
+    public <T> T delete(String resourcePath, Class<T> responseType) {
+        GdaxReturnValue value = makeRequest(resourcePath, "DELETE", "");
+        return gson.fromJson(value.getGdaxValue(), responseType);
+    }
+
+    @Override
+    public <T> T post(String resourcePath,  Class<T> responseType, String jsonObj) {
+        GdaxReturnValue value = makeRequest(resourcePath, "POST", jsonObj);
+        return gson.fromJson(value.getGdaxValue(), responseType);
+    }
+
+    public GdaxReturnValue makeRequest(String resourcePath, String method, String jsonBody) {
+        GdaxReturnValue retVal = null;
+        String timestamp = new Long(Instant.now().getEpochSecond()).toString();
+        URL url = null;
+        HttpURLConnection conn = null;
+        boolean isPost = method.equals("POST");
         try {
-            ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
-                HttpMethod.DELETE,
-                securityHeaders(resourcePath, "DELETE", ""),
-                responseType);
-            return response.getBody();
-        } catch (HttpClientErrorException ex) {
-            log.error("DELETE request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
+            url = new URL(this.baseUrl + resourcePath);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod(method);
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            log.error("POST request Failed for '" + resourcePath);
         }
-        return null;
-    }
-
-    @Override
-    public <T, R> T post(String resourcePath,  ParameterizedTypeReference<T> responseType, R jsonObj) {
-        Gson gson = new Gson();
-        String jsonBody = gson.toJson(jsonObj);
-
+        conn.setDoInput(true);
+        conn.setRequestProperty("accept", "application/json");
+        conn.setRequestProperty("content-type", "application/json");
+        conn.setRequestProperty("CB-ACCESS-KEY", publicKey);
+        conn.setRequestProperty("CB-ACCESS-SIGN", Signature.generate(resourcePath, method, jsonBody, timestamp));
+        conn.setRequestProperty("CB-ACCESS-TIMESTAMP", timestamp);
+        conn.setRequestProperty("CB-ACCESS-PASSPHRASE", passphrase);
+        if(isPost) {
+            conn.setDoOutput(true);
+            try {
+                conn.connect();
+                OutputStreamWriter sender = new OutputStreamWriter(conn.getOutputStream());
+                sender.write(jsonBody);
+                sender.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         try {
-            ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
-                    HttpMethod.POST,
-                    securityHeaders(resourcePath, "POST", jsonBody),
-                    responseType);
-            return response.getBody();
-        } catch (HttpClientErrorException ex) {
-            log.error("POST request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
+            if (!isPost) {
+                conn.connect();
+            }
+            String json = createStringFromCharStream(new InputStreamReader(conn.getInputStream()));
+            retVal = new GdaxReturnValue(json,
+                    conn.getResponseCode(),
+                    conn.getHeaderFields());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return null;
+        conn.disconnect();
+        return retVal;
     }
 
-    @Override
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    @Override
-    public HttpEntity<String> securityHeaders(String endpoint, String method, String jsonBody) {
-        HttpHeaders headers = new HttpHeaders();
-
-        String timestamp = Instant.now().getEpochSecond() + "";
-        String resource = endpoint.replace(getBaseUrl(), "");
-
-        headers.add("accept", "application/json");
-        headers.add("content-type", "application/json");
-        headers.add("CB-ACCESS-KEY", publicKey);
-        headers.add("CB-ACCESS-SIGN", signature.generate(resource, method, jsonBody, timestamp));
-        headers.add("CB-ACCESS-TIMESTAMP", timestamp);
-        headers.add("CB-ACCESS-PASSPHRASE", passphrase);
-
-        curlRequest(method, jsonBody, headers, resource);
-
-        return new HttpEntity<>(jsonBody, headers);
-    }
-
-    private void curlRequest(String method, String jsonBody, HttpHeaders headers, String resource) {
-        String curlTest = "curl ";
-        for (String key : headers.keySet()){
-            curlTest +=  "-H '" + key + ":" + headers.get(key).get(0) + "' ";
+    String createStringFromCharStream(InputStreamReader isr) throws IOException {
+        CharArrayWriter caw = new CharArrayWriter();
+        char[] buff = new char[512];
+        int len;
+        while ((len = isr.read(buff)) != -1) {
+            caw.write(buff, 0, len);
         }
-        if (!jsonBody.equals(""))
-            curlTest += "-d '" + jsonBody + "' ";
-
-        curlTest += "-X " + method + " " + getBaseUrl() + resource;
-        log.debug(curlTest);
+        String str = caw.toString();
+        caw.close();
+        isr.close();
+        return str;
     }
 }

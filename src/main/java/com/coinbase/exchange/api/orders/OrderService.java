@@ -1,61 +1,57 @@
 package com.coinbase.exchange.api.orders;
 
+import com.coinbase.exchange.api.config.GdaxStaticVariables;
 import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.Hold;
 import com.coinbase.exchange.api.entity.NewOrderSingle;
 import com.coinbase.exchange.api.exchange.GdaxExchange;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
+import com.google.gson.Gson;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 /**
  * Created by robevansuk on 03/02/2017.
  */
-@Component
+
 public class OrderService {
 
-    @Autowired
+
     GdaxExchange exchange;
 
-    public static final String ORDERS_ENDPOINT = "/orders";
-
     public List<Hold> getHolds(String accountId) {
-        return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/holds", new ParameterizedTypeReference<Hold[]>(){});
+        return exchange.getAsList(GdaxStaticVariables.ORDERS_ENDPOINT + "/" + accountId + "/holds", Hold[].class);
     }
 
     public List<Order> getOpenOrders(String accountId) {
-        return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/orders", new ParameterizedTypeReference<Order[]>(){});
+        return exchange.getAsList(GdaxStaticVariables.ORDERS_ENDPOINT + "/" + accountId + "/orders", Order[].class);
     }
 
     public Order getOrder(String orderId) {
-        return exchange.get(ORDERS_ENDPOINT + "/" + orderId,new ParameterizedTypeReference<Order>(){});
+        return exchange.get(GdaxStaticVariables.ORDERS_ENDPOINT + "/" + orderId, Order.class);
     }
 
     public Order createOrder(NewOrderSingle order) {
-        return exchange.post(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order>(){}, order);
+        Gson gson = new Gson();
+        return exchange.post(GdaxStaticVariables.ORDERS_ENDPOINT, Order.class, gson.toJson(order));
     }
 
     public String cancelOrder(String orderId) {
-        String deleteEndpoint = ORDERS_ENDPOINT + "/" + orderId;
-        return exchange.delete(deleteEndpoint, new ParameterizedTypeReference<String>(){});
+        String deleteEndpoint = GdaxStaticVariables.ORDERS_ENDPOINT + "/" + orderId;
+        return exchange.delete(deleteEndpoint, String.class);
     }
 
     public List<Order> getOpenOrders() {
-        return exchange.getAsList(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){});
+        return exchange.getAsList(GdaxStaticVariables.ORDERS_ENDPOINT, Order[].class);
     }
 
     public List<Order> cancelAllOpenOrders() {
-        return Arrays.asList(exchange.delete(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){}));
+        return Arrays.asList(exchange.delete(GdaxStaticVariables.ORDERS_ENDPOINT, Order[].class));
     }
 
     public List<Fill> getAllFills() {
         String fillsEndpoint = "/fills";
-        return exchange.getAsList(fillsEndpoint, new ParameterizedTypeReference<Fill[]>(){});
+        return exchange.getAsList(fillsEndpoint, Fill[].class);
     }
 }
 

@@ -1,11 +1,7 @@
 package com.coinbase.exchange.api.marketdata;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -19,9 +15,8 @@ public class OrderItem implements Comparable {
     private BigDecimal num;
 
 
-    @JsonCreator
     public OrderItem(List<String> limitOrders) {
-        if (CollectionUtils.isEmpty(limitOrders) || limitOrders.size() < 3) {
+        if (limitOrders.isEmpty() || limitOrders.size() < 3) {
             throw new IllegalArgumentException("LimitOrders was empty - check connection to the exchange");
         }
         price =  new BigDecimal(limitOrders.get(0));

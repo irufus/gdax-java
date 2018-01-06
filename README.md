@@ -1,6 +1,34 @@
-# gdax-java
+# New Path
 
-[![Join the chat at https://gitter.im/irufus/gdax-java](https://badges.gitter.im/irufus/gdax-java.svg)](https://gitter.im/irufus/gdax-java?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+gdax-java was intended to become a java GUI app.  The intent of this fork is to turn it into a server side service that can feed a MongoDB database and can track market state information (ie. current bids, ask, orders).
+
+# Progress
+
+- Completed
+    - [x] Remove joda time in favor of Java 8's java.time api.
+    - [x] Currently their are two json parsers remove one.
+    - [x] Fix logging.
+    - [x] Look at removing spring framework in place of a configuration and URL api or custom classes.
+    - [x] Convert all instance variables and static variables to configs.
+    - [x] Add JAR shading to build
+    - [x] Modify License to show changes
+
+- Currently
+    - Turn instance config into a json file readable config from arg.
+    - Create test instances for non-network functions.
+    - Create handler for websockets as it currently throws all data away.
+    - Look for and fix/clean code.
+    - Add additional logging
+
+- Next Steps
+    - Add MongoDB Client and operations.
+    - Add Mocking framework and test for testing network functions.
+    - Add state system.
+    - Add Travis script
+    - Verify that IO operations are Asynchronous or threaded.
+	- Add FIX for bidding.
+
+# gdax-java
 
 Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
 
@@ -32,10 +60,6 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
 - [x] Pagination support for all calls that support it.
 - [x] Pagination support for all calls that support it.
 - [x] Sandbox support - *sandbox support was dropped by gdax so this is now redundant*
-    
-# In Development
-
-Desktop client GUI. Check the issues on the repo for open items to work on. Please join the gitter channel if you have any questions. Support always welcome.
 
 # Usage
 --------
