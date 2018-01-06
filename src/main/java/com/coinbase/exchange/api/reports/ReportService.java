@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.reports;
 
+import com.coinbase.exchange.api.config.GdaxStaticVariables;
 import com.coinbase.exchange.api.exchange.GdaxExchange;
 import com.google.gson.Gson;
 
@@ -8,20 +9,17 @@ import com.google.gson.Gson;
  */
 public class ReportService {
 
-    static final String REPORTS_ENDPOINT = "/reports";
-
-
     GdaxExchange gdaxExchange;
 
     // TODO untested
     public ReportResponse createReport(String type, String startDate, String endDate){
         ReportRequest reportRequest = new ReportRequest(type, startDate, endDate);
         Gson gson = new Gson();
-        return gdaxExchange.post(REPORTS_ENDPOINT, ReportResponse.class, gson.toJson(reportRequest));
+        return gdaxExchange.post(GdaxStaticVariables.REPORTS_ENDPOINT, ReportResponse.class, gson.toJson(reportRequest));
     }
 
     // TODO untested
     public ReportResponse getReportStatus(String id) {
-        return gdaxExchange.get(REPORTS_ENDPOINT + "/" + id, ReportResponse.class);
+        return gdaxExchange.get(GdaxStaticVariables.REPORTS_ENDPOINT + "/" + id, ReportResponse.class);
     }
 }

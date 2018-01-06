@@ -25,9 +25,9 @@ public class GdaxExchangeImpl implements GdaxExchange {
 
     static Logger log = LoggerFactory.getLogger(GdaxExchangeImpl.class);
 
-    String publicKey;
-    String passphrase;
-    String baseUrl;
+    private String publicKey;
+    private String passphrase;
+    private String baseUrl;
 
     Gson gson = new Gson();
 
@@ -40,13 +40,13 @@ public class GdaxExchangeImpl implements GdaxExchange {
 
     @Override
     public <T> T get(String resourcePath, Class<T> responseType) {
-        GdaxReturnValue value = generateRequest(resourcePath, "GET", "");
+        GdaxReturnValue value = makeRequest(resourcePath, "GET", "");
         return gson.fromJson(value.getGdaxValue(), responseType);
     }
 
     @Override
     public <T> List<T> getAsList(String resourcePath, Class<T[]> responseType) {
-        GdaxReturnValue value = generateRequest(resourcePath, "GET", "");
+        GdaxReturnValue value = makeRequest(resourcePath, "GET", "");
         T[] result = gson.fromJson(value.getGdaxValue(), responseType);
         return result == null ? Arrays.asList() : Arrays.asList(result);
     }
@@ -73,17 +73,17 @@ public class GdaxExchangeImpl implements GdaxExchange {
 
     @Override
     public <T> T delete(String resourcePath, Class<T> responseType) {
-        GdaxReturnValue value = generateRequest(resourcePath, "DELETE", "");
+        GdaxReturnValue value = makeRequest(resourcePath, "DELETE", "");
         return gson.fromJson(value.getGdaxValue(), responseType);
     }
 
     @Override
     public <T> T post(String resourcePath,  Class<T> responseType, String jsonObj) {
-        GdaxReturnValue value = generateRequest(resourcePath, "POST", jsonObj);
+        GdaxReturnValue value = makeRequest(resourcePath, "POST", jsonObj);
         return gson.fromJson(value.getGdaxValue(), responseType);
     }
 
-    public GdaxReturnValue generateRequest(String resourcePath, String method, String jsonBody) {
+    public GdaxReturnValue makeRequest(String resourcePath, String method, String jsonBody) {
         GdaxReturnValue retVal = null;
         String timestamp = new Long(Instant.now().getEpochSecond()).toString();
         URL url = null;
@@ -122,24 +122,27 @@ public class GdaxExchangeImpl implements GdaxExchange {
             if (!isPost) {
                 conn.connect();
             }
-            InputStreamReader isr = new InputStreamReader(conn.getInputStream());
-            CharArrayWriter caw = new CharArrayWriter();
-            char[] buff = new char[512];
-            int len;
-            while((len = isr.read(buff)) != -1) {
-                caw.write(buff, 0, len);
-            }
-            String json = caw.toString();
-            caw.close();
-            isr.close();
+            String json = createStringFromCharStream(new InputStreamReader(conn.getInputStream()));
             retVal = new GdaxReturnValue(json,
                     conn.getResponseCode(),
                     conn.getHeaderFields());
-            isr.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         conn.disconnect();
         return retVal;
+    }
+
+    String createStringFromCharStream(InputStreamReader isr) throws IOException {
+        CharArrayWriter caw = new CharArrayWriter();
+        char[] buff = new char[512];
+        int len;
+        while ((len = isr.read(buff)) != -1) {
+            caw.write(buff, 0, len);
+        }
+        String str = caw.toString();
+        caw.close();
+        isr.close();
+        return str;
     }
 }

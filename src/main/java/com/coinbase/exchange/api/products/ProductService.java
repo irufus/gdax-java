@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.products;
 
+import com.coinbase.exchange.api.config.GdaxStaticVariables;
 import com.coinbase.exchange.api.entity.Product;
 import com.coinbase.exchange.api.exchange.GdaxExchange;
 
@@ -12,10 +13,8 @@ public class ProductService {
 
     GdaxExchange exchange;
 
-    public static final String PRODUCTS_ENDPOINT = "/products";
-
     // no paged products necessary
     public List<Product> getProducts() {
-        return exchange.getAsList(PRODUCTS_ENDPOINT, Product[].class);
+        return exchange.getAsList(GdaxStaticVariables.PRODUCTS_ENDPOINT, Product[].class);
     }
 }

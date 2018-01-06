@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.orders;
 
+import com.coinbase.exchange.api.config.GdaxStaticVariables;
 import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.Hold;
 import com.coinbase.exchange.api.entity.NewOrderSingle;
@@ -18,36 +19,34 @@ public class OrderService {
 
     GdaxExchange exchange;
 
-    public static final String ORDERS_ENDPOINT = "/orders";
-
     public List<Hold> getHolds(String accountId) {
-        return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/holds", Hold[].class);
+        return exchange.getAsList(GdaxStaticVariables.ORDERS_ENDPOINT + "/" + accountId + "/holds", Hold[].class);
     }
 
     public List<Order> getOpenOrders(String accountId) {
-        return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/orders", Order[].class);
+        return exchange.getAsList(GdaxStaticVariables.ORDERS_ENDPOINT + "/" + accountId + "/orders", Order[].class);
     }
 
     public Order getOrder(String orderId) {
-        return exchange.get(ORDERS_ENDPOINT + "/" + orderId, Order.class);
+        return exchange.get(GdaxStaticVariables.ORDERS_ENDPOINT + "/" + orderId, Order.class);
     }
 
     public Order createOrder(NewOrderSingle order) {
         Gson gson = new Gson();
-        return exchange.post(ORDERS_ENDPOINT, Order.class, gson.toJson(order));
+        return exchange.post(GdaxStaticVariables.ORDERS_ENDPOINT, Order.class, gson.toJson(order));
     }
 
     public String cancelOrder(String orderId) {
-        String deleteEndpoint = ORDERS_ENDPOINT + "/" + orderId;
+        String deleteEndpoint = GdaxStaticVariables.ORDERS_ENDPOINT + "/" + orderId;
         return exchange.delete(deleteEndpoint, String.class);
     }
 
     public List<Order> getOpenOrders() {
-        return exchange.getAsList(ORDERS_ENDPOINT, Order[].class);
+        return exchange.getAsList(GdaxStaticVariables.ORDERS_ENDPOINT, Order[].class);
     }
 
     public List<Order> cancelAllOpenOrders() {
-        return Arrays.asList(exchange.delete(ORDERS_ENDPOINT, Order[].class));
+        return Arrays.asList(exchange.delete(GdaxStaticVariables.ORDERS_ENDPOINT, Order[].class));
     }
 
     public List<Fill> getAllFills() {

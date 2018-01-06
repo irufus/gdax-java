@@ -42,16 +42,18 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
     - [x] Currently their are two json parsers remove one.
     - [x] Fix logging.
     - [x] Look at removing spring framework in place of a configuration and URL api or custom classes.
-    - Convert all instance variables and static variables to configs.
-    - Turn instance config into a file readable config
+    - [x] Convert all instance variables and static variables to configs.
+    - Turn instance config into a file readable config from arg
     - Create test instances for non-network functions.
     - Create handler for websockets as it currently throws all data away.
     - Look for and fix/clean code.
-    - [X] Add JAR shading to build
-    - Modify License to show changes
+    - [x] Add JAR shading to build
+    - [x] Modify License to show changes
+    - Add additional logging
 
 - Next Steps
     - Add MongoDB Client and operations.
+    - Add Mocking framework and test for testing network functions.
     - Add state system.
     - Add Travis script
     - Verify that IO operations are Asynchronous or threaded.

@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.useraccount;
 
+import com.coinbase.exchange.api.config.GdaxStaticVariables;
 import com.coinbase.exchange.api.exchange.GdaxExchange;
 
 /**
@@ -7,12 +8,9 @@ import com.coinbase.exchange.api.exchange.GdaxExchange;
  */
 public class UserAccountService {
 
-    static final String USER_ACCOUNT_ENDPOINT = "/users/self/trailing-volume";
-
-
     GdaxExchange gdaxExchange;
 
     public UserAccountData getUserAccounts(){
-        return gdaxExchange.get(USER_ACCOUNT_ENDPOINT, UserAccountData.class);
+        return gdaxExchange.get(GdaxStaticVariables.USER_ACCOUNT_ENDPOINT, UserAccountData.class);
     }
 }

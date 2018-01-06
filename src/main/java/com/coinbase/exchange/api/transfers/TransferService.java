@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.transfers;
 
+import com.coinbase.exchange.api.config.GdaxStaticVariables;
 import com.coinbase.exchange.api.exchange.GdaxExchange;
 import com.google.gson.Gson;
 
@@ -14,8 +15,6 @@ import java.math.BigDecimal;
 
 public class TransferService {
 
-    static final String TRANSFER_ENDPOINT = "/transfers";
-
     GdaxExchange gdaxExchange;
 
     /**
@@ -27,7 +26,7 @@ public class TransferService {
      */
     public String transfer(String type, BigDecimal amount, String coinbaseAccountId) {
         Gson gson = new Gson();
-        return gdaxExchange.post(TRANSFER_ENDPOINT,
+        return gdaxExchange.post(GdaxStaticVariables.TRANSFER_ENDPOINT,
                 String.class,
                 gson.toJson(new Transfer(type, amount, coinbaseAccountId)));
     }
