@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import javax.websocket.*;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.time.Instant;
 
@@ -114,7 +115,37 @@ public class WebsocketFeed {
         this.userSession.getAsyncRemote().sendText(message);
     }
 
-
+    public void subscribe(Subscribe msg){
+        String jsonSubscribeMessag = signObject(msg);
+        addMessageHandler(json -> {
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    OrderBookMessage message = getObject(json, new TypeReference<OrderBookMessage>() {});
+                    log.info(json);
+                    switch(message.getType()){
+                        case "heartbeat":
+                            break;
+                        case "received":
+                            break;
+                        case "open":
+                            break;
+                        case "done":
+                            break;
+                        case "match":
+                            break;
+                        case "change":
+                            break;
+                        default:
+                            log.error("Unhandled Json: " + json);
+                    }
+                    return null;
+                }
+            };
+            worker.execute();
+        });
+        sendMessage(jsonSubscribeMessag);
+    }
     public void subscribe(Subscribe msg, OrderBookView orderBook) {
         String jsonSubscribeMessage = signObject(msg);
 
