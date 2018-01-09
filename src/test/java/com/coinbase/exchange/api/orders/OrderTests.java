@@ -5,6 +5,7 @@ import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
 import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.NewLimitOrderSingle;
+import com.coinbase.exchange.api.entity.NewMarketOrderSingle;
 import com.coinbase.exchange.api.entity.Product;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
@@ -105,6 +106,40 @@ public class OrderTests extends BaseTest {
     public void getFills() {
         List<Fill> fills = orderService.getAllFills();
         assertTrue(fills.size() >= 0);
+    }
+    @Test
+    public void createMarketOrderBuy(){
+        NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "buy", new BigDecimal(0.01));
+        Order order = orderService.createOrder(marketOrder);
+
+        assertTrue(order != null); //make sure we created an order
+        String orderId = order.getId();
+        assertTrue(orderId.length() > 0); //ensure we have an actual orderId
+        Order filledOrder = orderService.getOrder(orderId);
+        assertTrue(filledOrder != null); //ensure our order hit the system
+        assertTrue(new BigDecimal(filledOrder.getSize()).compareTo(BigDecimal.ZERO) > 0); //ensure we got a fill
+        log.info("Order opened and filled: " + filledOrder.getSize() + " @ " + filledOrder.getExecuted_value()
+             + " at the cost of " + filledOrder.getFill_fees());
+   }
+   @Test
+   public void createMarketOrderSell(){
+       NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "sell", new BigDecimal(0.01));
+       Order order = orderService.createOrder(marketOrder);
+       assertTrue(order != null); //make sure we created an order
+       String orderId = order.getId();
+       assertTrue(orderId.length() > 0); //ensure we have an actual orderId
+       Order filledOrder = orderService.getOrder(orderId);
+       assertTrue(filledOrder != null); //ensure our order hit the system
+       assertTrue(new BigDecimal(filledOrder.getSize()).compareTo(BigDecimal.ZERO) > 0); //ensure we got a fill
+       log.info("Order opened and filled: " + filledOrder.getSize() + " @ " + filledOrder.getExecuted_value()
+               + " at the cost of " + filledOrder.getFill_fees());
+   }
+    private NewMarketOrderSingle createNewMarketOrder(String product, String action, BigDecimal size){
+        NewMarketOrderSingle marketOrder = new NewMarketOrderSingle();
+        marketOrder.setProduct_id(product);
+        marketOrder.setSide(action);
+        marketOrder.setSize(size);
+        return marketOrder;
     }
 
     private MarketData getMarketDataOrderBook(String product) {
