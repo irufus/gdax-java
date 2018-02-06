@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class OrderTests extends BaseTest {
 
-    static final Logger log = Logger.getLogger(OrderTests.class);
+    private static final Logger log = Logger.getLogger(OrderTests.class);
 
     @Autowired
     ProductService productService;

@@ -15,19 +15,18 @@ import java.math.BigDecimal;
 @Component
 public class DepositService {
 
-    static final String DEPOSIT_ENDPOINT = "/deposits";
-    static final String PAYMENTS = "/payment-method";
-    static final String COINBASE_PAYMENT = "/coinbase-account";
+    private static final String DEPOSIT_ENDPOINT = "/deposits";
+    private static final String PAYMENTS = "/payment-method";
+    private static final String COINBASE_PAYMENT = "/coinbase-account";
 
     @Autowired
     GdaxExchange exchange;
 
     /**
-     * can't realistically test this but it should work as is.
      * @param amount
      * @param currency
      * @param paymentMethodId
-     * @return
+     * @return PaymentResponse
      */
     public PaymentResponse depositViaPaymentMethod(BigDecimal amount, String currency, String paymentMethodId) {
         CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, paymentMethodId);
@@ -37,13 +36,12 @@ public class DepositService {
     }
 
     /**
-     * can't realistically test this but it should work as is.
      * @param amount
      * @param currency
      * @param coinbaseAccountId
-     * @return
+     * @return PaymentResponse
      */
-    public PaymentResponse coinbaseDeposit(BigDecimal amount, String currency, String coinbaseAccountId) {
+    public PaymentResponse depositViaCoinbase(BigDecimal amount, String currency, String coinbaseAccountId) {
         CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, coinbaseAccountId);
         return exchange.post(DEPOSIT_ENDPOINT + COINBASE_PAYMENT,
                 new ParameterizedTypeReference<PaymentResponse>(){},

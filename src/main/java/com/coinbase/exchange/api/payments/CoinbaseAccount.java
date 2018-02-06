@@ -5,29 +5,29 @@ import java.math.BigDecimal;
 /**
  * Created by robevansuk on 16/02/2017.
  */
-public class CoinbaseAccounts {
+public class CoinbaseAccount {
 
-    String id; //UUID
-    String name;
-    BigDecimal balance;
-    String currency;
-    String type;
-    Boolean primary;
-    Boolean active;
-    DepositInformation wire_deposit_information;
-    SepaDepositInformation sepa_deposit_information;
+    private String id; //UUID
+    private String name;
+    private BigDecimal balance;
+    private String currency;
+    private String type;
+    private Boolean primary;
+    private Boolean active;
+    private DepositInformation wire_deposit_information;
+    private SepaDepositInformation sepa_deposit_information;
 
-    public CoinbaseAccounts() {}
+    public CoinbaseAccount() {}
 
-    public CoinbaseAccounts(String id,
-                            String name,
-                            BigDecimal balance,
-                            String currency,
-                            String type,
-                            Boolean primary,
-                            Boolean active,
-                            DepositInformation wire_deposit_information,
-                            SepaDepositInformation sepa_deposit_information) {
+    public CoinbaseAccount(String id,
+                           String name,
+                           BigDecimal balance,
+                           String currency,
+                           String type,
+                           Boolean primary,
+                           Boolean active,
+                           DepositInformation wire_deposit_information,
+                           SepaDepositInformation sepa_deposit_information) {
         this.id = id;
         this.name = name;
         this.balance = balance;

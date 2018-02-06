@@ -3,32 +3,32 @@ package com.coinbase.exchange.api.payments;
 /**
  * Created by robevansuk on 16/02/2017.
  */
-public class PaymentTypes {
-    String id; // UUID
-    String type; // ach_bank_account
-    String name; // Bank of America - eBan... ********7134
-    String currency; // USD
-    Boolean primary_buy;
-    Boolean primary_sell;
-    Boolean allow_buy;
-    Boolean allow_sell;
-    Boolean allow_deposit;
-    Boolean allow_withdraw;
-    Limit[] limits;
+public class PaymentType {
+    private String id; // UUID
+    private String type; // ach_bank_account
+    private String name; // Bank of America - eBan... ********7134
+    private String currency; // USD
+    private Boolean primary_buy;
+    private Boolean primary_sell;
+    private Boolean allow_buy;
+    private Boolean allow_sell;
+    private Boolean allow_deposit;
+    private Boolean allow_withdraw;
+    private Limit limits;
 
-    public PaymentTypes() {}
+    public PaymentType() {}
 
-    public PaymentTypes(String id,
-                        String type,
-                        String name,
-                        String currency,
-                        Boolean primary_buy,
-                        Boolean primary_sell,
-                        Boolean allow_buy,
-                        Boolean allow_sell,
-                        Boolean allow_deposit,
-                        Boolean allow_withdraw,
-                        Limit[] limits) {
+    public PaymentType(String id,
+                       String type,
+                       String name,
+                       String currency,
+                       Boolean primary_buy,
+                       Boolean primary_sell,
+                       Boolean allow_buy,
+                       Boolean allow_sell,
+                       Boolean allow_deposit,
+                       Boolean allow_withdraw,
+                       Limit limits) {
         this.id = id;
         this.type = type;
         this.name = name;
@@ -122,11 +122,11 @@ public class PaymentTypes {
         this.allow_withdraw = allow_withdraw;
     }
 
-    public Limit[] getLimits() {
+    public Limit getLimits() {
         return limits;
     }
 
-    public void setLimits(Limit[] limits) {
+    public void setLimits(Limit limits) {
         this.limits = limits;
     }
 }
