@@ -1,7 +1,6 @@
 package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.BaseTest;
-import com.coinbase.exchange.api.entity.CoinbasePaymentRequest;
 import com.coinbase.exchange.api.entity.PaymentResponse;
 import com.coinbase.exchange.api.payments.CoinbaseAccount;
 import com.coinbase.exchange.api.payments.PaymentService;
@@ -29,16 +28,6 @@ public class WithdrawalTests extends BaseTest {
     AccountService accountService;
 
     @Test
-    public void hasAvailablePayments(){
-        List<PaymentType> types = paymentService.getPaymentTypes();
-        assertTrue(types.size() > 0);
-    }
-    @Test
-    public void hasCoinbaseAccounts(){
-        List<CoinbaseAccount> accounts = paymentService.getCoinbaseAccounts();
-        assertTrue(accounts.size() > 0);
-    }
-    @Test
     public void withdrawToCoinbaseAccount(){
         List<Account> gdaxAccounts = accountService.getAccounts();
         List<PaymentType> paymentTypes = paymentService.getPaymentTypes();
@@ -51,7 +40,6 @@ public class WithdrawalTests extends BaseTest {
                break;
            }
         }
-
         Account gdaxAccount = null;
         for(Account account : gdaxAccounts){
             if(account.getCurrency().equalsIgnoreCase("USD")){
@@ -68,14 +56,15 @@ public class WithdrawalTests extends BaseTest {
         assertTrue(gdaxAccount != null);
         assertTrue(mainType != null);
         assertTrue(account != null);
-        log.info("Testing withdrawToPayment with " + mainType);
+        log.info("Testing withdrawToPayment with " + mainType.getId());
+
         BigDecimal gdaxUSDValue = gdaxAccount.getBalance();
-        PaymentResponse response = withdrawalsService.makeWithdrawalToCoinbase(new BigDecimal(100), mainType.getCurrency(), account.getId());
-        assertTrue(response.getId().length() > 0 && response.getAmount().compareTo(new BigDecimal(100)) == 0);
+        BigDecimal withdrawAmount = new BigDecimal(100);
+        PaymentResponse response = withdrawalsService.makeWithdrawalToCoinbase(withdrawAmount, mainType.getCurrency(), account.getId());
+        assertTrue(response.getId().length() > 0 && response.getAmount().compareTo(withdrawAmount) == 0);
         log.info("Returned: " + response.getId());
-        BigDecimal expectedGdaxUSDValue = gdaxUSDValue.subtract(new BigDecimal(100));
         gdaxAccount = accountService.getAccount(gdaxAccount.getId());
-        assertTrue(expectedGdaxUSDValue.compareTo(gdaxAccount.getBalance()) == 0);
+        assertTrue(gdaxUSDValue.subtract(withdrawAmount).compareTo(gdaxAccount.getBalance()) == 0);
     }
 
 }

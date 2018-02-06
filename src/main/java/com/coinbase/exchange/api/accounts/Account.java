@@ -15,7 +15,11 @@ public class Account {
     private BigDecimal hold;
     private String profile_id;
 
-    public Account() {}
+    public Account() {
+        this.balance = BigDecimal.ZERO;
+        this.available = BigDecimal.ZERO;
+        this.hold = BigDecimal.ZERO;
+    }
 
     public Account(String id,
                    String currency,
