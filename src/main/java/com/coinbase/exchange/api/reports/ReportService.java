@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReportService {
 
-    static final String REPORTS_ENDPOINT = "/reports";
+    private static final String REPORTS_ENDPOINT = "/reports";
 
     @Autowired
     GdaxExchange gdaxExchange;
