@@ -42,7 +42,7 @@ public class Signature {
         try {
             String prehash = timestamp + method.toUpperCase() + requestPath + body;
             byte[] secretDecoded = Base64.getDecoder().decode(secretKey);
-            SecretKeySpec keyspec = new SecretKeySpec(secretDecoded, "HmacSHA256");
+            SecretKeySpec keyspec = new SecretKeySpec(secretDecoded, GdaxConstants.SHARED_MAC.getAlgorithm());
             Mac sha256 = (Mac) GdaxConstants.SHARED_MAC.clone();
             sha256.init(keyspec);
             return Base64.getEncoder().encodeToString(sha256.doFinal(prehash.getBytes()));
