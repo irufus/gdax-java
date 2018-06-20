@@ -28,8 +28,8 @@ public class DepositService {
      * @param paymentMethodId
      * @return PaymentResponse
      */
-    public PaymentResponse depositViaPaymentMethod(BigDecimal amount, String currency, String paymentMethodId) {
-        CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, paymentMethodId);
+    public PaymentResponse depositViaPaymentMethod(BigDecimal amount, String currency, final String paymentMethodId) {
+        CoinbasePaymentRequest coinbasePaymentRequest = new MyCoinbasePaymentRequest(amount, currency, paymentMethodId);
         return exchange.post(DEPOSIT_ENDPOINT + PAYMENTS,
                 new ParameterizedTypeReference<PaymentResponse>(){},
                 coinbasePaymentRequest);
@@ -46,5 +46,18 @@ public class DepositService {
         return exchange.post(DEPOSIT_ENDPOINT + COINBASE_PAYMENT,
                 new ParameterizedTypeReference<PaymentResponse>(){},
                 coinbasePaymentRequest);
+    }
+
+    private static class MyCoinbasePaymentRequest extends CoinbasePaymentRequest {
+        public final String payment_method_id;
+        //public final BigDecimal amount;
+       // private final String paymentMethodId;
+
+        public MyCoinbasePaymentRequest(BigDecimal amount, String currency, String paymentMethodId) {
+            super(amount, currency, paymentMethodId);
+            //this.paymentMethodId = paymentMethodId;
+            payment_method_id = paymentMethodId;
+           // this.amount = amount;
+        }
     }
 }
