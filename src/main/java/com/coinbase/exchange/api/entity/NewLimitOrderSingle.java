@@ -12,11 +12,18 @@ public class NewLimitOrderSingle extends NewOrderSingle {
 
     public NewLimitOrderSingle() {}
 
+<<<<<<< HEAD
     public NewLimitOrderSingle(BigDecimal size, BigDecimal price, Boolean post_only, String productId) {
         this.size = size;
         this.price = price;
         this.post_only = post_only;
         this.product_id = productId;
+=======
+    public NewLimitOrderSingle(BigDecimal size, BigDecimal price, Boolean post_only) {
+        this.size = size;
+        this.price = price;
+        this.post_only = post_only;
+>>>>>>> parent of 576452b... These are the changes I made to run your source as part of our microservice.
     }
 
     public NewLimitOrderSingle(BigDecimal size, BigDecimal price, Boolean post_only,

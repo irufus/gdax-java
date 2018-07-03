@@ -47,17 +47,4 @@ public class DepositService {
                 new ParameterizedTypeReference<PaymentResponse>(){},
                 coinbasePaymentRequest);
     }
-
-    private static class MyCoinbasePaymentRequest extends CoinbasePaymentRequest {
-        public final String payment_method_id;
-        //public final BigDecimal amount;
-       // private final String paymentMethodId;
-
-        public MyCoinbasePaymentRequest(BigDecimal amount, String currency, String paymentMethodId) {
-            super(amount, currency, paymentMethodId);
-            //this.paymentMethodId = paymentMethodId;
-            payment_method_id = paymentMethodId;
-           // this.amount = amount;
-        }
-    }
 }
