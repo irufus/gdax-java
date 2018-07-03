@@ -40,6 +40,7 @@ public class WithdrawalsService {
         return makeWithdrawal(request, CRYPTO);
     }
 
+
     private PaymentResponse makeWithdrawal(MonetaryRequest request, String withdrawalType) {
         return gdaxExchange.post(WITHDRAWALS_ENDPOINT+ withdrawalType,
                 new ParameterizedTypeReference<PaymentResponse>() {},
