@@ -19,18 +19,6 @@ public class PaymentService {
     @Autowired
     GdaxExchange gdaxExchange;
 
-<<<<<<< HEAD
-  public List<PaymentType> getPaymentTypes() {
-    return gdaxExchange.getAsList(PAYMENT_METHODS_ENDPOINT, new ParameterizedTypeReference<PaymentType[]>() {
-    });
-  }
-
-  public List<CoinbaseAccount> getCoinbaseAccounts() {
-    return gdaxExchange.getAsList(COINBASE_ACCOUNTS_ENDPOINT, new ParameterizedTypeReference<CoinbaseAccount[]>() {
-    });
-  }
-}
-=======
     public List<PaymentType> getPaymentTypes() {
         return gdaxExchange.getAsList(PAYMENT_METHODS_ENDPOINT, new ParameterizedTypeReference<PaymentType[]>(){});
     }
@@ -39,4 +27,3 @@ public class PaymentService {
         return gdaxExchange.getAsList(COINBASE_ACCOUNTS_ENDPOINT, new ParameterizedTypeReference<CoinbaseAccount[]>() {});
     }
 }
->>>>>>> parent of 576452b... These are the changes I made to run your source as part of our microservice.
