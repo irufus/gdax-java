@@ -8,9 +8,11 @@ import java.math.BigDecimal;
 public class CoinbasePaymentRequest extends MonetaryRequest {
 
     private String coinbase_account_id;
+    private String payment_method_id;
 
-    public CoinbasePaymentRequest(BigDecimal amount, String currency, String coinbase_account_id) {
+    public CoinbasePaymentRequest(BigDecimal amount, String currency, String coinbase_account_id, String paymentMethodId) {
         super(amount, currency);
+        this.payment_method_id = paymentMethodId;
         this.coinbase_account_id = coinbase_account_id;
     }
     public String getCoinbase_account_id() {
