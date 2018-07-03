@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.exchange;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +109,7 @@ public class GdaxExchangeImpl implements GdaxExchange {
 
     @Override
     public <T, R> T post(String resourcePath,  ParameterizedTypeReference<T> responseType, R jsonObj) {
+        Preconditions.checkNotNull(jsonObj);
         Gson gson = new Gson();
         String jsonBody = gson.toJson(jsonObj);
 
