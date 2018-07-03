@@ -12,10 +12,11 @@ public class NewLimitOrderSingle extends NewOrderSingle {
 
     public NewLimitOrderSingle() {}
 
-    public NewLimitOrderSingle(BigDecimal size, BigDecimal price, Boolean post_only) {
+    public NewLimitOrderSingle(BigDecimal size, BigDecimal price, Boolean post_only, String productId) {
         this.size = size;
         this.price = price;
         this.post_only = post_only;
+        this.product_id = productId;
     }
 
     public NewLimitOrderSingle(BigDecimal size, BigDecimal price, Boolean post_only,

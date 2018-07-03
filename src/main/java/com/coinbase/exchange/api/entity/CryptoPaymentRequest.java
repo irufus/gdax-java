@@ -3,16 +3,16 @@ package com.coinbase.exchange.api.entity;
 import java.math.BigDecimal;
 
 public class CryptoPaymentRequest extends MonetaryRequest {
-    private String cryptoAddress;
+    private String crypto_address;
 
     public CryptoPaymentRequest(BigDecimal amount, String currency, String cryptoAddress) {
         super(amount, currency);
-        this.cryptoAddress = cryptoAddress;
+        this.crypto_address = cryptoAddress;
     }
     public String getCryptoAddress() {
-        return cryptoAddress;
+        return crypto_address;
     }
     public void setCryptoAddress(String cryptoAddress) {
-        this.cryptoAddress = cryptoAddress;
+        this.crypto_address = cryptoAddress;
     }
 }
