@@ -7,3 +7,4 @@ gdax.properties
 classes/
 out/
 application*.yml
+src/test/resources/application*.yml
