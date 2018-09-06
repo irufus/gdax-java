@@ -28,7 +28,7 @@ public class DepositService {
      * @param paymentMethodId
      * @return PaymentResponse
      */
-    public PaymentResponse depositViaPaymentMethod(BigDecimal amount, String currency, String paymentMethodId) {
+    public PaymentResponse depositViaPaymentMethod(BigDecimal amount, String currency, final String paymentMethodId) {
         CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, paymentMethodId);
         return exchange.post(DEPOSIT_ENDPOINT + PAYMENTS,
                 new ParameterizedTypeReference<PaymentResponse>(){},
