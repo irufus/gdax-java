@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by Ishmael (sakamura@gmail.com) on 6/18/2016.
@@ -56,13 +55,13 @@ public class OrderTests extends BaseTest {
     public void canMakeLimitOrderAndGetTheOrderAndCancelIt() {
         List<Account> accounts = accountService.getAccounts();
         Optional<Account> accountsWithMoreThanZeroCoinsAvailable = accounts.stream()
-                .filter(account -> account.getBalance().compareTo(BigDecimal.ONE) > 0)
+                .filter(account -> account.getBalance().compareTo(BigDecimal.ONE) > 0 && account.getCurrency().contains("BTC"))
                 .findFirst();
 
         assertTrue(accountsWithMoreThanZeroCoinsAvailable.isPresent());
 
         String productId;
-        if (accountsWithMoreThanZeroCoinsAvailable.get().equals("BTC")) {
+        if (accountsWithMoreThanZeroCoinsAvailable.get().getCurrency().equals("BTC")) {
             productId = accountsWithMoreThanZeroCoinsAvailable.get().getCurrency() + "-USD";
         } else {
             productId = accountsWithMoreThanZeroCoinsAvailable.get().getCurrency() + "-BTC";
@@ -70,7 +69,7 @@ public class OrderTests extends BaseTest {
 
         MarketData marketData = getMarketDataOrderBook(productId);
 
-        assertTrue(marketData != null);
+        assertNotNull(marketData);
 
         BigDecimal price = getAskPrice(marketData).setScale(8, BigDecimal.ROUND_HALF_UP);
         BigDecimal size = new BigDecimal("0.01").setScale(8, BigDecimal.ROUND_HALF_UP);
@@ -79,7 +78,7 @@ public class OrderTests extends BaseTest {
 
         Order order = orderService.createOrder(limitOrder);
 
-        assertTrue(order != null);
+        assertNotNull(order);
         assertEquals(productId, order.getProduct_id());
         assertEquals(size, new BigDecimal(order.getSize()).setScale(8, BigDecimal.ROUND_HALF_UP));
         assertEquals(price, new BigDecimal(order.getPrice()).setScale(8, BigDecimal.ROUND_HALF_UP));
@@ -162,5 +161,18 @@ public class OrderTests extends BaseTest {
 
     private BigDecimal getAskPrice(MarketData marketData) {
         return marketData.getAsks().get(0).getPrice().setScale(4, BigDecimal.ROUND_HALF_UP);
+    }
+
+    /**
+     *
+     * @param accountsAvailable Available accounts to trade from
+     * @return null or String
+     */
+    private MarketData getTradeableProductData(List<Account> accountsAvailable){
+        MarketData data = null;
+        for(Account account : accountsAvailable){
+            System.out.println("Do nothing");
+        }
+        return data;
     }
 }
