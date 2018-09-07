@@ -20,6 +20,7 @@ public class ProductsTest extends BaseTest {
     @Test
     public void canGetProducts() {
         List<Product> products = productService.getProducts();
+        products.forEach(item->System.out.println(item.getId()));
         assertTrue(products.size() >= 0);
     }
 }
