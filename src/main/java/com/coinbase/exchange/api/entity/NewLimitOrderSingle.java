@@ -9,7 +9,6 @@ public class NewLimitOrderSingle extends NewOrderSingle {
     private BigDecimal size;
     private BigDecimal price;
     private Boolean post_only;
-    private String product_id;
 
     public NewLimitOrderSingle() {}
 
@@ -17,7 +16,7 @@ public class NewLimitOrderSingle extends NewOrderSingle {
         this.size = size;
         this.price = price;
         this.post_only = post_only;
-        this.product_id = product_id;
+        setProduct_id(product_id);
     }
 
     public NewLimitOrderSingle(BigDecimal size, BigDecimal price, Boolean post_only,
@@ -62,7 +61,4 @@ public class NewLimitOrderSingle extends NewOrderSingle {
         this.size = size;
     }
 
-    public String getProduct_id() { return product_id; }
-
-    public void setProduct_id(String product_id) { this.product_id = product_id; }
 }
