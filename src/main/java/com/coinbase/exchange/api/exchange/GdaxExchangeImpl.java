@@ -137,6 +137,7 @@ public class GdaxExchangeImpl implements GdaxExchange {
 
         headers.add("accept", "application/json");
         headers.add("content-type", "application/json");
+        headers.add("User-Agent", "gdax-java unofficial coinbase pro api library");
         headers.add("CB-ACCESS-KEY", publicKey);
         headers.add("CB-ACCESS-SIGN", signature.generate(resource, method, jsonBody, timestamp));
         headers.add("CB-ACCESS-TIMESTAMP", timestamp);
