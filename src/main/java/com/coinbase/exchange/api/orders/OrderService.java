@@ -23,6 +23,7 @@ public class OrderService {
     GdaxExchange exchange;
 
     public static final String ORDERS_ENDPOINT = "/orders";
+    public static final String FILLS_ENDPOINT = "/fills";
 
     public List<Hold> getHolds(String accountId) {
         return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/holds", new ParameterizedTypeReference<Hold[]>(){});
@@ -53,9 +54,12 @@ public class OrderService {
         return Arrays.asList(exchange.delete(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){}));
     }
 
-    public List<Fill> getAllFills() {
-        String fillsEndpoint = "/fills";
-        return exchange.getAsList(fillsEndpoint, new ParameterizedTypeReference<Fill[]>(){});
+    public List<Fill> getFillsByProductId(String product_id, int resultLimit) {
+        return exchange.getAsList(FILLS_ENDPOINT + "?product_id=" + product_id + "&limit=" + resultLimit, new ParameterizedTypeReference<Fill[]>(){});
+    }
+    
+    public List<Fill> getFillByOrderId(String order_id, int resultLimit) {
+        return exchange.getAsList(FILLS_ENDPOINT + "?order_id=" + order_id + "&limit=" + resultLimit, new ParameterizedTypeReference<Fill[]>(){});
     }
 }
 
