@@ -108,21 +108,11 @@ public class OrderTests extends BaseTest {
     }
 
     @Test
-    public void createMarketOrderBuyThenGetFillByOrderId() {
+    public void shouldGetFilledByOrderIdWhenMakingMarketOrderBuy() { 
         NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "buy", new BigDecimal(0.01));
         Order order = orderService.createOrder(marketOrder);
-
-        assertTrue(order != null); //make sure we created an order
-        String orderId = order.getId();
-        assertTrue(orderId.length() > 0); //ensure we have an actual orderId
-        Order filledOrder = orderService.getOrder(orderId);
-        assertTrue(filledOrder != null); //ensure our order hit the system
-        assertTrue(new BigDecimal(filledOrder.getSize()).compareTo(BigDecimal.ZERO) > 0); //ensure we got a fill
-        log.info("Order opened and filled: " + filledOrder.getSize() + " @ " + filledOrder.getExecuted_value()
-             + " at the cost of " + filledOrder.getFill_fees());
-        
-        List<Fill> fills = orderService.getFillByOrderId(orderId, 100);
-        assertTrue(fills.size() >= 0);
+        List<Fill> fills = orderService.getFillByOrderId(order.getId(), 100);
+        assertTrue(fills.size() == 1);
     }
     
     @Test
