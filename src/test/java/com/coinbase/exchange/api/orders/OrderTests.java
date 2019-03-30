@@ -102,10 +102,19 @@ public class OrderTests extends BaseTest {
     }
 
     @Test
-    public void getFills() {
-        List<Fill> fills = orderService.getAllFills();
+    public void getFillsByProductId() {
+        List<Fill> fills = orderService.getFillsByProductId("BTC-USD", 100);
         assertTrue(fills.size() >= 0);
     }
+
+    @Test
+    public void shouldGetFilledByOrderIdWhenMakingMarketOrderBuy() { 
+        NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "buy", new BigDecimal(0.01));
+        Order order = orderService.createOrder(marketOrder);
+        List<Fill> fills = orderService.getFillByOrderId(order.getId(), 100);
+        assertTrue(fills.size() == 1);
+    }
+    
     @Test
     public void createMarketOrderBuy(){
         NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "buy", new BigDecimal(0.01));
