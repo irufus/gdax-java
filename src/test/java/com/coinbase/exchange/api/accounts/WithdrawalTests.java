@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class WithdrawalTests extends BaseTest {
@@ -53,9 +54,9 @@ public class WithdrawalTests extends BaseTest {
                 account = coinbaseAccount;
             }
         }
-        assertTrue(gdaxAccount != null);
-        assertTrue(mainType != null);
-        assertTrue(account != null);
+        assertNotNull(gdaxAccount);
+        assertNotNull(mainType);
+        assertNotNull(account);
         log.info("Testing withdrawToPayment with " + mainType.getId());
 
         BigDecimal gdaxUSDValue = gdaxAccount.getBalance();
