@@ -7,9 +7,9 @@ import com.coinbase.exchange.api.payments.PaymentService;
 import com.coinbase.exchange.api.payments.PaymentType;
 import com.coinbase.exchange.api.withdrawals.WithdrawalsService;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 
 public class WithdrawalTests extends BaseTest {
-    private final static Logger log  = Logger.getLogger(WithdrawalTests.class);
+    private final static Logger log  = LoggerFactory.getLogger(WithdrawalTests.class);
     @Autowired
     PaymentService paymentService;
 
