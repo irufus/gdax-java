@@ -6,30 +6,29 @@ import com.coinbase.exchange.api.accounts.AccountService;
 import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.NewLimitOrderSingle;
 import com.coinbase.exchange.api.entity.NewMarketOrderSingle;
-import com.coinbase.exchange.api.entity.Product;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.products.ProductService;
-import org.apache.log4j.Logger;
-import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Ishmael (sakamura@gmail.com) on 6/18/2016.
  */
 public class OrderTests extends BaseTest {
 
-    private static final Logger log = Logger.getLogger(OrderTests.class);
+    private static final Logger log = LoggerFactory.getLogger(OrderTests.class);
 
     @Autowired
     ProductService productService;
@@ -51,7 +50,7 @@ public class OrderTests extends BaseTest {
      * then cancelling it without leaving a mess.
      * Note: You'll need credit available
      */
-    @Test
+    @Ignore
     public void canMakeLimitOrderAndGetTheOrderAndCancelIt() {
         List<Account> accounts = accountService.getAccounts();
         Optional<Account> accountsWithMoreThanZeroCoinsAvailable = accounts.stream()
@@ -92,7 +91,7 @@ public class OrderTests extends BaseTest {
     @Test
     public void cancelAllOrders() {
         List<Order> cancelledOrders = orderService.cancelAllOpenOrders();
-        assertTrue(cancelledOrders.size() >=0);
+        assertTrue(cancelledOrders.size() >= 0);
     }
 
     @Test
@@ -107,16 +106,16 @@ public class OrderTests extends BaseTest {
         assertTrue(fills.size() >= 0);
     }
 
-    @Test
-    public void shouldGetFilledByOrderIdWhenMakingMarketOrderBuy() { 
+    @Ignore
+    public void shouldGetFilledByOrderIdWhenMakingMarketOrderBuy() {
         NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "buy", new BigDecimal(0.01));
         Order order = orderService.createOrder(marketOrder);
         List<Fill> fills = orderService.getFillByOrderId(order.getId(), 100);
         assertTrue(fills.size() == 1);
     }
-    
-    @Test
-    public void createMarketOrderBuy(){
+
+    @Ignore
+    public void createMarketOrderBuy() {
         NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "buy", new BigDecimal(0.01));
         Order order = orderService.createOrder(marketOrder);
 
@@ -127,22 +126,24 @@ public class OrderTests extends BaseTest {
         assertTrue(filledOrder != null); //ensure our order hit the system
         assertTrue(new BigDecimal(filledOrder.getSize()).compareTo(BigDecimal.ZERO) > 0); //ensure we got a fill
         log.info("Order opened and filled: " + filledOrder.getSize() + " @ " + filledOrder.getExecuted_value()
-             + " at the cost of " + filledOrder.getFill_fees());
-   }
-   @Test
-   public void createMarketOrderSell(){
-       NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "sell", new BigDecimal(0.01));
-       Order order = orderService.createOrder(marketOrder);
-       assertTrue(order != null); //make sure we created an order
-       String orderId = order.getId();
-       assertTrue(orderId.length() > 0); //ensure we have an actual orderId
-       Order filledOrder = orderService.getOrder(orderId);
-       assertTrue(filledOrder != null); //ensure our order hit the system
-       assertTrue(new BigDecimal(filledOrder.getSize()).compareTo(BigDecimal.ZERO) > 0); //ensure we got a fill
-       log.info("Order opened and filled: " + filledOrder.getSize() + " @ " + filledOrder.getExecuted_value()
-               + " at the cost of " + filledOrder.getFill_fees());
-   }
-    private NewMarketOrderSingle createNewMarketOrder(String product, String action, BigDecimal size){
+                + " at the cost of " + filledOrder.getFill_fees());
+    }
+
+    @Ignore
+    public void createMarketOrderSell() {
+        NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "sell", new BigDecimal(0.01));
+        Order order = orderService.createOrder(marketOrder);
+        assertTrue(order != null); //make sure we created an order
+        String orderId = order.getId();
+        assertTrue(orderId.length() > 0); //ensure we have an actual orderId
+        Order filledOrder = orderService.getOrder(orderId);
+        assertTrue(filledOrder != null); //ensure our order hit the system
+        assertTrue(new BigDecimal(filledOrder.getSize()).compareTo(BigDecimal.ZERO) > 0); //ensure we got a fill
+        log.info("Order opened and filled: " + filledOrder.getSize() + " @ " + filledOrder.getExecuted_value()
+                + " at the cost of " + filledOrder.getFill_fees());
+    }
+
+    private NewMarketOrderSingle createNewMarketOrder(String product, String action, BigDecimal size) {
         NewMarketOrderSingle marketOrder = new NewMarketOrderSingle();
         marketOrder.setProduct_id(product);
         marketOrder.setSide(action);
@@ -173,13 +174,12 @@ public class OrderTests extends BaseTest {
     }
 
     /**
-     *
      * @param accountsAvailable Available accounts to trade from
      * @return null or String
      */
-    private MarketData getTradeableProductData(List<Account> accountsAvailable){
+    private MarketData getTradeableProductData(List<Account> accountsAvailable) {
         MarketData data = null;
-        for(Account account : accountsAvailable){
+        for (Account account : accountsAvailable) {
             System.out.println("Do nothing");
         }
         return data;

@@ -6,24 +6,27 @@ import com.coinbase.exchange.api.payments.CoinbaseAccount;
 import com.coinbase.exchange.api.payments.PaymentService;
 import com.coinbase.exchange.api.payments.PaymentType;
 import com.coinbase.exchange.api.withdrawals.WithdrawalsService;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+@Ignore
 public class WithdrawalTests extends BaseTest {
-    private final static Logger log  = Logger.getLogger(WithdrawalTests.class);
+
+    private final static Logger log  = LoggerFactory.getLogger(WithdrawalTests.class);
+
     @Autowired
     PaymentService paymentService;
-
     @Autowired
     WithdrawalsService withdrawalsService;
-
     @Autowired
     AccountService accountService;
 
@@ -33,29 +36,11 @@ public class WithdrawalTests extends BaseTest {
         List<PaymentType> paymentTypes = paymentService.getPaymentTypes();
         List<CoinbaseAccount> coinbaseAccounts = paymentService.getCoinbaseAccounts();
         assertTrue(paymentTypes.size() > 0);
-        PaymentType mainType = null;
-        for(PaymentType paymentType : paymentTypes){
-           if(paymentType.getCurrency().equalsIgnoreCase("USD")){
-               mainType = paymentType;
-               break;
-           }
-        }
-        Account gdaxAccount = null;
-        for(Account account : gdaxAccounts){
-            if(account.getCurrency().equalsIgnoreCase("USD")){
-                gdaxAccount = account;
-                break;
-            }
-        }
-        CoinbaseAccount account = null;
-        for(CoinbaseAccount coinbaseAccount : coinbaseAccounts){
-            if(coinbaseAccount.getCurrency().equalsIgnoreCase("USD")){
-                account = coinbaseAccount;
-            }
-        }
-        assertTrue(gdaxAccount != null);
-        assertTrue(mainType != null);
-        assertTrue(account != null);
+
+        PaymentType mainType = getUsdPaymentType(paymentTypes);
+        Account gdaxAccount = getUsdAccount(gdaxAccounts);
+        CoinbaseAccount account = getUsdCoinbaseAccount(coinbaseAccounts);
+
         log.info("Testing withdrawToPayment with " + mainType.getId());
 
         BigDecimal gdaxUSDValue = gdaxAccount.getBalance();
@@ -67,4 +52,38 @@ public class WithdrawalTests extends BaseTest {
         assertTrue(gdaxUSDValue.subtract(withdrawAmount).compareTo(gdaxAccount.getBalance()) == 0);
     }
 
+    private CoinbaseAccount getUsdCoinbaseAccount(List<CoinbaseAccount> coinbaseAccounts) {
+        CoinbaseAccount account = null;
+        for(CoinbaseAccount coinbaseAccount : coinbaseAccounts){
+            if(coinbaseAccount.getCurrency().equalsIgnoreCase("USD")){
+                account = coinbaseAccount;
+            }
+        }
+        assertNotNull(account);
+        return account;
+    }
+
+    private Account getUsdAccount(List<Account> gdaxAccounts) {
+        Account gdaxAccount = null;
+        for(Account account : gdaxAccounts){
+            if(account.getCurrency().equalsIgnoreCase("USD")){
+                gdaxAccount = account;
+                break;
+            }
+        }
+        assertNotNull(gdaxAccount);
+        return gdaxAccount;
+    }
+
+    private PaymentType getUsdPaymentType(List<PaymentType> paymentTypes) {
+        PaymentType mainType = null;
+        for(PaymentType paymentType : paymentTypes){
+           if(paymentType.getCurrency().equalsIgnoreCase("USD")){
+               mainType = paymentType;
+               break;
+           }
+        }
+        assertNotNull(mainType);
+        return mainType;
+    }
 }
