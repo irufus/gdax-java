@@ -5,6 +5,7 @@ import com.coinbase.exchange.api.deposits.DepositService;
 import com.coinbase.exchange.api.entity.PaymentResponse;
 import com.coinbase.exchange.api.payments.CoinbaseAccount;
 import com.coinbase.exchange.api.payments.PaymentService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class DepositTests extends BaseTest {
     @Autowired
     DepositService depositService;
 
-    @Test
+    @Ignore
     public void depositToGDAXExchangeFromCoinbase(){
         List<CoinbaseAccount> coinbaseAccountList = paymentService.getCoinbaseAccounts();
         List<Account> gdaxAccountList = accountService.getAccounts();
