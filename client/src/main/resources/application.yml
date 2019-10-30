@@ -1,0 +1,12 @@
+gdax:
+  api:
+    baseUrl: "https://api.pro.coinbase.com"
+  key: ""
+  secret: ""
+  passphrase: ""
+
+websocket:
+  baseUrl: "wss://ws-feed.pro.coinbase.com"
+
+gui:
+  enabled: false
