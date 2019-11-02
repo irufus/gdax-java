@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.accounts;
 
-import com.coinbase.exchange.api.BaseTest;
+import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.entity.Hold;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +10,11 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 
 /**
+ * See class doc for BaseIntegrationTest
+ *
  * Created by robevansuk on 03/02/2017.
  */
-public class AccountsTest extends BaseTest {
+public class AccountsIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     AccountService accountService;

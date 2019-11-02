@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.accounts;
 
-import com.coinbase.exchange.api.BaseTest;
+import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.useraccount.UserAccountData;
 import com.coinbase.exchange.api.useraccount.UserAccountService;
 import org.junit.Test;
@@ -10,7 +10,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-public class UserAccountServiceTests extends BaseTest {
+/**
+ * See class doc for BaseIntegrationTest
+ */
+public class UserAccountServiceIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     UserAccountService userAccountService;

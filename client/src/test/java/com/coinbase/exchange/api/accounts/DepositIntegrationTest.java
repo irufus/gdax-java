@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.accounts;
 
-import com.coinbase.exchange.api.BaseTest;
+import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.deposits.DepositService;
 import com.coinbase.exchange.api.entity.PaymentResponse;
 import com.coinbase.exchange.api.payments.CoinbaseAccount;
@@ -17,9 +17,12 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * See class doc for BaseIntegrationTest
+ */
 @Ignore
-public class DepositTests extends BaseTest {
-    private final static Logger log = LoggerFactory.getLogger(DepositTests.class);
+public class DepositIntegrationTest extends BaseIntegrationTest {
+    private final static Logger log = LoggerFactory.getLogger(DepositIntegrationTest.class);
 
     @Autowired
     PaymentService paymentService;

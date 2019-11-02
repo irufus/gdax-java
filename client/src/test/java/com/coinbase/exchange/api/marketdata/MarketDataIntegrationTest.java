@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.marketdata;
 
-import com.coinbase.exchange.api.BaseTest;
+import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.entity.Product;
 import com.coinbase.exchange.api.products.ProductService;
 import org.junit.Test;
@@ -12,9 +12,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
+ * See class doc for BaseIntegrationTest
+ *
  * Created by robevansuk on 14/02/2017.
  */
-public class MarketDataTest extends BaseTest {
+public class MarketDataIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     MarketDataService marketDataService;

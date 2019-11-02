@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.payments;
 
-import com.coinbase.exchange.api.BaseTest;
+import com.coinbase.exchange.api.BaseIntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-public class PaymentTests extends BaseTest {
+public class PaymentIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     PaymentService paymentService;

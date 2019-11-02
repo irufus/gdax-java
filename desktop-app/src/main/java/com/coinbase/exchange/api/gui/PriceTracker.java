@@ -1,6 +1,5 @@
 package com.coinbase.exchange.api.gui;
 
-import com.coinbase.exchange.api.GdaxApiApplication;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

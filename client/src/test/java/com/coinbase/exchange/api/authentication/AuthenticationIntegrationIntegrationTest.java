@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.authentication;
 
-import com.coinbase.exchange.api.BaseTest;
+import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
 import org.junit.Test;
@@ -11,10 +11,12 @@ import java.util.List;
 import static junit.framework.TestCase.assertTrue;
 
 /**
+ * See class doc for BaseIntegrationTest
+ *
  * Created by irufus (sakamura@gmail.com)
  * @Description The primary function of this class is to run through basic tests for the Authentication and GdaxExchange classes
  */
-public class AuthenticationTests extends BaseTest {
+public class AuthenticationIntegrationIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     AccountService accountService;

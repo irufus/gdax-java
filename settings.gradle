@@ -1,4 +1,5 @@
 rootProject.name = 'gdax-java'
+
 include 'client'
 include 'desktop-app'
 

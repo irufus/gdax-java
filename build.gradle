@@ -1,4 +1,6 @@
 allprojects {
+    apply plugin: 'java'
+
     group = 'irufus'
     description = 'Client for the GDAX API'
     version = '0.10.0'
@@ -10,8 +12,16 @@ allprojects {
         maven { url "http://repo1.maven.org/maven2/" }
         maven { url "https://repo.spring.io/release/"}
     }
-}
 
-subprojects {
-    apply plugin: 'java'
+    test {
+        exclude '**/*IntegrationTest*'
+    }
+
+    task integrationTest(type: Test) {
+        include '**/*IntegrationTest*'
+    }
+
+    check.dependsOn integrationTest
+    integrationTest.mustRunAfter test
+
 }

@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.orders;
 
-import com.coinbase.exchange.api.BaseTest;
+import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
 import com.coinbase.exchange.api.entity.Fill;
@@ -24,11 +24,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
+ * See class doc for BaseIntegrationTest
+ *
  * Created by Ishmael (sakamura@gmail.com) on 6/18/2016.
  */
-public class OrderTests extends BaseTest {
+public class OrderIntegrationTest extends BaseIntegrationTest {
 
-    private static final Logger log = LoggerFactory.getLogger(OrderTests.class);
+    private static final Logger log = LoggerFactory.getLogger(OrderIntegrationTest.class);
 
     @Autowired
     ProductService productService;
