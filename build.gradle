@@ -8,9 +8,9 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url "http://central.maven.org/maven2/"}
+        maven { url "http://central.maven.org/maven2/" }
         maven { url "http://repo1.maven.org/maven2/" }
-        maven { url "https://repo.spring.io/release/"}
+        maven { url "https://repo.spring.io/release/" }
     }
 
     test {
@@ -23,5 +23,4 @@ allprojects {
 
     check.dependsOn integrationTest
     integrationTest.mustRunAfter test
-
 }

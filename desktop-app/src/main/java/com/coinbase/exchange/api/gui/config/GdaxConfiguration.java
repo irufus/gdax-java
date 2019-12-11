@@ -1,4 +1,4 @@
-package com.coinbase.exchange.api.config;
+package com.coinbase.exchange.api.gui.config;
 
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
