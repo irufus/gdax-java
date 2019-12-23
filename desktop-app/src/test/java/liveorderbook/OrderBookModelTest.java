@@ -1,13 +1,15 @@
-package com.coinbase.exchange.api.liveorderbook;
+package liveorderbook;
 
+import com.coinbase.exchange.api.liveorderbook.OrderBookModel;
 import com.coinbase.exchange.api.websocketfeed.message.OrderBookMessage;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  * Created by robevansuk on 31/03/2017.
@@ -16,7 +18,7 @@ public class OrderBookModelTest {
 
     OrderBookModel testObject;
 
-    @Before
+    @BeforeEach
     public void setup(){
         testObject = new OrderBookModel();
     }
@@ -25,8 +27,8 @@ public class OrderBookModelTest {
     public void shouldAddItemToTable() {
         testObject.setValueAt("Some Value", 0, 0);
         String testResult = ((String) testObject.getValueAt(0, 0));
-        assertThat(testResult, equalTo("Some Value"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals("Some Value", testResult);
+        assertEquals(1, testObject.getRowCount());
     }
 
     @Test
@@ -37,8 +39,8 @@ public class OrderBookModelTest {
 
         String testResult = ((String)testObject.getValueAt(0,0));
 
-        assertThat(testObject.getRowCount(), equalTo(1));
-        assertThat(testResult, equalTo("1.0"));
+        assertEquals(1, testObject.getRowCount());
+        assertEquals("1.0", testResult);
         OrderBookMessage message1 = new OrderBookMessage();
         message1.setType("limit");
         message1.setSide("buy");
@@ -48,10 +50,10 @@ public class OrderBookModelTest {
         testObject.insertInto(message1);
 
         int firstRow = 0;
-        assertThat(testObject.getRowCount(), equalTo(2));
-        assertThat(testObject.getValueAt(firstRow, 0), equalTo("1.50000"));
-        assertThat(testObject.getValueAt(firstRow, 1), equalTo("3.00000"));
-        assertThat(testObject.getValueAt(firstRow, 2), equalTo("1"));
+        assertEquals(2, testObject.getRowCount());
+        assertEquals("1.50000", testObject.getValueAt(firstRow, 0));
+        assertEquals("3.00000", testObject.getValueAt(firstRow, 1));
+        assertEquals("1", testObject.getValueAt(firstRow, 2));
         OrderBookMessage message2 = new OrderBookMessage();
         message2.setType("limit");
         message2.setSide("buy");
@@ -60,10 +62,10 @@ public class OrderBookModelTest {
 
         testObject.insertInto(message2);
 
-        assertThat(testObject.getRowCount(), equalTo(2));
-        assertThat(testObject.getValueAt(firstRow, 0), equalTo("1.50000"));
-        assertThat(testObject.getValueAt(firstRow, 1), equalTo("5.20000"));
-        assertThat(testObject.getValueAt(firstRow, 2), equalTo("2"));
+        assertEquals(2, testObject.getRowCount());
+        assertEquals("1.50000", testObject.getValueAt(firstRow, 0));
+        assertEquals("5.20000",testObject.getValueAt(firstRow, 1));
+        assertEquals("2", testObject.getValueAt(firstRow, 2));
     }
 
     @Test
@@ -72,8 +74,8 @@ public class OrderBookModelTest {
 
         String testResult = ((String)testObject.getValueAt(0,0));
 
-        assertThat(testResult, equalTo("1.0"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+       assertEquals("1.0", testResult);
+       assertEquals(1, testObject.getRowCount());
         OrderBookMessage message1 = new OrderBookMessage();
         message1.setType("limit");
         message1.setSide("buy");
@@ -83,9 +85,9 @@ public class OrderBookModelTest {
         testObject.insertInto(message1);
 
         int firstRow = 0;
-        assertThat(testObject.getValueAt(firstRow, 0), equalTo("1.50000"));
-        assertThat(testObject.getValueAt(firstRow, 1), equalTo("3.00000"));
-        assertThat(testObject.getValueAt(firstRow, 2), equalTo("1"));
+        assertEquals("1.50000", testObject.getValueAt(firstRow, 0));
+        assertEquals("3.00000", testObject.getValueAt(firstRow, 1));
+        assertEquals("1", testObject.getValueAt(firstRow, 2));
 
         OrderBookMessage message2 = new OrderBookMessage();
         message2.setPrice(new BigDecimal("3.8"));
@@ -96,9 +98,9 @@ public class OrderBookModelTest {
         testObject.insertInto(message2);
 
         // item should appear at the top of the list since it's a new highest bidder/buy order
-        assertThat(testObject.getValueAt(0, 0), equalTo("3.80000"));
-        assertThat(testObject.getValueAt(0, 1), equalTo("0.43400"));
-        assertThat(testObject.getValueAt(0, 2), equalTo("1"));
+        assertEquals("3.80000", testObject.getValueAt(0, 0));
+        assertEquals("0.43400", testObject.getValueAt(0, 1));
+        assertEquals("1",  testObject.getValueAt(0, 2));
     }
 
     @Test
@@ -107,8 +109,8 @@ public class OrderBookModelTest {
 
         String testResult = ((String)testObject.getValueAt(0,0));
 
-        assertThat(testResult, equalTo("1.00000"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals("1.00000", testResult);
+        assertEquals(1, testObject.getRowCount());
 
         OrderBookMessage message = new OrderBookMessage();
         message.setPrice(new BigDecimal("3.8"));
@@ -120,9 +122,9 @@ public class OrderBookModelTest {
         int firstRow = 0;
 
         // item should appear at the top of the list since it's a new highest bidder/buy order
-        assertThat(testObject.getValueAt(firstRow, 0), equalTo("3.80000"));
-        assertThat(testObject.getValueAt(firstRow, 1), equalTo("0.43400"));
-        assertThat(testObject.getValueAt(firstRow, 2), equalTo("1"));
+        assertEquals("3.80000", testObject.getValueAt(firstRow, 0));
+        assertEquals("0.43400", testObject.getValueAt(firstRow, 1));
+        assertEquals("1",  testObject.getValueAt(firstRow, 2));
     }
 
     @Test
@@ -131,10 +133,10 @@ public class OrderBookModelTest {
         testObject.setValueAt("1.00000", firstRow, 0);
         testObject.setValueAt("0.87655",firstRow, 1);
         testObject.setValueAt("1",firstRow, 2);
-        assertThat(((String)testObject.getValueAt(firstRow, 0)), equalTo("1.00000"));
-        assertThat(((String)testObject.getValueAt(firstRow, 1)), equalTo("0.87655"));
-        assertThat(((String)testObject.getValueAt(firstRow, 2)), equalTo("1"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals("1.00000", ((String)testObject.getValueAt(firstRow, 0)));
+        assertEquals("0.87655", ((String)testObject.getValueAt(firstRow, 1)));
+        assertEquals("1", ((String)testObject.getValueAt(firstRow, 2)));
+        assertEquals(1, testObject.getRowCount());
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
         message.setPrice(new BigDecimal("1.0"));
@@ -145,10 +147,10 @@ public class OrderBookModelTest {
         testObject.insertInto(message);
 
         // item should appear at the top of the list since it's a new highest bidder/buy order
-        assertThat(testObject.getRowCount(), equalTo(1));
-        assertThat(testObject.getValueAt(0, 0), equalTo("1.00000"));
-        assertThat(testObject.getValueAt(0, 1), equalTo("1.31055"));
-        assertThat(testObject.getValueAt(0, 2), equalTo("2"));
+        assertEquals(1, testObject.getRowCount());
+        assertEquals("1.00000", testObject.getValueAt(0, 0));
+        assertEquals("1.31055", testObject.getValueAt(0, 1));
+        assertEquals("2", testObject.getValueAt(0, 2));
     }
 
     @Test
@@ -157,10 +159,10 @@ public class OrderBookModelTest {
         testObject.setValueAt("1.00000", firstRow, 0);
         testObject.setValueAt("0.87655",firstRow, 1);
         testObject.setValueAt("1",firstRow, 2);
-        assertThat(((String)testObject.getValueAt(firstRow, 0)), equalTo("1.00000"));
-        assertThat(((String)testObject.getValueAt(firstRow, 1)), equalTo("0.87655"));
-        assertThat(((String)testObject.getValueAt(firstRow, 2)), equalTo("1"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals("1.00000", ((String)testObject.getValueAt(firstRow, 0)));
+        assertEquals("0.87655", ((String)testObject.getValueAt(firstRow, 1)));
+        assertEquals("1", ((String)testObject.getValueAt(firstRow, 2)));
+        assertEquals(1, testObject.getRowCount());
 
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
@@ -172,10 +174,10 @@ public class OrderBookModelTest {
         testObject.insertInto(message);
 
         // item should appear at the top of the list since it's a new highest bidder/buy order
-        assertThat(testObject.getValueAt(0, 0), equalTo("1.00000"));
-        assertThat(testObject.getValueAt(0, 1), equalTo("1.31055"));
-        assertThat(testObject.getValueAt(0, 2), equalTo("2"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals(1, testObject.getRowCount());
+        assertEquals("1.00000", testObject.getValueAt(0, 0));
+        assertEquals("1.31055", testObject.getValueAt(0, 1));
+        assertEquals("2", testObject.getValueAt(0, 2));
     }
 
     @Test
@@ -184,10 +186,10 @@ public class OrderBookModelTest {
         testObject.setValueAt("1.00000", firstRow, 0);
         testObject.setValueAt("0.87655",firstRow, 1);
         testObject.setValueAt("5",firstRow, 2);
-        assertThat(((String)testObject.getValueAt(firstRow, 0)), equalTo("1.00000"));
-        assertThat(((String)testObject.getValueAt(firstRow, 1)), equalTo("0.87655"));
-        assertThat(((String)testObject.getValueAt(firstRow, 2)), equalTo("5"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals("1.00000", ((String)testObject.getValueAt(firstRow, 0)));
+        assertEquals("0.87655", ((String)testObject.getValueAt(firstRow, 1)));
+        assertEquals("5", ((String)testObject.getValueAt(firstRow, 2)));
+        assertEquals(1, testObject.getRowCount());
 
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
@@ -199,10 +201,10 @@ public class OrderBookModelTest {
         // insert the new order
         testObject.insertInto(message);
         // item should appear at the top of the list since it's a new highest bidder/buy order
-        assertThat(testObject.getValueAt(0, 0), equalTo("1.00000"));
-        assertThat(testObject.getValueAt(0, 1), equalTo("0.44255"));
-        assertThat(testObject.getValueAt(0, 2), equalTo("4"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals("1.00000", testObject.getValueAt(0, 0));
+        assertEquals("0.44255", testObject.getValueAt(0, 1));
+        assertEquals("4", testObject.getValueAt(0, 2));
+        assertEquals(1, testObject.getRowCount());
     }
 
     @Test
@@ -213,10 +215,10 @@ public class OrderBookModelTest {
         testObject.setValueAt("0.87655",firstRow, 1);
         testObject.setValueAt("5",firstRow, 2);
 
-        assertThat(((String)testObject.getValueAt(firstRow, 0)), equalTo("1.00000"));
-        assertThat(((String)testObject.getValueAt(firstRow, 1)), equalTo("0.87655"));
-        assertThat(((String)testObject.getValueAt(firstRow, 2)), equalTo("5"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals("1.00000", ((String)testObject.getValueAt(firstRow, 0)));
+        assertEquals("0.87655", ((String)testObject.getValueAt(firstRow, 1)));
+        assertEquals("5", ((String)testObject.getValueAt(firstRow, 2)));
+        assertEquals(1, testObject.getRowCount());
 
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
@@ -229,10 +231,10 @@ public class OrderBookModelTest {
         testObject.insertInto(message);
 
         // item should appear at the top of the list since it's a new highest bidder/buy order
-        assertThat(testObject.getValueAt(0, 0), equalTo("1.00000"));
-        assertThat(testObject.getValueAt(0, 1), equalTo("0.44255"));
-        assertThat(testObject.getValueAt(0, 2), equalTo("4"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals(1, testObject.getRowCount());
+        assertEquals("1.00000", testObject.getValueAt(0, 0));
+        assertEquals("0.44255", testObject.getValueAt(0, 1));
+        assertEquals("4", testObject.getValueAt(0, 2));
     }
 
     @Test
@@ -241,10 +243,10 @@ public class OrderBookModelTest {
         testObject.setValueAt("1.00000", firstRow, 0);
         testObject.setValueAt("0.87655",firstRow, 1);
         testObject.setValueAt("5",firstRow, 2);
-        assertThat(((String)testObject.getValueAt(firstRow, 0)), equalTo("1.00000"));
-        assertThat(((String)testObject.getValueAt(firstRow, 1)), equalTo("0.87655"));
-        assertThat(((String)testObject.getValueAt(firstRow, 2)), equalTo("5"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals("1.00000", ((String)testObject.getValueAt(firstRow, 0)));
+        assertEquals("0.87655", ((String)testObject.getValueAt(firstRow, 1)));
+        assertEquals("5", ((String)testObject.getValueAt(firstRow, 2)));
+        assertEquals(1, testObject.getRowCount());
 
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
@@ -257,10 +259,10 @@ public class OrderBookModelTest {
         testObject.insertInto(message);
 
         // item should appear at the top of the list since it's a new highest bidder/buy order
-        assertThat(testObject.getValueAt(0, 0), equalTo("1.00000"));
-        assertThat(testObject.getValueAt(0, 1), equalTo("0.43400"));
-        assertThat(testObject.getValueAt(0, 2), equalTo("4"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals(1, testObject.getRowCount());
+        assertEquals("1.00000", testObject.getValueAt(0, 0));
+        assertEquals("0.43400", testObject.getValueAt(0, 1));
+        assertEquals("4", testObject.getValueAt(0, 2));
     }
 
     @Test
@@ -271,10 +273,10 @@ public class OrderBookModelTest {
         testObject.setValueAt("0.87655",firstRow, 1);
         testObject.setValueAt("5",firstRow, 2);
 
-        assertThat(((String)testObject.getValueAt(firstRow, 0)), equalTo("1.00000"));
-        assertThat(((String)testObject.getValueAt(firstRow, 1)), equalTo("0.87655"));
-        assertThat(((String)testObject.getValueAt(firstRow, 2)), equalTo("5"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals("1.00000", ((String)testObject.getValueAt(firstRow, 0)));
+        assertEquals("0.87655", ((String)testObject.getValueAt(firstRow, 1)));
+        assertEquals("5", ((String)testObject.getValueAt(firstRow, 2)));
+        assertEquals(1, testObject.getRowCount());
 
         // create a new order
         OrderBookMessage message = new OrderBookMessage();
@@ -287,10 +289,10 @@ public class OrderBookModelTest {
         testObject.insertInto(message);
 
         // item should appear at the top of the list since it's a new highest bidder/buy order
-        assertThat(testObject.getValueAt(0, 0), equalTo("1.00000"));
-        assertThat(testObject.getValueAt(0, 1), equalTo("0.43400"));
-        assertThat(testObject.getValueAt(0, 2), equalTo("4"));
-        assertThat(testObject.getRowCount(), equalTo(1));
+        assertEquals(1, testObject.getRowCount());
+        assertEquals("1.00000", testObject.getValueAt(0, 0));
+        assertEquals("0.43400", testObject.getValueAt(0, 1));
+        assertEquals("4", testObject.getValueAt(0, 2));
     }
 
     @Test
@@ -305,7 +307,7 @@ public class OrderBookModelTest {
 
         testObject.checkSequence(message);
 
-        assertThat(testObject.getLastOrders().size(), equalTo(1));
+        assertEquals(1, testObject.getLastOrders().size());
     }
 
     @Test
@@ -320,16 +322,16 @@ public class OrderBookModelTest {
 
         testObject.checkSequence(message);
 
-        assertThat(testObject.getLastOrders().size(), equalTo(1));
+        assertEquals(1, testObject.getLastOrders().size());
 
         OrderBookMessage newMessage = new OrderBookMessage();
         newMessage.setSequence(2L);
 
         testObject.checkSequence(newMessage);
 
-        assertThat(testObject.getLastOrders().size(), equalTo(2));
-        assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
-        assertThat(testObject.getLastOrders().get(1).getSequence(), equalTo(2L));
+        assertEquals(2, testObject.getLastOrders().size());
+        assertEquals(1L, testObject.getLastOrders().get(0).getSequence());
+        assertEquals(2L, testObject.getLastOrders().get(1).getSequence());
     }
 
     @Test
@@ -344,16 +346,16 @@ public class OrderBookModelTest {
 
         testObject.checkSequence(message);
 
-        assertThat(testObject.getLastOrders().size(), equalTo(1));
+        assertEquals(1, testObject.getLastOrders().size());
 
         OrderBookMessage newMessage = new OrderBookMessage();
         newMessage.setSequence(0L);
 
         testObject.checkSequence(newMessage);
 
-        assertThat(testObject.getLastOrders().size(), equalTo(2));
-        assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(0L));
-        assertThat(testObject.getLastOrders().get(1).getSequence(), equalTo(1L));
+        assertEquals(2, testObject.getLastOrders().size());
+        assertEquals(0L, testObject.getLastOrders().get(0).getSequence());
+        assertEquals(1L, testObject.getLastOrders().get(1).getSequence());
     }
 
     @Test
@@ -368,8 +370,8 @@ public class OrderBookModelTest {
 
         testObject.incomingOrder(message);
 
-        assertThat(testObject.getRowCount(), equalTo(1));
-        assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
+        assertEquals(1, testObject.getRowCount());
+        assertEquals(1L, testObject.getLastOrders().get(0).getSequence());
     }
 
     @Test
@@ -384,8 +386,8 @@ public class OrderBookModelTest {
 
         testObject.incomingOrder(message1);
 
-        assertThat(testObject.getRowCount(), equalTo(1));
-        assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
+        assertEquals(1, testObject.getRowCount());
+        assertEquals(1L, testObject.getLastOrders().get(0).getSequence());
 
         OrderBookMessage message2 = new OrderBookMessage();
         message2.setType("limit");
@@ -396,9 +398,9 @@ public class OrderBookModelTest {
 
         testObject.incomingOrder(message2);
 
-        assertThat(testObject.getRowCount(), equalTo(2));
-        assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
-        assertThat(testObject.getLastOrders().get(1).getSequence(), equalTo(2L));
+        assertEquals(2, testObject.getRowCount());
+        assertEquals(1L, testObject.getLastOrders().get(0).getSequence());
+        assertEquals(2L, testObject.getLastOrders().get(1).getSequence());
     }
 
     @Test
@@ -413,8 +415,8 @@ public class OrderBookModelTest {
 
         testObject.incomingOrder(message1);
 
-        assertThat(testObject.getRowCount(), equalTo(1));
-        assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
+        assertEquals(1, testObject.getRowCount());
+        assertEquals(1L, testObject.getLastOrders().get(0).getSequence());
 
         // third message will be received before 2nd message
         OrderBookMessage message3 = new OrderBookMessage();
@@ -426,9 +428,9 @@ public class OrderBookModelTest {
 
         testObject.incomingOrder(message3);
 
-        assertThat(testObject.getRowCount(), equalTo(2));
-        assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
-        assertThat(testObject.getLastOrders().get(1).getSequence(), equalTo(3L));
+        assertEquals(2, testObject.getRowCount());
+        assertEquals(1L, testObject.getLastOrders().get(0).getSequence());
+        assertEquals(3L, testObject.getLastOrders().get(1).getSequence());
 
         // 2nd message arrived late...
         OrderBookMessage message2 = new OrderBookMessage();
@@ -440,9 +442,9 @@ public class OrderBookModelTest {
 
         testObject.incomingOrder(message2);
 
-        assertThat(testObject.getRowCount(), equalTo(3));
-        assertThat(testObject.getLastOrders().get(0).getSequence(), equalTo(1L));
-        assertThat(testObject.getLastOrders().get(1).getSequence(), equalTo(2L));
-        assertThat(testObject.getLastOrders().get(2).getSequence(), equalTo(3L));
+        assertEquals(3, testObject.getRowCount());
+        assertEquals(1L, testObject.getLastOrders().get(0).getSequence());
+        assertEquals(2L, testObject.getLastOrders().get(1).getSequence());
+        assertEquals(3L, testObject.getLastOrders().get(2).getSequence());
     }
 }

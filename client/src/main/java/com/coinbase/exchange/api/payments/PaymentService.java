@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.payments;
 
-import com.coinbase.exchange.api.exchange.GdaxExchange;
+import com.coinbase.exchange.api.exchange.CoinbasePro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -17,13 +17,13 @@ public class PaymentService {
     private static final String COINBASE_ACCOUNTS_ENDPOINT = "/coinbase-accounts";
 
     @Autowired
-    GdaxExchange gdaxExchange;
+    CoinbasePro coinbasePro;
 
     public List<PaymentType> getPaymentTypes() {
-        return gdaxExchange.getAsList(PAYMENT_METHODS_ENDPOINT, new ParameterizedTypeReference<PaymentType[]>(){});
+        return coinbasePro.getAsList(PAYMENT_METHODS_ENDPOINT, new ParameterizedTypeReference<PaymentType[]>(){});
     }
 
     public List<CoinbaseAccount> getCoinbaseAccounts() {
-        return gdaxExchange.getAsList(COINBASE_ACCOUNTS_ENDPOINT, new ParameterizedTypeReference<CoinbaseAccount[]>() {});
+        return coinbasePro.getAsList(COINBASE_ACCOUNTS_ENDPOINT, new ParameterizedTypeReference<CoinbaseAccount[]>() {});
     }
 }

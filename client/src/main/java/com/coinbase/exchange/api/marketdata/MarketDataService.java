@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.marketdata;
 
-import com.coinbase.exchange.api.exchange.GdaxExchange;
+import com.coinbase.exchange.api.exchange.CoinbasePro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import java.util.List;
 public class MarketDataService {
 
     @Autowired
-    GdaxExchange exchange;
+    CoinbasePro exchange;
 
     public static final String PRODUCT_ENDPOINT = "/products";
 

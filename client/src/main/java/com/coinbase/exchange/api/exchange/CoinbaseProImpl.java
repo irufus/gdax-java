@@ -18,16 +18,14 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.http.HttpMethod.GET;
-
 
 /**
  * Created by irufus on 2/25/15.
  */
 @Component
-public class GdaxExchangeImpl implements GdaxExchange {
+public class CoinbaseProImpl implements CoinbasePro {
 
-    static Logger log = LoggerFactory.getLogger(GdaxExchangeImpl.class.getName());
+    static Logger log = LoggerFactory.getLogger(CoinbaseProImpl.class.getName());
 
     String publicKey;
     String passphrase;
@@ -38,11 +36,11 @@ public class GdaxExchangeImpl implements GdaxExchange {
     RestTemplate restTemplate;
 
     @Autowired
-    public GdaxExchangeImpl(@Value("${gdax.key}") String publicKey,
-                            @Value("${gdax.passphrase}") String passphrase,
-                            @Value("${gdax.api.baseUrl}") String baseUrl,
-                            Signature signature,
-                            RestTemplate restTemplate) {
+    public CoinbaseProImpl(@Value("${gdax.key}") String publicKey,
+                           @Value("${gdax.passphrase}") String passphrase,
+                           @Value("${gdax.api.baseUrl}") String baseUrl,
+                           Signature signature,
+                           RestTemplate restTemplate) {
         this.publicKey = publicKey;
         this.passphrase = passphrase;
         this.baseUrl = baseUrl;

@@ -2,7 +2,7 @@ package com.coinbase.exchange.api.deposits;
 
 import com.coinbase.exchange.api.entity.CoinbasePaymentRequest;
 import com.coinbase.exchange.api.entity.PaymentResponse;
-import com.coinbase.exchange.api.exchange.GdaxExchange;
+import com.coinbase.exchange.api.exchange.CoinbasePro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class DepositService {
     private static final String COINBASE_PAYMENT = "/coinbase-account";
 
     @Autowired
-    GdaxExchange exchange;
+    CoinbasePro exchange;
 
     /**
      * @param amount

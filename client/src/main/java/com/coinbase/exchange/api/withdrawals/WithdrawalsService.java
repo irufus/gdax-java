@@ -5,7 +5,7 @@ import com.coinbase.exchange.api.entity.CryptoPaymentRequest;
 import com.coinbase.exchange.api.entity.MonetaryRequest;
 import com.coinbase.exchange.api.entity.PaymentRequest;
 import com.coinbase.exchange.api.entity.PaymentResponse;
-import com.coinbase.exchange.api.exchange.GdaxExchange;
+import com.coinbase.exchange.api.exchange.CoinbasePro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ public class WithdrawalsService {
 
 
     @Autowired
-    GdaxExchange gdaxExchange;
+    CoinbasePro coinbasePro;
 
     public PaymentResponse makeWithdrawalToPaymentMethod(BigDecimal amount, String currency, String paymentMethodId) {
         PaymentRequest request = new PaymentRequest(amount, currency, paymentMethodId);
@@ -46,7 +46,7 @@ public class WithdrawalsService {
 
 
     private PaymentResponse makeWithdrawal(MonetaryRequest request, String withdrawalType) {
-        return gdaxExchange.post(WITHDRAWALS_ENDPOINT+ withdrawalType,
+        return coinbasePro.post(WITHDRAWALS_ENDPOINT+ withdrawalType,
                 new ParameterizedTypeReference<PaymentResponse>() {},
                 request);
     }

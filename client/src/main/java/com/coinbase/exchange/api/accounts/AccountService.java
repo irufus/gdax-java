@@ -1,7 +1,7 @@
 package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.entity.Hold;
-import com.coinbase.exchange.api.exchange.GdaxExchange;
+import com.coinbase.exchange.api.exchange.CoinbasePro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import java.util.List;
 public class AccountService {
 
     @Autowired
-    GdaxExchange exchange;
+    CoinbasePro exchange;
 
     public static final String ACCOUNTS_ENDPOINT = "/accounts";
 

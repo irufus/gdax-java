@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.transfers;
 
-import com.coinbase.exchange.api.exchange.GdaxExchange;
+import com.coinbase.exchange.api.exchange.CoinbasePro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class TransferService {
     static final String TRANSFER_ENDPOINT = "/transfers";
 
     @Autowired
-    GdaxExchange gdaxExchange;
+    CoinbasePro coinbasePro;
 
     /**
      * TODO untested due to lack of a coinbaseaccountID to test with.
@@ -29,7 +29,7 @@ public class TransferService {
      * @return
      */
     public String transfer(String type, BigDecimal amount, String coinbaseAccountId) {
-        return gdaxExchange.post(TRANSFER_ENDPOINT,
+        return coinbasePro.post(TRANSFER_ENDPOINT,
                 new ParameterizedTypeReference<String>(){},
                 new Transfer(type, amount, coinbaseAccountId));
     }

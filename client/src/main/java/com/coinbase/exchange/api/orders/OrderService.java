@@ -3,7 +3,7 @@ package com.coinbase.exchange.api.orders;
 import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.Hold;
 import com.coinbase.exchange.api.entity.NewOrderSingle;
-import com.coinbase.exchange.api.exchange.GdaxExchange;
+import com.coinbase.exchange.api.exchange.CoinbasePro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import java.util.List;
 public class OrderService {
 
     @Autowired
-    GdaxExchange exchange;
+    CoinbasePro exchange;
 
     public static final String ORDERS_ENDPOINT = "/orders";
     public static final String FILLS_ENDPOINT = "/fills";

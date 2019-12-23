@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api;
 
-import com.coinbase.exchange.api.exchange.GdaxExchange;
+import com.coinbase.exchange.api.exchange.CoinbasePro;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {
-                 GdaxApiApplication.class
+                 CoinbasePro.class
                 },
                 properties = {
                     "spring.profiles.active=test"
@@ -24,5 +24,5 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public abstract class BaseIntegrationTest {
 
     @Autowired
-    public GdaxExchange exchange;
+    public CoinbasePro exchange;
 }
