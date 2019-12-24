@@ -50,7 +50,7 @@ Please see CONTRIBUTE.md if your interested in getting involved.
 
 To build and run the desktop client application you can use the gradle script - this requires no installation as the "gradle wrapper" is included as part of the source code. All you need to do is:
 
-1. supply your API key, secret and passphrase as environment or command line variables or in the `application.yaml` file. There are placeholders ready to receive these parameters. Because you should NEVER commit these details, the `application.yaml` file is included in the `.gitignore` so that changes to it should be ignored. Commiting your keys, secret and passphrase may result in you losing funds from your account(s). *If you commit your secure keys, passphrase or secrete, disable/delete them from Coinbase Pro immediately**.
+1. supply your API key, secret and passphrase as environment or command line variables or in the `application.yml` file. There are placeholders ready to receive these parameters. Because you should NEVER commit these details, the `application.yml` file is included in the `.gitignore` so that changes to it should be ignored. Commiting your keys, secret and passphrase may result in you losing funds from your account(s). *If you commit your secure keys, passphrase or secrete, disable/delete them from Coinbase Pro immediately**.
 
 Spring Boot will pick up the values of these variables from various places including the `application.yml` properties file, the system environment, command line variables and more.
 
