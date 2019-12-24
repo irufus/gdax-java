@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.gui;
 
-import com.coinbase.exchange.api.liveorderbook.view.OrderBookView;
+import com.coinbase.exchange.api.gui.liveorderbook.view.OrderBookView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

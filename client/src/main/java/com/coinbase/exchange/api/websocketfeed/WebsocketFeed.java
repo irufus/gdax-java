@@ -1,15 +1,7 @@
 package com.coinbase.exchange.api.websocketfeed;
 
-import com.coinbase.exchange.api.liveorderbook.view.OrderBookView;
-import com.coinbase.exchange.api.websocketfeed.message.HeartBeat;
-import com.coinbase.exchange.api.websocketfeed.message.OrderBookMessage;
-import com.coinbase.exchange.api.websocketfeed.message.OrderDoneOrderBookMessage;
-import com.coinbase.exchange.api.websocketfeed.message.OrderMatchOrderBookMessage;
-import com.coinbase.exchange.api.websocketfeed.message.OrderOpenOrderBookMessage;
-import com.coinbase.exchange.api.websocketfeed.message.Subscribe;
 import com.coinbase.exchange.api.exchange.Signature;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.coinbase.exchange.api.websocketfeed.message.Subscribe;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.swing.*;
-import javax.websocket.*;
+import javax.websocket.ClientEndpoint;
+import javax.websocket.CloseReason;
+import javax.websocket.ContainerProvider;
+import javax.websocket.DeploymentException;
+import javax.websocket.OnClose;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.WebSocketContainer;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Instant;
 
 /**
@@ -60,9 +60,10 @@ public class WebsocketFeed {
             try {
                 WebSocketContainer container = ContainerProvider.getWebSocketContainer();
                 container.connectToServer(this, new URI(websocketUrl));
-            } catch (Exception e) {
-                System.out.println("Could not connect to remote server: " + e.getMessage() + ", " + e.getLocalizedMessage());
-                e.printStackTrace();
+            } catch (DeploymentException | IOException e) {
+                log.error("Could not connect to remote server: " + e.getMessage() + ", " + e.getLocalizedMessage(), e);
+            } catch (URISyntaxException e) {
+                log.error("Coinbase Pro MalFormed URL", e);
             }
         }
     }
@@ -120,73 +121,10 @@ public class WebsocketFeed {
     }
 
 
-    public void subscribe(Subscribe msg, OrderBookView orderBook) {
+    public void subscribe(Subscribe msg) {
         String jsonSubscribeMessage = signObject(msg);
 
-        addMessageHandler(json -> {
-
-            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-                @Override
-                public Void doInBackground() {
-                    OrderBookMessage message = getObject(json, new TypeReference<OrderBookMessage>() {});
-
-                    String type = message.getType();
-
-                    if (type.equals("heartbeat"))
-                    {
-                        log.info("heartbeat");
-                        orderBook.heartBeat(getObject(json, new TypeReference<HeartBeat>() {}));
-                    }
-                    else if (type.equals("received"))
-                    {
-                        // received orders are not necessarily live orders - so I'm ignoring these msgs as they're
-                        // subject to change.
-                        log.info("order received {}", json);
-
-                    }
-                    else if (type.equals("open"))
-                    {
-                        log.info("Order opened: " + json );
-                        orderBook.updateOrderBook(getObject(json, new TypeReference<OrderOpenOrderBookMessage>() {}));
-                    }
-                    else if (type.equals("done"))
-                    {
-                        log.info("Order done: " + json);
-                        if (!message.getReason().equals("filled")) {
-                            OrderBookMessage doneOrder = getObject(json, new TypeReference<OrderDoneOrderBookMessage>() {});
-                            orderBook.updateOrderBook(doneOrder);
-                        }
-                    }
-                    else if (type.equals("match"))
-                    {
-                        log.info("Order matched: " + json);
-                        OrderBookMessage matchedOrder = getObject(json, new TypeReference<OrderMatchOrderBookMessage>(){});
-                        orderBook.updateOrderBook(matchedOrder);
-                    }
-                    else if (type.equals("change"))
-                    {
-                        // TODO - possibly need to provide implementation for this to work in real time.
-                         log.info("Order Changed {}", json);
-                        // orderBook.updateOrderBookWithChange(getObject(json, new TypeReference<OrderChangeOrderBookMessage>(){}));
-                    }
-                    else
-                    {
-                        // Not sure this is required unless I'm attempting to place orders
-                        // ERROR
-                        log.error("Error {}", json);
-                        // orderBook.orderBookError(getObject(json, new TypeReference<ErrorOrderBookMessage>(){}));
-                    }
-                    return null;
-                }
-
-                public void done() {
-
-                }
-            };
-            worker.execute();
-        });
-
-        // send message to websocket
+        // send subscription message to websocket
         sendMessage(jsonSubscribeMessage);
 
     }
@@ -203,16 +141,6 @@ public class WebsocketFeed {
         jsonObj.setSignature(signature.generate("", "GET", jsonString, timestamp));
 
         return gson.toJson(jsonObj);
-    }
-
-    public <T> T getObject(String json, TypeReference<T> type) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(json, type);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     /**

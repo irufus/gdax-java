@@ -1,4 +1,4 @@
-package com.coinbase.exchange.api.liveorderbook;
+package com.coinbase.exchange.api.gui.liveorderbook;
 
 import com.coinbase.exchange.api.marketdata.OrderItem;
 import com.coinbase.exchange.api.websocketfeed.message.OrderBookMessage;
@@ -10,7 +10,11 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
 import static java.util.stream.Collectors.toList;
 
