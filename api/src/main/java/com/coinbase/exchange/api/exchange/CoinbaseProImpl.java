@@ -15,9 +15,9 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
- * Created by irufus on 2/25/15.
+ * This class acts as a central point for providing user configuration and making GET/POST/PUT requests as well as
+ * getting responses as Lists of objects rather than arrays.
  */
 public class CoinbaseProImpl implements CoinbasePro {
 

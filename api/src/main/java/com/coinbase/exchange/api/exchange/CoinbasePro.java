@@ -1,6 +1,3 @@
-/**
- * Created by irufus on 2/19/15.
- */
 package com.coinbase.exchange.api.exchange;
 
 import org.springframework.core.ParameterizedTypeReference;

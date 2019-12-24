@@ -1,16 +1,16 @@
-# gdax-java
+# Coinbase Pro
 
 [![Join the chat at https://gitter.im/irufus/gdax-java](https://badges.gitter.im/irufus/gdax-java.svg)](https://gitter.im/irufus/gdax-java?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
+Java based wrapper for the [GDAX API](https://docs.pro.coinbase.com/) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
 
-# Notes:
+## Notes:
 
-> GDAX primary data sources and servers run in the Amazon US East data center. To minimize latency for API access, we recommend making requests from servers located near the US East data center.
+> Coinbase Pro primary data sources and servers run in the Amazon US East data center. To minimize latency for API access, we recommend making requests from servers located near the US East data center.
 > Some of the methods do not yet have tests and so may not work as expected until a later date. Please raise an issue in github if you want something in particular as a priority.
-> This codebase is maintained independently of Coinbase. We are not in any way affiliated with coinbase or gdax.
+> This codebase is maintained independently of Coinbase. We are not in any way affiliated with coinbase or coinbase pro.
 
-# Functions supported:
+## Functions supported:
 - [x] Authentication (GET, POST, DELETE supported)
 - [x] Get Account
 - [x] Get Accounts
@@ -33,24 +33,24 @@ Java based wrapper for the [GDAX API](https://docs.gdax.com/#introduction) that 
 - [x] Pagination support for all calls that support it.
 - [x] Pagination support for all calls that support it.
 - [x] Sandbox support - *sandbox support was dropped by gdax so this is now redundant*
-- [x] LiveOrderBook implementation
+- [-] LiveOrderBook implementation implemented on a separate repository but in need of optimisation.
     
 # In Development
 
 Desktop client GUI.
 Check the issues on the repo for open items to work on.
-Please join the gitter channel if you have any questions. Support always welcome.
+Please join the gitter channel if you have any questions. Support always welcome. Note the channel uses the legaxy name of 'gdax-java' rather than 'coinbase-pro-java'
 
 # Contributing
 
 Please see CONTRIBUTE.md if your interested in getting involved.
 
-# Usage
+## Usage
 --------
 
 To build and run the application you can use the gradle script - this requires no installation as the "gradle wrapper" is included as part of the source code. All you need to do is:
 
-1. supply your API key, secret and passphrase as environment or command line variables. NEVER commit these details to your repo, as you may lose any funds from your account(s). Spring Boot is smart enough to pick up the values for these variables from various places including the application.yml properties file, the system environment, command line variables and more.
+1. supply your API key, secret and passphrase as environment or command line variables. NEVER commit these details to your repo, as you may lose any funds from your account(s). Spring Boot is smart enough to pick up the values for these variables from various places including the `application.yml` properties file, the system environment, command line variables and more.
 1. 1. For environment variables set: `gdax.key`, `gdax.passphrase`, `gdax.secret`
 1. 1. For command line variables `-Dgdax.key="apiKey" -Dgdax.passphrase="passphrase" -Dgdax.secret="secret"` should work
 1. 1. For command line variables with the gradle command use `-Pgdax.key="apiKey" -Pgdax.passphrase="passphrase" -Pgdax.secret="secret"` should work
@@ -58,11 +58,11 @@ To build and run the application you can use the gradle script - this requires n
 1. navigate to the root directory of this project (where `build.gradle` is)
 1. execute `./gradlew bootRun` (Mac/unix). For equivalent Windows commands just remove the `./` from the commands, since there's a gradlew.bat included as well.
 
-This won't actually do much on its own but the beginnings of a GUI have been developed and you can test this out by enabling the GUI in the application.yml config and restarting the application.
+This won't actually do much on its own but the beginnings of a GUI have been developed and you can test this out by enabling the GUI in the `application.yml` config and restarting the application.
 
 1. tests can also be run with  `./gradlew test` - simple.
 
-For a lib:
+## For a lib:
 
 1. If you'd rather work purely in java then you can build an executable jar file `./gradlew jar` and you should be able to find the jar in the build directory.
 
@@ -74,48 +74,25 @@ If the config changes from the above you should see a relevant error message in 
 
 The other alternative is to include all config in the application.yml, build the jar and export it somewhere.
 
-# Examples
+## Examples
 
 To make use of this library you only need a reference to the Service that you want. For Accounts, get an instance of the AccountService. For MarketData, use the MarketDataService, and so on.
 
 In order to get an instance of the various services from the Spring Dependency Injector, you simply need to create a new component class, and then in your constructor add the Autowired annotation, then declare in the constructor signature the various services you want to have references to within your code, use variable setting then to store the references Autowiring will provide so you can use them in your class:
 
-```
-@Component
-public class MyClassThatDoesSomethingReallyUseful{
-
-  private LiveOrderBook liveOrderBook;
-
-  @Autowired
-  public MyClassThatDoesSomethingReallyUseful(LiveOrderBook liveOrderBook){
-    this.LiveOrderBook = liveOrderBook;
-    OrderBookModel bids = liveOrderBook.getBids();
-    OrderBookModel asks = liveOrderBook.getAsks();
-
-    String highestBidPrice = (String) bids.getValueAt(0, PRICE_COL);
-    String lowestAskPrice = (String) asks.getValueAt(0, PRICE_COL);
-
-    // do something useful
-  }
-}
-```
-
-The two annotations in the code above are pretty straight forward.
-@Component - tells Spring to create an instance of this class and store it in the 'SpringContext'. This means we can 'wire' it into something else later.
-@Autowired - tells Spring to look in its 'SpringContext' for an instance of the object that needs to be autowired in. In the above example, we're asking spring to AutoWire in an AccountService object so we can use it. If you look at the AccountService you'll notice it is also annotated with the @Component annotation, so its readily available where ever we want it within the codebase.
 
 The API and this code follows MVC design pattern - model, view, control.
 - Models are the data objects received from the API,
 - Views are the items you'll likely create on top of this codebase - e.g. Swing GUI or some webpage output
 - Control - all application logic goes in the control layer.
 
-#Notes:
+## Notes:
 
 > GDAX primary data sources and servers run in the Amazon US East data center. To minimize latency for API access, we recommend making requests from servers located near the US East data center.
 
 > Some of the methods do not yet have tests and so may not work as expected until a later date. Please raise an issue in github if you want something in particular as a priority. I'll be looking to fully flesh this out if possible over the coming months.
 
-#Examples
+## Examples
 --------
 
 To make use of this library you only need a reference to the service that you want.
@@ -131,7 +108,7 @@ This works better if you declare the above method as a spring object (@Component
 
 Then in your method you can carry out any of the public API operations such as `orderService().createOrder(NewSingleOrder order);` - this creates a limit order. Currently this is only the basic order.
 
-# API
+## API
 --------
 
 The Api for this application/library is as follows:
@@ -152,16 +129,21 @@ The Api for this application/library is as follows:
 - `ReportService.createReport(String product, String startDate, String endDate)` - not certain about this one as I've not tried it but presumably generates a report of a given product's trade history for the dates supplied
 
 
-# WebsocketFeed API 
+## WebsocketFeed API
 ---------------------
 
-The WebsocketFeed is implemented and works. To use the WSF check out the API documentation and look at websocketFeed.subscribe(String, LiveOrderBook) method implementation as an example that already works.
+The WebsocketFeed is implemented and works. To use the WSF check out the API documentation and look at websocketFeed.subscribe(String) method implementation as an example that already works.
 
-# Updates - v 0.9.1
+## Updates - v 0.11.0
+-------------------
+- decoupling the `api` `integration code from the spring boot desktop client application
+- multiproject gradle build now in place
+
+## Updates - v 0.9.1
 -------------------
 - building an order book that works ready for a desktop client.
 
-# Updates
+## Updates
 ---------
 - converted to using Gradle
 - converted to using SpringBoot for DI and request building
@@ -180,7 +162,7 @@ The WebsocketFeed is implemented and works. To use the WSF check out the API doc
 - OrderBook GUI component added - enable in the `application.yml` by setting enabled to `true`
 - LiveOrderBook (full channel) Implemented and viewable via the GUI when enabled
 
-# TODO
+## TODO
 -------
 - add pagination versions of all endpoints, or offer a way to append to the endpoint urls.
 - smarted up the GUI
