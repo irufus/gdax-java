@@ -1,6 +1,5 @@
-package com.coinbase.exchange.api.liveorderbook;
+package com.coinbase.exchange.api.gui.liveorderbook;
 
-import com.coinbase.exchange.api.gui.liveorderbook.OrderBookModel;
 import com.coinbase.exchange.api.websocketfeed.message.OrderBookMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

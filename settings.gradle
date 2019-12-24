@@ -1,4 +1,4 @@
-rootProject.name = 'gdax-java'
+rootProject.name = 'coinbase-pro-java'
 
 include 'client'
 include 'desktop-app'

@@ -10,11 +10,13 @@ import java.util.List;
 /**
  * Created by robevansuk on 07/02/2017.
  */
-@Component
 public class MarketDataService {
 
-    @Autowired
-    CoinbasePro exchange;
+    final CoinbasePro exchange;
+
+    public MarketDataService(CoinbasePro exchange) {
+        this.exchange = exchange;
+    }
 
     public static final String PRODUCT_ENDPOINT = "/products";
 

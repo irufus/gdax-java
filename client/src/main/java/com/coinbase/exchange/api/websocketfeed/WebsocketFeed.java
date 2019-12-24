@@ -28,27 +28,24 @@ import java.time.Instant;
  * <p>
  * >Jiji Sasidharan
  */
-@Component
 @ClientEndpoint
 public class WebsocketFeed {
 
-    static Logger log = LoggerFactory.getLogger(WebsocketFeed.class);
+    static final Logger log = LoggerFactory.getLogger(WebsocketFeed.class);
 
-    Signature signature;
+    final String websocketUrl;
+    final String passphrase;
+    final String key;
+    final boolean guiEnabled;
+    final Signature signature;
 
     Session userSession = null;
     MessageHandler messageHandler;
 
-    String websocketUrl;
-    String passphrase;
-    String key;
-    boolean guiEnabled;
-
-    @Autowired
-    public WebsocketFeed(@Value("${websocket.baseUrl}") String websocketUrl,
-                         @Value("${gdax.key}") String key,
-                         @Value("${gdax.passphrase}") String passphrase,
-                         @Value("${gui.enabled}") boolean guiEnabled,
+    public WebsocketFeed(String websocketUrl,
+                         String key,
+                         String passphrase,
+                         boolean guiEnabled,
                          Signature signature) {
         this.key = key;
         this.passphrase = passphrase;
