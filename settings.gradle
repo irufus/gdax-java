@@ -1,5 +1,5 @@
 rootProject.name = 'coinbase-pro-java'
 
-include 'client'
-include 'desktop-app'
+include 'api'
+include 'gui'
 

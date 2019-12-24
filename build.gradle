@@ -1,9 +1,9 @@
 allprojects {
     apply plugin: 'java'
 
-    group = 'irufus'
-    description = 'Client for the GDAX API'
-    version = '0.10.0'
+    group = 'com.coinbase.exchange.api'
+    description = 'Client for the Coinbase Pro API'
+    version = '0.11.0'
 
     repositories {
         jcenter()
@@ -17,10 +17,10 @@ allprojects {
         exclude '**/*IntegrationTest*'
     }
 
+    /**
+     * User can run these as optional against the sandbox api exchange
+     **/
     task integrationTest(type: Test) {
         include '**/*IntegrationTest*'
     }
-
-    check.dependsOn integrationTest
-    integrationTest.mustRunAfter test
 }

@@ -1,9 +1,9 @@
 *.iml
 .idea/
 .gradle/
-build/
 gdax.properties
 *.log
-classes/
-out/
+**/classes/
+**/build/
+**/out/
 application*.yml

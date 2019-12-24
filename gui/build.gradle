@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id "org.springframework.boot" version "2.2.2.RELEASE"
+}
+
+sourceCompatibility = 1.8
+
+group = 'com.coinbase.exchange.api.gui'
+description = 'Desktop Client for Coinbase Pro'
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation project(':api')
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.2.2.RELEASE'
+    implementation 'org.springframework:spring-context:5.2.2.RELEASE'
+
+    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    testCompile 'org.junit.jupiter:junit-jupiter-params:5.5.2'
+    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+    testCompile 'org.springframework.boot:spring-boot-test:2.2.2.RELEASE'
+    testCompile 'org.junit.platform:junit-platform-suite-api:1.5.2'
+}
