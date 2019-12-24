@@ -58,7 +58,7 @@ public class PriceTracker {
     }
 
     public static void main(String[] args) {
-        System.setProperty(CoinbaseProApiApplication.SYSTEM_PROPERTY_JAVA_AWT_HEADLESS, System.getProperty(CoinbaseProApiApplication.SYSTEM_PROPERTY_JAVA_AWT_HEADLESS, Boolean.toString(false)));
-        SpringApplication.run(CoinbaseProApiApplication.class, args);
+        System.setProperty(CoinbaseExchangeApplication.SYSTEM_PROPERTY_JAVA_AWT_HEADLESS, System.getProperty(CoinbaseExchangeApplication.SYSTEM_PROPERTY_JAVA_AWT_HEADLESS, Boolean.toString(false)));
+        SpringApplication.run(CoinbaseExchangeApplication.class, args);
     }
 }

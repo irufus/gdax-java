@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.transfers;
 
-import com.coinbase.exchange.api.exchange.CoinbasePro;
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.math.BigDecimal;
@@ -15,10 +15,10 @@ public class TransferService {
 
     static final String TRANSFER_ENDPOINT = "/transfers";
 
-    final CoinbasePro coinbasePro;
+    final CoinbaseExchange coinbaseExchange;
 
-    public TransferService(final CoinbasePro coinbasePro) {
-        this.coinbasePro = coinbasePro;
+    public TransferService(final CoinbaseExchange coinbaseExchange) {
+        this.coinbaseExchange = coinbaseExchange;
     }
 
     /**
@@ -29,7 +29,7 @@ public class TransferService {
      * @return
      */
     public String transfer(String type, BigDecimal amount, String coinbaseAccountId) {
-        return coinbasePro.post(TRANSFER_ENDPOINT,
+        return coinbaseExchange.post(TRANSFER_ENDPOINT,
                 new ParameterizedTypeReference<String>(){},
                 new Transfer(type, amount, coinbaseAccountId));
     }

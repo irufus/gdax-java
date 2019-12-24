@@ -1,7 +1,7 @@
 package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.entity.Hold;
-import com.coinbase.exchange.api.exchange.CoinbasePro;
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.List;
@@ -11,9 +11,9 @@ import java.util.List;
  */
 public class AccountService {
 
-    final CoinbasePro exchange;
+    final CoinbaseExchange exchange;
 
-    public AccountService(final CoinbasePro exchange) {
+    public AccountService(final CoinbaseExchange exchange) {
         this.exchange = exchange;
     }
 

@@ -1,7 +1,7 @@
 package com.coinbase.exchange.api.gui.config;
 
-import com.coinbase.exchange.api.exchange.CoinbasePro;
-import com.coinbase.exchange.api.exchange.CoinbaseProImpl;
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeImpl;
 import com.coinbase.exchange.api.exchange.Signature;
 import com.coinbase.exchange.api.websocketfeed.WebsocketFeed;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,12 +13,12 @@ import org.springframework.web.client.RestTemplate;
 public class DesktopConfiguration {
 
     @Bean
-    public CoinbasePro coinbasePro(@Value("${gdax.key}") String publicKey,
-                                   @Value("${gdax.passphrase}") String passphrase,
-                                   @Value("${gdax.api.baseUrl}") String baseUrl,
-                                   Signature signature,
-                                   RestTemplate restTemplate) {
-        return new CoinbaseProImpl(publicKey, passphrase, baseUrl, signature, restTemplate);
+    public CoinbaseExchange coinbasePro(@Value("${gdax.key}") String publicKey,
+                                        @Value("${gdax.passphrase}") String passphrase,
+                                        @Value("${gdax.api.baseUrl}") String baseUrl,
+                                        Signature signature,
+                                        RestTemplate restTemplate) {
+        return new CoinbaseExchangeImpl(publicKey, passphrase, baseUrl, signature, restTemplate);
     }
 
     @Bean

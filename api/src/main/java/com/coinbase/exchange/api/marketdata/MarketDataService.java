@@ -1,9 +1,7 @@
 package com.coinbase.exchange.api.marketdata;
 
-import com.coinbase.exchange.api.exchange.CoinbasePro;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -12,9 +10,9 @@ import java.util.List;
  */
 public class MarketDataService {
 
-    final CoinbasePro exchange;
+    final CoinbaseExchange exchange;
 
-    public MarketDataService(final CoinbasePro exchange) {
+    public MarketDataService(final CoinbaseExchange exchange) {
         this.exchange = exchange;
     }
 

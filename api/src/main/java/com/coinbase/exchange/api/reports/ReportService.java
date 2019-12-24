@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.reports;
 
-import com.coinbase.exchange.api.exchange.CoinbasePro;
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
 
 /**
@@ -10,20 +10,20 @@ public class ReportService {
 
     private static final String REPORTS_ENDPOINT = "/reports";
 
-    final CoinbasePro coinbasePro;
+    final CoinbaseExchange coinbaseExchange;
 
-    public ReportService(final CoinbasePro coinbasePro) {
-        this.coinbasePro = coinbasePro;
+    public ReportService(final CoinbaseExchange coinbaseExchange) {
+        this.coinbaseExchange = coinbaseExchange;
     }
 
     // TODO untested
     public ReportResponse createReport(String type, String startDate, String endDate){
         ReportRequest reportRequest = new ReportRequest(type, startDate, endDate);
-        return coinbasePro.post(REPORTS_ENDPOINT, new ParameterizedTypeReference<ReportResponse>(){}, reportRequest);
+        return coinbaseExchange.post(REPORTS_ENDPOINT, new ParameterizedTypeReference<ReportResponse>(){}, reportRequest);
     }
 
     // TODO untested
     public ReportResponse getReportStatus(String id) {
-        return coinbasePro.get(REPORTS_ENDPOINT + "/" + id, new ParameterizedTypeReference<ReportResponse>(){});
+        return coinbaseExchange.get(REPORTS_ENDPOINT + "/" + id, new ParameterizedTypeReference<ReportResponse>(){});
     }
 }

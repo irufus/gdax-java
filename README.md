@@ -35,22 +35,25 @@ Java based wrapper for the [GDAX API](https://docs.pro.coinbase.com/) that follo
 - [x] Sandbox support - *sandbox support was dropped by gdax so this is now redundant*
 - [-] LiveOrderBook implementation implemented on a separate repository but in need of optimisation.
     
-# In Development
+### In Development
 
 Desktop client GUI.
 Check the issues on the repo for open items to work on.
 Please join the gitter channel if you have any questions. Support always welcome. Note the channel uses the legaxy name of 'gdax-java' rather than 'coinbase-pro-java'
 
-# Contributing
+### Contributing
 
 Please see CONTRIBUTE.md if your interested in getting involved.
 
 ## Usage
 --------
 
-To build and run the application you can use the gradle script - this requires no installation as the "gradle wrapper" is included as part of the source code. All you need to do is:
+To build and run the desktop client application you can use the gradle script - this requires no installation as the "gradle wrapper" is included as part of the source code. All you need to do is:
 
-1. supply your API key, secret and passphrase as environment or command line variables. NEVER commit these details to your repo, as you may lose any funds from your account(s). Spring Boot is smart enough to pick up the values for these variables from various places including the `application.yml` properties file, the system environment, command line variables and more.
+1. supply your API key, secret and passphrase as environment or command line variables or in the `application.yaml` file. There are placeholders ready to receive these parameters. Because you should NEVER commit these details, the `application.yaml` file is included in the `.gitignore` so that changes to it should be ignored. Commiting your keys, secret and passphrase may result in you losing funds from your account(s). *If you commit your secure keys, passphrase or secrete, disable/delete them from Coinbase Pro immediately**.
+
+Spring Boot will pick up the values of these variables from various places including the `application.yml` properties file, the system environment, command line variables and more.
+
 1. 1. For environment variables set: `gdax.key`, `gdax.passphrase`, `gdax.secret`
 1. 1. For command line variables `-Dgdax.key="apiKey" -Dgdax.passphrase="passphrase" -Dgdax.secret="secret"` should work
 1. 1. For command line variables with the gradle command use `-Pgdax.key="apiKey" -Pgdax.passphrase="passphrase" -Pgdax.secret="secret"` should work
@@ -90,29 +93,28 @@ The API and this code follows MVC design pattern - model, view, control.
 
 > GDAX primary data sources and servers run in the Amazon US East data center. To minimize latency for API access, we recommend making requests from servers located near the US East data center.
 
-> Some of the methods do not yet have tests and so may not work as expected until a later date. Please raise an issue in github if you want something in particular as a priority. I'll be looking to fully flesh this out if possible over the coming months.
+> Some of the methods do not yet have tests and so may not work as expected until someone needs to use them and finds they are broken... and then fixes them for the next person. Please raise an issue in the github repository if you want something updated as a priority.
 
 ## Examples
 --------
 
 To make use of this library you only need a reference to the service that you want.
 
-At present the classes match the interface specified in the coinbase/gdax api here: https://docs.gdax.com/#api
+At present the classes match the interface specified in the Coinbase Pro api here: [https://docs.pro.coinbase.com/#api](https://docs.pro.coinbase.com/#api)
 
 e.g. 
 `public OrderService orderService(){
     new OrderService();
 }`
 
-This works better if you declare the above method as a spring object (@Component) and then plug it in to your classes using dependency injection.
-
-Then in your method you can carry out any of the public API operations such as `orderService().createOrder(NewSingleOrder order);` - this creates a limit order. Currently this is only the basic order.
+Each `Service` class requires the `CoinbaseExchange` object so that methods calling the REST endpoints can be made, using a `RestTemplate` that has
+the correct headers and signatures is used.
 
 ## API
 --------
 
-The Api for this application/library is as follows:
-(Note: this section is likely to change but is provided on the basis it will work well for example usage)
+This library is as set up as follows:
+(Note: this section is likely to change over time)
 
 - `AccountService.getAccounts()` - returns a List Accounts
 - `AccountService.getAccountHistory(String accountId)` - returns the history for a given account as a List
@@ -132,7 +134,7 @@ The Api for this application/library is as follows:
 ## WebsocketFeed API
 ---------------------
 
-The WebsocketFeed is implemented and works. To use the WSF check out the API documentation and look at websocketFeed.subscribe(String) method implementation as an example that already works.
+The WebsocketFeed is implemented and works. There are techniques to using it successfully for production use - e.g. monitoring for 'heartbeats'. To use the WSF check out the API documentation and look at usages of `websocketFeed.subscribe(String)` as an example that already works.
 
 ## Updates - v 0.11.0
 -------------------
@@ -145,7 +147,7 @@ The WebsocketFeed is implemented and works. To use the WSF check out the API doc
 
 ## Updates
 ---------
-- converted to using Gradle
+- converted to using Gradle as a build tool
 - converted to using SpringBoot for DI and request building
 - updated all libraries used - removed some unnecessary libraries
 - refactored the code to remove error handling from every method (rightly/wrongly) - its easier to maintain and extend now as a result

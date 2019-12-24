@@ -1,10 +1,8 @@
 package com.coinbase.exchange.api.products;
 
 import com.coinbase.exchange.api.entity.Product;
-import com.coinbase.exchange.api.exchange.CoinbasePro;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -15,9 +13,9 @@ public class ProductService {
 
     public static final String PRODUCTS_ENDPOINT = "/products";
 
-    final CoinbasePro exchange;
+    final CoinbaseExchange exchange;
 
-    public ProductService(final CoinbasePro exchange) {
+    public ProductService(final CoinbaseExchange exchange) {
         this.exchange = exchange;
     }
 

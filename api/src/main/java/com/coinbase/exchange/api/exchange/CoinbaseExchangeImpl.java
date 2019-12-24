@@ -19,9 +19,9 @@ import java.util.List;
  * This class acts as a central point for providing user configuration and making GET/POST/PUT requests as well as
  * getting responses as Lists of objects rather than arrays.
  */
-public class CoinbaseProImpl implements CoinbasePro {
+public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
-    static final Logger log = LoggerFactory.getLogger(CoinbaseProImpl.class.getName());
+    static final Logger log = LoggerFactory.getLogger(CoinbaseExchangeImpl.class.getName());
 
     final String publicKey;
     final String passphrase;
@@ -29,11 +29,11 @@ public class CoinbaseProImpl implements CoinbasePro {
     final Signature signature;
     final RestTemplate restTemplate;
 
-    public CoinbaseProImpl(final String publicKey,
-                           final String passphrase,
-                           final String baseUrl,
-                           final Signature signature,
-                           final RestTemplate restTemplate) {
+    public CoinbaseExchangeImpl(final String publicKey,
+                                final String passphrase,
+                                final String baseUrl,
+                                final Signature signature,
+                                final RestTemplate restTemplate) {
         this.publicKey = publicKey;
         this.passphrase = passphrase;
         this.baseUrl = baseUrl;

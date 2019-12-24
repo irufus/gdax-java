@@ -2,7 +2,7 @@ package com.coinbase.exchange.api.deposits;
 
 import com.coinbase.exchange.api.entity.CoinbasePaymentRequest;
 import com.coinbase.exchange.api.entity.PaymentResponse;
-import com.coinbase.exchange.api.exchange.CoinbasePro;
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.math.BigDecimal;
@@ -16,9 +16,9 @@ public class DepositService {
     private static final String PAYMENTS = "/payment-method";
     private static final String COINBASE_PAYMENT = "/coinbase-account";
 
-    final CoinbasePro exchange;
+    final CoinbaseExchange exchange;
 
-    public DepositService(final CoinbasePro exchange) {
+    public DepositService(final CoinbaseExchange exchange) {
         this.exchange = exchange;
     }
 

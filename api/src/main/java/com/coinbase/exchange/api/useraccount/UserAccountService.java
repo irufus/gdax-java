@@ -1,9 +1,7 @@
 package com.coinbase.exchange.api.useraccount;
 
-import com.coinbase.exchange.api.exchange.CoinbasePro;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -14,10 +12,10 @@ public class UserAccountService {
 
     private static final String USER_ACCOUNT_ENDPOINT = "/users/self/trailing-volume";
 
-    final CoinbasePro coinbasePro;
+    final CoinbaseExchange coinbaseExchange;
 
-    public UserAccountService(final CoinbasePro coinbasePro) {
-        this.coinbasePro = coinbasePro;
+    public UserAccountService(final CoinbaseExchange coinbaseExchange) {
+        this.coinbaseExchange = coinbaseExchange;
     }
 
     /**
@@ -25,6 +23,6 @@ public class UserAccountService {
      * @return UserAccountData
      */
     public List<UserAccountData> getTrailingVolume(){
-        return coinbasePro.getAsList(USER_ACCOUNT_ENDPOINT, new ParameterizedTypeReference<UserAccountData[]>() {});
+        return coinbaseExchange.getAsList(USER_ACCOUNT_ENDPOINT, new ParameterizedTypeReference<UserAccountData[]>() {});
     }
 }

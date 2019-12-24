@@ -5,7 +5,7 @@ import org.springframework.http.HttpEntity;
 
 import java.util.List;
 
-public interface CoinbasePro {
+public interface CoinbaseExchange {
 
     public String getBaseUrl();
     public <R> HttpEntity<String> securityHeaders(String endpoint, String method, String body);

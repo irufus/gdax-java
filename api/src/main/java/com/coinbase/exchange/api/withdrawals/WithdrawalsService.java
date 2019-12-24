@@ -5,10 +5,8 @@ import com.coinbase.exchange.api.entity.CryptoPaymentRequest;
 import com.coinbase.exchange.api.entity.MonetaryRequest;
 import com.coinbase.exchange.api.entity.PaymentRequest;
 import com.coinbase.exchange.api.entity.PaymentResponse;
-import com.coinbase.exchange.api.exchange.CoinbasePro;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
@@ -22,10 +20,10 @@ public class WithdrawalsService {
     private static final String COINBASE = "/coinbase-account";
     private static final String CRYPTO = "/crypto";
 
-    final CoinbasePro coinbasePro;
+    final CoinbaseExchange coinbaseExchange;
 
-    public WithdrawalsService(final CoinbasePro coinbasePro) {
-        this.coinbasePro = coinbasePro;
+    public WithdrawalsService(final CoinbaseExchange coinbaseExchange) {
+        this.coinbaseExchange = coinbaseExchange;
     }
 
     public PaymentResponse makeWithdrawalToPaymentMethod(BigDecimal amount, String currency, String paymentMethodId) {
@@ -47,7 +45,7 @@ public class WithdrawalsService {
 
 
     private PaymentResponse makeWithdrawal(MonetaryRequest request, String withdrawalType) {
-        return coinbasePro.post(WITHDRAWALS_ENDPOINT+ withdrawalType,
+        return coinbaseExchange.post(WITHDRAWALS_ENDPOINT+ withdrawalType,
                 new ParameterizedTypeReference<PaymentResponse>() {},
                 request);
     }

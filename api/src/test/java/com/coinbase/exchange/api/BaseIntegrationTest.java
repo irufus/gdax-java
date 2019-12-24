@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api;
 
-import com.coinbase.exchange.api.exchange.CoinbasePro;
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
@@ -15,5 +15,5 @@ import org.springframework.boot.test.context.SpringBootTest;
                 })
 public abstract class BaseIntegrationTest {
 
-    public CoinbasePro exchange;
+    public CoinbaseExchange exchange;
 }

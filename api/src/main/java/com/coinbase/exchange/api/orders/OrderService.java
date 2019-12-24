@@ -3,7 +3,7 @@ package com.coinbase.exchange.api.orders;
 import com.coinbase.exchange.api.entity.Fill;
 import com.coinbase.exchange.api.entity.Hold;
 import com.coinbase.exchange.api.entity.NewOrderSingle;
-import com.coinbase.exchange.api.exchange.CoinbasePro;
+import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.Arrays;
@@ -16,9 +16,9 @@ public class OrderService {
     public static final String ORDERS_ENDPOINT = "/orders";
     public static final String FILLS_ENDPOINT = "/fills";
 
-    final CoinbasePro exchange;
+    final CoinbaseExchange exchange;
 
-    public OrderService(final CoinbasePro exchange) {
+    public OrderService(final CoinbaseExchange exchange) {
         this.exchange = exchange;
     }
 
