@@ -7,6 +7,7 @@ public class Subscribe {
 
     String type;
     String[] product_ids;
+    Channel[] channels;
 
     // Used for signing the subscribe message to the Websocket feed
     String signature;
@@ -19,6 +20,7 @@ public class Subscribe {
     public Subscribe(String[] product_ids) {
         this.type = "subscribe";
         this.product_ids = product_ids;
+        this.channels = new Channel[]{new Channel("full", product_ids)};
     }
 
     public String getType() {

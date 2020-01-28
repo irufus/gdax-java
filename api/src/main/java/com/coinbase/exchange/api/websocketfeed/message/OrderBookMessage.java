@@ -42,7 +42,23 @@ public class OrderBookMessage implements Comparable {
     String client_oid;
     String stp;
 
+    String message;
+    String open_24h; //"0.01770000",
+    String volume_24h; //"227.10129703",
+    String low_24h; //"0.01767000",
+    String high_24h; //"130.00000000",
+    String volume_30d; //"606472.35955714",
+    String best_bid; //"0.01905",
+    String best_ask; //"0.01907",
+    String last_size; //"0.01"
+    Channel[] channels;
+
     public OrderBookMessage() { }
+
+    public OrderBookMessage(String type, Channel[] channels) {
+        this.type = type;
+        this.channels = channels;
+    }
 
     public OrderBookMessage(String type, String time, String product_id,
                             String trade_id, Long sequence, String side,
@@ -53,7 +69,10 @@ public class OrderBookMessage implements Comparable {
                             BigDecimal remaining_size, String maker_order_id,
                             String taker_order_id, String taker_user_id, String user_id,
                             String taker_profile_id, String profile_id, String last_trade_id,
-                            String client_oid, String stp) {
+                            String client_oid, String stp, String message,
+                            String open_24h, String volume_24h, String low_24h,
+                            String high_24h, String volume_30d, String best_bid,
+                            String best_ask, String last_size, Channel[] channels) {
         this.type = type;
         this.time = time;
         this.product_id = product_id;
@@ -80,7 +99,16 @@ public class OrderBookMessage implements Comparable {
         this.last_trade_id = last_trade_id;
         this.client_oid = client_oid;
         this.stp = stp;
-
+        this.message = message;
+        this.open_24h = open_24h;
+        this.volume_24h = volume_24h;
+        this.low_24h = low_24h;
+        this.high_24h = high_24h;
+        this.volume_30d = volume_30d;
+        this.best_bid = best_bid;
+        this.best_ask = best_ask;
+        this.last_size = last_size;
+        this.channels = channels;
     }
 
     public String getClient_oid() {
@@ -289,6 +317,86 @@ public class OrderBookMessage implements Comparable {
 
     public void setLast_trade_id(String last_trade_id) {
         this.last_trade_id = last_trade_id;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getOpen_24h() {
+        return open_24h;
+    }
+
+    public void setOpen_24h(String open_24h) {
+        this.open_24h = open_24h;
+    }
+
+    public String getVolume_24h() {
+        return volume_24h;
+    }
+
+    public void setVolume_24h(String volume_24h) {
+        this.volume_24h = volume_24h;
+    }
+
+    public String getLow_24h() {
+        return low_24h;
+    }
+
+    public void setLow_24h(String low_24h) {
+        this.low_24h = low_24h;
+    }
+
+    public String getHigh_24h() {
+        return high_24h;
+    }
+
+    public void setHigh_24h(String high_24h) {
+        this.high_24h = high_24h;
+    }
+
+    public String getVolume_30d() {
+        return volume_30d;
+    }
+
+    public void setVolume_30d(String volume_30d) {
+        this.volume_30d = volume_30d;
+    }
+
+    public String getBest_bid() {
+        return best_bid;
+    }
+
+    public void setBest_bid(String best_bid) {
+        this.best_bid = best_bid;
+    }
+
+    public String getBest_ask() {
+        return best_ask;
+    }
+
+    public void setBest_ask(String best_ask) {
+        this.best_ask = best_ask;
+    }
+
+    public String getLast_size() {
+        return last_size;
+    }
+
+    public void setLast_size(String last_size) {
+        this.last_size = last_size;
+    }
+
+    public Channel[] getChannels() {
+        return channels;
+    }
+
+    public void setChannels(Channel[] channels) {
+        this.channels = channels;
     }
 
     @Override

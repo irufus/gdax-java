@@ -1,6 +1,6 @@
 # Contributing
 
-If you'd like to contribute you'd be more than welcome. The code base is ever growing and in order to make it usable by as many people as possible, we'd like to hear your ideas, suggestions, feedback, as well as accepting your code improvements.
+If you'd like to contribute you'd be more than welcome. The code base is ever growing and in order to make it usable by as many people as possible, we'd like your ideas, suggestions, feedback, as well as accepting your code improvements.
 
 Join us on the Gitter.im channel (chat link at the top of the main README.md file)
 
@@ -9,22 +9,6 @@ If you'd like to contribute code, fork the repo, make your changes, then create 
 Please ensure where possible, tests are included with any new features. Tests in this project are JUnit. Mockito, PowerMockito, etc. are all possible. The only real restriction is to Keep It Simple (where possible).
 
 Please also update/amend the README.md as necessary regarding changes so that it is kept up to date.
-
-# SPRING BOOT - Dependency injection and auto wiring
-
-Spring is great. Having developed for many years now, developers on this project have built applications large and small. Simply put without Spring/DI, the skill necessary to develop an application of this size becomes messy/chaotic due to the complexity that comes with creating large codebases with many dependencies. New-ing up classes to configure other classes, details getting lost in the code. Etc. Its all considerably easier using the Spring framework.
-
-Spring helps alleviate all the spaghetti configuration. I'll give a high level overview of Spring concepts utilised in this codebase.
-
-Spring Beans - Java instances. Beans are slightly different to POJOs as the lifecycle of a bean is managed by spring - from instantiation to termination.
-
-`@Component` - whenever you write a class, marking it with the @Component annotation makes a class instance available in the Spring Context (essentially a registry of instances of various objects). Any instance in the spring context can be fetched and passed in to a constructor at instantiation using the `@Autowired` Annotation. `@Components` must be configured correctly at instantiation. After that changing them is done through event driven processes (buttons/keyboard) which you will have to write code for.
-`@Autowired` - Used to get instances of a particular object at instantiation time. A constructor or field variable marked with `@Autowired` will have an instance of the class provided so long as one (and only one) exists in the Spring Context. To get a Java object into the Spring Context, mark it with `@Component`
-`@SpringBootConfiguration` - tells Spring there's some configured items in the class - Beans/factories/etc.
-`@SpringBootApplication` - used on the application entry point. Tells Spring where to begin from - usually some top level class file.
-`@Value` - used heavily to pass properties from application.yml files, into the constructors of various classes. If we want to configure a class with a true/false switch we can just declare a new true/false variable in the application.yml called, say, `gdax.isEnabled`, set it to `true`, then when we want to pass it into a constructor we just write a constructor param and annotate it with `@Value("${gdax.isEnabled}") boolean isEnabled` and isEnabled in our code will pick up the value that is set in the config. Since .yml files are structured, we can group elements together more sensibly than a standard properties file. The only time Spring/yml struggles with config in a file is when we declare a list. We can cross that bridge if/when we get to it, For now its not a concern but something to be aware of.
-
-Spring boot also makes our lives easier by allowing us to set a testing profile that differs from the live configuration.
 
 # TESTING
 

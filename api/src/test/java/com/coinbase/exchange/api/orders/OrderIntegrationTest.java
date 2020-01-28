@@ -31,7 +31,7 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
 
     private static final Logger log = LoggerFactory.getLogger(OrderIntegrationTest.class);
 
-    ProductService productService; // TODO Mock
+    ProductService productService; // TODO Mock using mockito + mocked responses (hint: use @Mock annotation)
     AccountService accountService; // TODO Mock
     MarketDataService marketDataService;// TODO Mock
 
@@ -41,9 +41,9 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
     // products: BTC-USD, BTC-GBP, BTC-EUR, ETH-BTC, ETH-USD, LTC-BTC, LTC-USD
 
     /**
-     * Not Strictly the best test but tests placing the order and
+     * Test is too complex. This test tests placing an order and
      * then cancelling it without leaving a mess.
-     * Note: You'll need credit available
+     * Note: You'll need credit available in your test account
      */
     @Ignore
     public void canMakeLimitOrderAndGetTheOrderAndCancelIt() {

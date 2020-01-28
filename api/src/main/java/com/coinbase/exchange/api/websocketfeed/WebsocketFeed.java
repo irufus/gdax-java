@@ -120,7 +120,7 @@ public class WebsocketFeed {
 
     public void subscribe(Subscribe msg) {
         String jsonSubscribeMessage = signObject(msg);
-
+        log.info(jsonSubscribeMessage);
         // send subscription message to websocket
         sendMessage(jsonSubscribeMessage);
 

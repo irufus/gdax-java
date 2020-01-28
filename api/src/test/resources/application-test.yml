@@ -4,9 +4,9 @@
 exchange:
   api:
     baseUrl: "https://api-public.sandbox.pro.coinbase.com"
-  key: ""
-  secret: ""
-  passphrase: ""
+  key: "e86b532c59a0e58eebcf32ee7efb486f"
+  secret: "IB8/XWY9kRdw3TMirmvYOnRjpNXJlxEMZxeX104pVNx30p2YGP5E3dN7pedpnVasz5cepNR1eHRzANNV0sTKqg=="
+  passphrase: "4auvra80twd"
 
 websocket:
   baseUrl: "wss://ws-feed-public.sandbox.pro.coinbase.com"

@@ -32,13 +32,12 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     public CoinbaseExchangeImpl(final String publicKey,
                                 final String passphrase,
                                 final String baseUrl,
-                                final Signature signature,
-                                final RestTemplate restTemplate) {
+                                final Signature signature) {
         this.publicKey = publicKey;
         this.passphrase = passphrase;
         this.baseUrl = baseUrl;
         this.signature = signature;
-        this.restTemplate = restTemplate;
+        this.restTemplate = new RestTemplate();
     }
 
     @Override

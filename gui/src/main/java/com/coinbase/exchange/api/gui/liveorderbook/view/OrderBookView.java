@@ -15,23 +15,22 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO - convert to JFX rather than using Swing.
  * <p>
  * Created by robevansuk on 10/03/2017.
  */
-@Component
 public class OrderBookView extends JPanel {
 
     static final Logger log = LoggerFactory.getLogger(OrderBookView.class);
@@ -55,8 +54,7 @@ public class OrderBookView extends JPanel {
     JPanel productSelectionPanel;
     Map<String, Long> maxSequenceIds;
 
-    @Autowired
-    public OrderBookView(@Value("${gui.enabled}") boolean guiEnabled,
+    public OrderBookView(boolean guiEnabled,
                          MarketDataService marketDataService,
                          WebsocketFeed websocketFeed) {
         super();
@@ -147,21 +145,20 @@ public class OrderBookView extends JPanel {
 
                     log.info("*** Subscribing ***");
                     websocketFeed.subscribe(new Subscribe(productIds));
+                    // TODO - extract to external standalone class rather than having this mess in-line.
                     websocketFeed.addMessageHandler(new WebsocketFeed.MessageHandler() {
                         @Override
                         public void handleMessage(String json) {
                             SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
                                 @Override
                                 public Void doInBackground() {
-                                    OrderBookMessage message = getObject(json, new TypeReference<OrderBookMessage>() {
-                                    });
+                                    OrderBookMessage message = getObject(json, new TypeReference<OrderBookMessage>() {});
 
                                     String type = message.getType();
 
                                     if (type.equals("heartbeat")) {
                                         log.info("heartbeat");
-                                        thisOrderBook.heartBeat(getObject(json, new TypeReference<HeartBeat>() {
-                                        }));
+                                        thisOrderBook.heartBeat(getObject(json, new TypeReference<HeartBeat>() {}));
                                     } else if (type.equals("received")) {
                                         // received orders are not necessarily live orders - so I'm ignoring these msgs as they're
                                         // subject to change.
@@ -190,7 +187,7 @@ public class OrderBookView extends JPanel {
                                     } else {
                                         // Not sure this is required unless I'm attempting to place orders
                                         // ERROR
-                                        log.error("Error {}", json);
+                                        log.info("Unrecognised message type {}", json);
                                         // orderBook.orderBookError(getObject(json, new TypeReference<ErrorOrderBookMessage>(){}));
                                     }
                                     return null;
@@ -219,6 +216,7 @@ public class OrderBookView extends JPanel {
     public <T> T getObject(String json, TypeReference<T> type) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
+            log.info(json);
             return objectMapper.readValue(json, type);
         } catch (IOException e) {
             e.printStackTrace();
