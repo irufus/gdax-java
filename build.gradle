@@ -34,7 +34,6 @@ dependencies {
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.3'
     compile 'org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE'
     compile 'org.springframework:spring-context:5.1.5.RELEASE'
-    compile 'joda-time:joda-time:2.9.7'
     compile 'org.slf4j:slf4j-api:1.7.26'
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'ch.qos.logback:logback-core:1.2.3'

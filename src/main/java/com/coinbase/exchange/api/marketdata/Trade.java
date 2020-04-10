@@ -1,14 +1,13 @@
 package com.coinbase.exchange.api.marketdata;
 
-import org.joda.time.DateTime;
-
 import java.math.BigDecimal;
+import java.time.Instant;
 
 /**
  * Created by robevansuk on 12/03/2017.
  */
 public class Trade {
-    DateTime time;
+    Instant time;
     Long trade_id;
     BigDecimal price;
     BigDecimal size;
@@ -16,7 +15,7 @@ public class Trade {
 
     public Trade() {}
 
-    public Trade(DateTime time, Long trade_id, BigDecimal price, BigDecimal size, String side) {
+    public Trade(Instant time, Long trade_id, BigDecimal price, BigDecimal size, String side) {
         this.time = time;
         this.trade_id = trade_id;
         this.price = price;
@@ -24,11 +23,11 @@ public class Trade {
         this.side = side;
     }
 
-    public DateTime getTime() {
+    public Instant getTime() {
         return time;
     }
 
-    public void setTime(DateTime time) {
+    public void setTime(Instant time) {
         this.time = time;
     }
 
