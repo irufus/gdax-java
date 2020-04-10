@@ -20,31 +20,30 @@ import java.math.BigDecimal;
  * funds field which indicates how much quote currency will be used to buy
  * or sell. For example, a funds field of 100.00 for the BTC-USD product
  * would indicate a purchase of up to 100.00 USD worth of bitcoin.
- *
+ * <pre>
  * {
-     "type": "received",
-     "time": "2014-11-07T08:19:27.028459Z",
-     "product_id": "BTC-USD",
-     "sequence": 10,
-     "order_id": "d50ec984-77a8-460a-b958-66f114b0de9b",
-     "size": "1.34",
-     "price": "502.1",
-     "side": "buy",
-     "order_type": "limit"
-   }
-
-   {
-     "type": "received",
-     "time": "2014-11-09T08:19:27.028459Z",
-     "product_id": "BTC-USD",
-     "sequence": 12,
-     "order_id": "dddec984-77a8-460a-b958-66f114b0de9b",
-     "funds": "3000.234",
-     "side": "buy",
-     "order_type": "market"
-   }
+ *    "type": "received",
+ *    "time": "2014-11-07T08:19:27.028459Z",
+ *    "product_id": "BTC-USD",
+ *    "sequence": 10,
+ *    "order_id": "d50ec984-77a8-460a-b958-66f114b0de9b",
+ *    "size": "1.34",
+ *    "price": "502.1",
+ *    "side": "buy",
+ *    "order_type": "limit"
+ *  }
  *
- * Created by robevansuk on 13/03/2017.
+ *  {
+ *    "type": "received",
+ *    "time": "2014-11-09T08:19:27.028459Z",
+ *    "product_id": "BTC-USD",
+ *    "sequence": 12,
+ *    "order_id": "dddec984-77a8-460a-b958-66f114b0de9b",
+ *    "funds": "3000.234",
+ *    "side": "buy",
+ *    "order_type": "market"
+ *  }
+ * </pre>
  */
 public class OrderReceivedOrderBookMessage extends OrderBookMessage {
 

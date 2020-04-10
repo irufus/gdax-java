@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  * so the relevant parts can be determined and the messages typed.
  * Created by robevansuk on 15/03/2017.
  */
-public class OrderBookMessage implements Comparable {
+public class OrderBookMessage implements Comparable<OrderBookMessage> {
     String type;
     String time;
     String product_id;
@@ -41,47 +41,6 @@ public class OrderBookMessage implements Comparable {
 
     String client_oid;
     String stp;
-
-    public OrderBookMessage() { }
-
-    public OrderBookMessage(String type, String time, String product_id,
-                            String trade_id, Long sequence, String side,
-                            String order_id, String order_type, BigDecimal funds,
-                            BigDecimal size, BigDecimal price, BigDecimal new_size,
-                            BigDecimal old_size, BigDecimal new_funds,
-                            BigDecimal old_funds, String reason,
-                            BigDecimal remaining_size, String maker_order_id,
-                            String taker_order_id, String taker_user_id, String user_id,
-                            String taker_profile_id, String profile_id, String last_trade_id,
-                            String client_oid, String stp) {
-        this.type = type;
-        this.time = time;
-        this.product_id = product_id;
-        this.trade_id = trade_id;
-        this.sequence = sequence;
-        this.side = side;
-        this.order_id = order_id;
-        this.order_type = order_type;
-        this.funds = funds;
-        this.size = size;
-        this.price = price;
-        this.new_size = new_size;
-        this.old_size = old_size;
-        this.new_funds = new_funds;
-        this.old_funds = old_funds;
-        this.reason = reason;
-        this.remaining_size = remaining_size;
-        this.maker_order_id = maker_order_id;
-        this.taker_order_id = taker_order_id;
-        this.taker_user_id = taker_user_id;
-        this.user_id = user_id;
-        this.taker_profile_id = taker_profile_id;
-        this.profile_id = profile_id;
-        this.last_trade_id = last_trade_id;
-        this.client_oid = client_oid;
-        this.stp = stp;
-
-    }
 
     public String getClient_oid() {
         return client_oid;
@@ -292,8 +251,8 @@ public class OrderBookMessage implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        return this.getSequence().compareTo(((OrderBookMessage) o).getSequence());
+    public int compareTo(OrderBookMessage other) {
+        return this.getSequence().compareTo(other.getSequence());
 //        if (getSide().equals("buy")) {
 //            return result;
 //        } else {

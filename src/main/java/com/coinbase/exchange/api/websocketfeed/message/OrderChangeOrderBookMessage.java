@@ -8,7 +8,7 @@ package com.coinbase.exchange.api.websocketfeed.message;
  * well as received but not yet open. change messages are also
  * sent when a new market order goes through self trade prevention
  * and the funds for the market order have changed.
- *
+ * <pre>
  * {
  *     "type": "change",
  *     "time": "2014-11-07T08:19:27.028459Z",
@@ -20,7 +20,7 @@ package com.coinbase.exchange.api.websocketfeed.message;
  *     "price": "400.23",
  *     "side": "sell"
  * }
- *
+ * </pre>
  * change messages for received but not yet open orders can be
  * ignored when building a real-time order book. The side field
  * of a change message and price can be used as indicators for whether
@@ -29,7 +29,7 @@ package com.coinbase.exchange.api.websocketfeed.message;
  * Any change message where the price is null indicates that the change
  * message is for a market order. Change messages for limit orders will
  * always have a price specified.
- *
+ * <pre>
  * {
  *     "type": "change",
  *     "time": "2014-11-07T08:19:27.028459Z",
@@ -41,8 +41,7 @@ package com.coinbase.exchange.api.websocketfeed.message;
  *     "price": "400.23",
  *     "side": "sell"
  * }
- *
- * Created by robevansuk on 15/03/2017.
+ * </pre>
  */
 public class OrderChangeOrderBookMessage extends OrderBookMessage {
 

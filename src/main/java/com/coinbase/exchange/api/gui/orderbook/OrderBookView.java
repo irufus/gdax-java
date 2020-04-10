@@ -138,7 +138,8 @@ public class OrderBookView extends JPanel {
 
                 log.info("*** Subscribing ***");
                 websocketFeed.connect();
-                Subscribe subscribeRequest = new Subscribe(productIds);
+                Subscribe subscribeRequest = new Subscribe();
+                subscribeRequest.setProduct_ids(productIds);
                 websocketFeed.subscribe(subscribeRequest, thisOrderBook);
                 return null;
             }
