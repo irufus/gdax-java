@@ -120,16 +120,14 @@ public class WebsocketFeed {
     }
 
 
-    public void subscribe(Subscribe msg, OrderBookView orderBook) {
-        String jsonSubscribeMessage = signObject(msg);
-
+    public void subscribe(Subscribe subscribeReq, OrderBookView orderBook) {
         addMessageHandler(json -> {
 
-            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
                 public Void doInBackground() {
                     log.info("received: " + json);
-                    FeedMessage message = getObject(json, new TypeReference<FeedMessage>() {});
+                    FeedMessage message = getObject(json, FeedMessage.class);
 
                     if (message instanceof HeartBeat)
                     {
@@ -183,17 +181,13 @@ public class WebsocketFeed {
                     }
                     return null;
                 }
-
-                public void done() {
-
-                }
             };
             worker.execute();
         });
 
         // send message to websocket
+        String jsonSubscribeMessage = signObject(subscribeReq);
         sendMessage(jsonSubscribeMessage);
-
     }
 
     // TODO - get this into postHandle interceptor.
@@ -210,7 +204,7 @@ public class WebsocketFeed {
         return toJson(jsonObj);
     }
 
-    public <T> T getObject(String json, TypeReference<T> type) {
+    public <T> T getObject(String json, Class<T> type) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
