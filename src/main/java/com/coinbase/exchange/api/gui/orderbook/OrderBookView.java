@@ -8,6 +8,7 @@ import com.coinbase.exchange.api.websocketfeed.WebsocketFeed;
 import com.coinbase.exchange.api.websocketfeed.message.HeartBeat;
 import com.coinbase.exchange.api.websocketfeed.message.OrderBookMessage;
 import com.coinbase.exchange.api.websocketfeed.message.Subscribe;
+import com.coinbase.exchange.api.websocketfeed.message.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
+
+import static com.coinbase.exchange.api.websocketfeed.message.Channel.*;
 
 /**
  * TODO - convert to JFX rather than using Swing.
@@ -123,7 +126,7 @@ public class OrderBookView extends JPanel {
                     orderBookPanelView.add(splitPane);
 
                     orderBookSplitPaneMap.put(productId, orderBookPanelView);
-                    maxSequenceIds.put(productId, new Long(0));
+                    maxSequenceIds.put(productId, 0L);
                 }
 
                 setLobViewer(productIds[0]);
@@ -140,6 +143,7 @@ public class OrderBookView extends JPanel {
                 websocketFeed.connect();
                 Subscribe subscribeRequest = new Subscribe();
                 subscribeRequest.setProduct_ids(productIds);
+                subscribeRequest.setChannels(new Channel[]{CHANNEL_FULL});
                 websocketFeed.subscribe(subscribeRequest, thisOrderBook);
                 return null;
             }

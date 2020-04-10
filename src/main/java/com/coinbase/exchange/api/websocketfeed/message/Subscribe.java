@@ -27,13 +27,14 @@ package com.coinbase.exchange.api.websocketfeed.message;
  * }
  * </pre>
  *
- * You'll receive a {@link SubscribeResponseMessage}
+ * You'll receive a {@link SubscriptionsMessage}
  * See docs https://docs.pro.coinbase.com/#subscribe
  */
 public class Subscribe {
 
     private String type = "subscribe";
     private String[] product_ids;
+    private Channel[] channels;
 
     // Used for signing the subscribe message to the Websocket feed
     private String signature;
@@ -77,4 +78,11 @@ public class Subscribe {
         return this;
     }
 
+    public void setChannels(Channel[] channels) {
+        this.channels = channels;
+    }
+
+    public Channel[] getChannels() {
+        return channels;
+    }
 }
