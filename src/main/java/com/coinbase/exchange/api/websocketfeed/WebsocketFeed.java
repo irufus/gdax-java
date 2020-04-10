@@ -65,19 +65,24 @@ public class WebsocketFeed {
      */
     @OnOpen
     public void onOpen(Session userSession) {
+        log.info("opened websocket");
         this.userSession = userSession;
     }
 
     /**
      * Callback hook for Connection close events.
      *
-     * @param userSession the userSession which is getting closed.
      * @param reason      the reason for connection close
      */
     @OnClose
-    public void onClose(Session userSession, CloseReason reason) {
-        System.out.println("closing websocket");
+    public void onClose(CloseReason reason) {
+        log.info("closing websocket " + reason);
         this.userSession = null;
+    }
+
+    @OnError
+    public void onError(Throwable t) {
+        log.error("websocket error", t);
     }
 
     /**
@@ -200,7 +205,7 @@ public class WebsocketFeed {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(json, type);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Parsing failed", e);
         }
         return null;
     }
