@@ -3,9 +3,9 @@ package com.coinbase.exchange.api.websocketfeed;
 import com.coinbase.exchange.api.exchange.Signature;
 import com.coinbase.exchange.api.gui.orderbook.OrderBookView;
 import com.coinbase.exchange.api.websocketfeed.message.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,8 +188,7 @@ public class WebsocketFeed {
 
     // TODO - get this into postHandle interceptor.
     public String signObject(Subscribe jsonObj) {
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(jsonObj);
+        String jsonString = toJson(jsonObj);
 
         String timestamp = Instant.now().getEpochSecond() + "";
         jsonObj.setKey(key);
@@ -197,7 +196,7 @@ public class WebsocketFeed {
         jsonObj.setPassphrase(passphrase);
         jsonObj.setSignature(signature.generate("", "GET", jsonString, timestamp));
 
-        return gson.toJson(jsonObj);
+        return toJson(jsonObj);
     }
 
     public <T> T getObject(String json, TypeReference<T> type) {
@@ -208,6 +207,17 @@ public class WebsocketFeed {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private String toJson(Object object) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json = objectMapper.writeValueAsString(object);
+            return json;
+        } catch (JsonProcessingException e) {
+            log.error("Unable to serialize", e);
+            throw new RuntimeException("Unable to serialize");
+        }
     }
 
     /**

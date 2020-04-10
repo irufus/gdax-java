@@ -27,7 +27,6 @@ project.applicationName = 'gdax-java'
 
 dependencies {
     compile 'junit:junit:4.12'
-    compile 'com.google.code.gson:gson:2.8.5'
     compile 'com.fasterxml.jackson.core:jackson-core:2.10.3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.10.3'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.10.3'
