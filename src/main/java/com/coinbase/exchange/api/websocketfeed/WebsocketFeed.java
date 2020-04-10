@@ -189,14 +189,15 @@ public class WebsocketFeed {
 
     // TODO - get this into postHandle interceptor.
     public String signObject(Subscribe jsonObj) {
-        String jsonString = toJson(jsonObj);
+        if (key != null && !key.isBlank()) {
+            String jsonString = toJson(jsonObj);
 
-        String timestamp = Instant.now().getEpochSecond() + "";
-        jsonObj.setKey(key);
-        jsonObj.setTimestamp(timestamp);
-        jsonObj.setPassphrase(passphrase);
-        jsonObj.setSignature(signature.generate("", "GET", jsonString, timestamp));
-
+            String timestamp = Instant.now().getEpochSecond() + "";
+            jsonObj.setKey(key);
+            jsonObj.setTimestamp(timestamp);
+            jsonObj.setPassphrase(passphrase);
+            jsonObj.setSignature(signature.generate("", "GET", jsonString, timestamp));
+        }
         return toJson(jsonObj);
     }
 
