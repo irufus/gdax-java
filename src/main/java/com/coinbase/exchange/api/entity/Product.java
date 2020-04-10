@@ -1,10 +1,33 @@
 package com.coinbase.exchange.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.math.BigDecimal;
 
 /**
- * Created by irufus on 2/25/15.
+ * <pre>
+ *     {
+ *       "id": "BTC-USD",
+ *       "base_currency": "BTC",
+ *       "quote_currency": "USD",
+ *       "base_min_size": "0.001",
+ *       "base_max_size": "280",
+ *       "base_increment": "0.00000001",
+ *       "quote_increment": "0.01",
+ *       "display_name": "BTC/USD",
+ *       "status": "online",
+ *       "margin_enabled": false,
+ *       "status_message": "",
+ *       "min_market_funds": "5",
+ *       "max_market_funds": "1000000",
+ *       "post_only": false,
+ *       "limit_only": false,
+ *       "cancel_only": false,
+ *       "type": "spot"
+ *     }
+ * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Product {
     private String id;
     private String base_currency;
@@ -12,6 +35,16 @@ public class Product {
     private Double base_min_size;
     private Double base_max_size;
     private Double quote_increment;
+
+/*TODO      Object base_increment;
+     Object display_name;
+     Object status;
+     Object status_message;
+     Object min_market_funds;
+     Object max_market_funds;
+     Object post_only;
+     Object limit_only;
+     Object cancel_only;*/
 
     public Double getQuote_increment() {
         return quote_increment;
