@@ -55,24 +55,7 @@ public class OrderReceivedOrderBookMessage extends OrderBookMessage {
     BigDecimal size;
     BigDecimal price;
     String side;
+    /** limit/market order types. */
     String order_type;
     BigDecimal funds;
-
-    public OrderReceivedOrderBookMessage() { }
-
-    public OrderReceivedOrderBookMessage(OrderBookMessage orderBookMessage) {
-        this.type = orderBookMessage.type;
-        this.time = orderBookMessage.time;
-        this.product_id = orderBookMessage.product_id;
-        this.sequence = orderBookMessage.sequence;
-        this.order_id = orderBookMessage.order_id;
-
-        this.size = orderBookMessage.size;
-        this.price = orderBookMessage.price;
-
-        this.funds = orderBookMessage.funds;
-
-        this.side = orderBookMessage.side;
-        this.order_type = orderBookMessage.order_type; // limit/market order types.
-    }
 }
