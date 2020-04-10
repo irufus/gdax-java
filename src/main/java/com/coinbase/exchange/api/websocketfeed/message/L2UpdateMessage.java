@@ -22,19 +22,8 @@ import java.time.Instant;
  * }
  * </pre>
  */
-public class L2UpdateMessage extends OrderBookMessage {
-    private String product_id;
+public class L2UpdateMessage extends FeedMessage {
     private String[][] changes;
-    private Instant time;
-
-
-    public String getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
-    }
 
     public String[][] getChanges() {
         return changes;
@@ -42,15 +31,5 @@ public class L2UpdateMessage extends OrderBookMessage {
 
     public void setChanges(String[][] changes) {
         this.changes = changes;
-    }
-
-    @Override
-    public Instant getTime() {
-        return time;
-    }
-
-    @Override
-    public void setTime(Instant time) {
-        this.time = time;
     }
 }

@@ -1,6 +1,5 @@
 package com.coinbase.exchange.api.websocketfeed.message;
 
-import java.math.BigDecimal;
 
 /**
  * A valid order has been received and is now active. This message is
@@ -46,16 +45,4 @@ import java.math.BigDecimal;
  * </pre>
  */
 public class OrderReceivedOrderBookMessage extends OrderBookMessage {
-
-    String type;
-    String time;
-    String product_id;
-    Long sequence;
-    String order_id;
-    BigDecimal size;
-    BigDecimal price;
-    String side;
-    /** limit/market order types. */
-    String order_type;
-    BigDecimal funds;
 }

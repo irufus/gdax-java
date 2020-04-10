@@ -12,7 +12,7 @@ package com.coinbase.exchange.api.websocketfeed.message;
  * }
  * </pre>
  */
-public class HeartBeat extends OrderBookMessage {
+public class HeartBeat extends FeedMessage {
 
     private String last_trade_id;
 

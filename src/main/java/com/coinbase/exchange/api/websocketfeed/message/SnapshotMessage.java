@@ -12,18 +12,9 @@ package com.coinbase.exchange.api.websocketfeed.message;
  * }
  * </pre>
  */
-public class SnapshotMessage extends OrderBookMessage {
-    private String product_id;
+public class SnapshotMessage extends FeedMessage {
     private String[][] bids;
     private String[][] asks;
-
-    public String getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
-    }
 
     public String[][] getBids() {
         return bids;

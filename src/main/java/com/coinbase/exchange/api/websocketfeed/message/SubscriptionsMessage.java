@@ -31,7 +31,7 @@ package com.coinbase.exchange.api.websocketfeed.message;
  * }
  * </pre>
  */
-public class SubscriptionsMessage extends OrderBookMessage {
+public class SubscriptionsMessage extends FeedMessage {
     private Channel[] channels;
 
     public Channel[] getChannels() {

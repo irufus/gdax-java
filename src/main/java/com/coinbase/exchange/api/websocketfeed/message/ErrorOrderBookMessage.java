@@ -11,7 +11,7 @@ package com.coinbase.exchange.api.websocketfeed.message;
  * }
  * </pre>
  */
-public class ErrorOrderBookMessage extends OrderBookMessage {
+public class ErrorOrderBookMessage extends FeedMessage {
 
     private String message;
 

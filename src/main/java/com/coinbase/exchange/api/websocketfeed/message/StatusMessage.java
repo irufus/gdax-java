@@ -62,7 +62,7 @@ import com.coinbase.exchange.api.entity.Product;
  * }
  * </pre>
  */
-public class StatusMessage extends OrderBookMessage {
+public class StatusMessage extends FeedMessage {
     private Product[] products;
     private Currency[] currencies;
 

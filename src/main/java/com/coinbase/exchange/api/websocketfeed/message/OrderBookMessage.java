@@ -1,66 +1,36 @@
 package com.coinbase.exchange.api.websocketfeed.message;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import java.math.BigDecimal;
-import java.time.Instant;
 
-/**
- * Generic message that will be passed as an argument to other message types
- * so the relevant parts can be determined and the messages typed.
- */
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes({
-      @JsonSubTypes.Type(value = ErrorOrderBookMessage.class, name = "error"),
-      @JsonSubTypes.Type(value = SubscriptionsMessage.class, name = "subscriptions"),
-      @JsonSubTypes.Type(value = HeartBeat.class, name = "heartbeat"),
-      @JsonSubTypes.Type(value = OrderChangeOrderBookMessage.class, name = "change"),
-      @JsonSubTypes.Type(value = OrderDoneOrderBookMessage.class, name = "done"),
-      @JsonSubTypes.Type(value = OrderMatchOrderBookMessage.class, name = "match"),
-      @JsonSubTypes.Type(value = OrderMatchOrderBookMessage.class, name = "last_match"),
-      @JsonSubTypes.Type(value = OrderOpenOrderBookMessage.class, name = "open"),
-      @JsonSubTypes.Type(value = OrderReceivedOrderBookMessage.class, name = "received"),
-      @JsonSubTypes.Type(value = TickerMessage.class, name = "ticker"),
-      @JsonSubTypes.Type(value = ActivateOrderBookMessage.class, name = "activate"),
-      @JsonSubTypes.Type(value = StatusMessage.class, name = "status"),
-      @JsonSubTypes.Type(value = SnapshotMessage.class, name = "snapshot"),
-      @JsonSubTypes.Type(value = L2UpdateMessage.class, name = "l2update"),
-})
-public class OrderBookMessage implements Comparable<OrderBookMessage> {
-    String type;  // "received" | "open" | "done" | "match" | "change" | "activate"
-    Instant time;
-    String product_id;
-    String trade_id;
-    Long sequence;
-    String side;
-    String order_id;
-    String order_type;
+public class OrderBookMessage extends FeedMessage implements Comparable<OrderBookMessage> {
+    private String trade_id;
+    private String side;
+    private String order_id;
+    /** limit/market order types. */
+    private String order_type;
 
-    BigDecimal funds;
+    private BigDecimal funds;
 
-    BigDecimal size;
-    BigDecimal price;
+    private BigDecimal size;
+    private BigDecimal price;
 
-    BigDecimal new_size;
-    BigDecimal old_size;
-    BigDecimal new_funds;
-    BigDecimal old_funds;
+    private BigDecimal new_size;
+    private BigDecimal old_size;
+    private BigDecimal new_funds;
+    private BigDecimal old_funds;
 
-    String reason;
-    BigDecimal remaining_size;
+    private String reason;
+    private BigDecimal remaining_size;
 
-    String maker_order_id;
-    String taker_order_id;
-    String taker_user_id;
-    String user_id;
-    String taker_profile_id;
-    String profile_id;
+    private String maker_order_id;
+    private String taker_order_id;
+    private String taker_user_id;
+    private String taker_profile_id;
+    private String user_id;
+    private String profile_id;
 
-    String client_oid;
-    String stp;
+    private String client_oid;
+    private String stp;
 
     public String getClient_oid() {
         return client_oid;
@@ -78,44 +48,12 @@ public class OrderBookMessage implements Comparable<OrderBookMessage> {
         this.stp = stp;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Instant getTime() {
-        return time;
-    }
-
-    public void setTime(Instant time) {
-        this.time = time;
-    }
-
-    public String getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
-    }
-
     public String getTrade_id() {
         return trade_id;
     }
 
     public void setTrade_id(String trade_id) {
         this.trade_id = trade_id;
-    }
-
-    public Long getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Long sequence) {
-        this.sequence = sequence;
     }
 
     public String getSide() {

@@ -24,7 +24,7 @@ import java.math.BigDecimal;
  * }
  * </pre>
  */
-public class TickerMessage extends OrderBookMessage {
+public class TickerMessage extends FeedMessage {
 /*    Object sequence;
     Object product_id;
     Object price;
