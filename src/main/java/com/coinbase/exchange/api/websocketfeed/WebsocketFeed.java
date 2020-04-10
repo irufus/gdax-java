@@ -129,14 +129,13 @@ public class WebsocketFeed {
                 @Override
                 public Void doInBackground() {
                     log.info("received: " + json);
-                    OrderBookMessage message = getObject(json, new TypeReference<OrderBookMessage>() {});
-
-                    String type = message.getType();
+                    FeedMessage message = getObject(json, new TypeReference<FeedMessage>() {});
 
                     if (message instanceof HeartBeat)
                     {
                         log.info("heartbeat");
-                        orderBook.heartBeat(getObject(json, new TypeReference<HeartBeat>() {}));
+                        HeartBeat heartBeat = (HeartBeat) message;
+                        orderBook.heartBeat(heartBeat);
                     }
                     else if (message instanceof OrderReceivedOrderBookMessage)
                     {
@@ -145,37 +144,40 @@ public class WebsocketFeed {
                         log.info("order received {}", json);
 
                     }
-                    else if (message instanceof  OrderOpenOrderBookMessage)
+                    else if (message instanceof OrderOpenOrderBookMessage)
                     {
                         log.info("Order opened: " + json );
-                        orderBook.updateOrderBook(getObject(json, new TypeReference<OrderOpenOrderBookMessage>() {}));
+                        OrderOpenOrderBookMessage openOrderBookMessage = (OrderOpenOrderBookMessage) message;
+                        orderBook.updateOrderBook(openOrderBookMessage);
                     }
-                    else if (message instanceof  OrderDoneOrderBookMessage)
+                    else if (message instanceof OrderDoneOrderBookMessage)
                     {
                         log.info("Order done: " + json);
-                        if (!message.getReason().equals("filled")) {
-                            OrderBookMessage doneOrder = getObject(json, new TypeReference<OrderDoneOrderBookMessage>() {});
+                        OrderBookMessage doneOrder = (OrderDoneOrderBookMessage) message;
+                        if (!doneOrder.getReason().equals("filled")) {
                             orderBook.updateOrderBook(doneOrder);
                         }
                     }
                     else if (message instanceof  OrderMatchOrderBookMessage)
                     {
                         log.info("Order matched: " + json);
-                        OrderBookMessage matchedOrder = getObject(json, new TypeReference<OrderMatchOrderBookMessage>(){});
+                        OrderBookMessage matchedOrder = (OrderBookMessage) message;
                         orderBook.updateOrderBook(matchedOrder);
                     }
                     else if (message instanceof  OrderChangeOrderBookMessage)
                     {
                         // TODO - possibly need to provide implementation for this to work in real time.
-                         log.info("Order Changed {}", json);
-                        // orderBook.updateOrderBookWithChange(getObject(json, new TypeReference<OrderChangeOrderBookMessage>(){}));
+                        log.info("Order Changed {}", json);
+                        OrderChangeOrderBookMessage changeOrderMessage = (OrderChangeOrderBookMessage) message;
+                        // orderBook.updateOrderBookWithChange(changeOrderMessage);
                     }
                     else if (message instanceof  ErrorOrderBookMessage)
                     {
                         // Not sure this is required unless I'm attempting to place orders
                         // ERROR
                         log.error("Error {}", json);
-                        // orderBook.orderBookError(getObject(json, new TypeReference<ErrorOrderBookMessage>(){}));
+                        ErrorOrderBookMessage errorMessage = (ErrorOrderBookMessage) message;
+                        // orderBook.orderBookError(errorMessage);
                     } else {
                         log.warn("Unsupported message " + message);
                     }
