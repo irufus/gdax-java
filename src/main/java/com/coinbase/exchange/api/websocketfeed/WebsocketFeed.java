@@ -6,6 +6,7 @@ import com.coinbase.exchange.api.websocketfeed.message.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,8 @@ public class WebsocketFeed {
     public void connect() {
         try {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            container.setDefaultMaxBinaryMessageBufferSize(1024 * 1024);
+            container.setDefaultMaxTextMessageBufferSize(1024 * 1024);
             container.connectToServer(this, new URI(websocketUrl));
         } catch (Exception e) {
             log.error("Could not connect to remote server", e);
@@ -112,6 +115,7 @@ public class WebsocketFeed {
      * @param message
      */
     public void sendMessage(String message) {
+        log.info("send: " + message);
         this.userSession.getAsyncRemote().sendText(message);
     }
 
@@ -124,6 +128,7 @@ public class WebsocketFeed {
             SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
                 @Override
                 public Void doInBackground() {
+                    log.info("received: " + json);
                     OrderBookMessage message = getObject(json, new TypeReference<OrderBookMessage>() {});
 
                     String type = message.getType();
@@ -204,6 +209,7 @@ public class WebsocketFeed {
     public <T> T getObject(String json, TypeReference<T> type) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
             return objectMapper.readValue(json, type);
         } catch (IOException e) {
             log.error("Parsing failed", e);
@@ -214,6 +220,7 @@ public class WebsocketFeed {
     private String toJson(Object object) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
             String json = objectMapper.writeValueAsString(object);
             return json;
         } catch (JsonProcessingException e) {
