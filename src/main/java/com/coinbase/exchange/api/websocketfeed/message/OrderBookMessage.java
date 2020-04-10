@@ -1,15 +1,37 @@
 package com.coinbase.exchange.api.websocketfeed.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.math.BigDecimal;
+import java.time.Instant;
 
 /**
  * Generic message that will be passed as an argument to other message types
  * so the relevant parts can be determined and the messages typed.
- * Created by robevansuk on 15/03/2017.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({
+      @JsonSubTypes.Type(value = ErrorOrderBookMessage.class, name = "error"),
+      @JsonSubTypes.Type(value = SubscriptionsMessage.class, name = "subscriptions"),
+      @JsonSubTypes.Type(value = HeartBeat.class, name = "heartbeat"),
+      @JsonSubTypes.Type(value = OrderChangeOrderBookMessage.class, name = "change"),
+      @JsonSubTypes.Type(value = OrderDoneOrderBookMessage.class, name = "done"),
+      @JsonSubTypes.Type(value = OrderMatchOrderBookMessage.class, name = "match"),
+      @JsonSubTypes.Type(value = OrderMatchOrderBookMessage.class, name = "last_match"),
+      @JsonSubTypes.Type(value = OrderOpenOrderBookMessage.class, name = "open"),
+      @JsonSubTypes.Type(value = OrderReceivedOrderBookMessage.class, name = "received"),
+      @JsonSubTypes.Type(value = TickerMessage.class, name = "ticker"),
+      @JsonSubTypes.Type(value = ActivateOrderBookMessage.class, name = "activate"),
+      @JsonSubTypes.Type(value = StatusMessage.class, name = "status"),
+      @JsonSubTypes.Type(value = SnapshotMessage.class, name = "snapshot"),
+      @JsonSubTypes.Type(value = L2UpdateMessage.class, name = "l2update"),
+})
 public class OrderBookMessage implements Comparable<OrderBookMessage> {
-    String type;
-    String time;
+    String type;  // "received" | "open" | "done" | "match" | "change" | "activate"
+    Instant time;
     String product_id;
     String trade_id;
     Long sequence;
@@ -36,8 +58,6 @@ public class OrderBookMessage implements Comparable<OrderBookMessage> {
     String user_id;
     String taker_profile_id;
     String profile_id;
-
-    String last_trade_id;
 
     String client_oid;
     String stp;
@@ -66,11 +86,11 @@ public class OrderBookMessage implements Comparable<OrderBookMessage> {
         this.type = type;
     }
 
-    public String getTime() {
+    public Instant getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Instant time) {
         this.time = time;
     }
 
@@ -240,14 +260,6 @@ public class OrderBookMessage implements Comparable<OrderBookMessage> {
 
     public void setProfile_id(String profile_id) {
         this.profile_id = profile_id;
-    }
-
-    public String getLast_trade_id() {
-        return last_trade_id;
-    }
-
-    public void setLast_trade_id(String last_trade_id) {
-        this.last_trade_id = last_trade_id;
     }
 
     @Override

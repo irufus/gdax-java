@@ -133,24 +133,24 @@ public class WebsocketFeed {
 
                     String type = message.getType();
 
-                    if (type.equals("heartbeat"))
+                    if (message instanceof HeartBeat)
                     {
                         log.info("heartbeat");
                         orderBook.heartBeat(getObject(json, new TypeReference<HeartBeat>() {}));
                     }
-                    else if (type.equals("received"))
+                    else if (message instanceof OrderReceivedOrderBookMessage)
                     {
                         // received orders are not necessarily live orders - so I'm ignoring these msgs as they're
                         // subject to change.
                         log.info("order received {}", json);
 
                     }
-                    else if (type.equals("open"))
+                    else if (message instanceof  OrderOpenOrderBookMessage)
                     {
                         log.info("Order opened: " + json );
                         orderBook.updateOrderBook(getObject(json, new TypeReference<OrderOpenOrderBookMessage>() {}));
                     }
-                    else if (type.equals("done"))
+                    else if (message instanceof  OrderDoneOrderBookMessage)
                     {
                         log.info("Order done: " + json);
                         if (!message.getReason().equals("filled")) {
@@ -158,24 +158,26 @@ public class WebsocketFeed {
                             orderBook.updateOrderBook(doneOrder);
                         }
                     }
-                    else if (type.equals("match"))
+                    else if (message instanceof  OrderMatchOrderBookMessage)
                     {
                         log.info("Order matched: " + json);
                         OrderBookMessage matchedOrder = getObject(json, new TypeReference<OrderMatchOrderBookMessage>(){});
                         orderBook.updateOrderBook(matchedOrder);
                     }
-                    else if (type.equals("change"))
+                    else if (message instanceof  OrderChangeOrderBookMessage)
                     {
                         // TODO - possibly need to provide implementation for this to work in real time.
                          log.info("Order Changed {}", json);
                         // orderBook.updateOrderBookWithChange(getObject(json, new TypeReference<OrderChangeOrderBookMessage>(){}));
                     }
-                    else
+                    else if (message instanceof  ErrorOrderBookMessage)
                     {
                         // Not sure this is required unless I'm attempting to place orders
                         // ERROR
                         log.error("Error {}", json);
                         // orderBook.orderBookError(getObject(json, new TypeReference<ErrorOrderBookMessage>(){}));
+                    } else {
+                        log.warn("Unsupported message " + message);
                     }
                     return null;
                 }
