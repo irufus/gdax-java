@@ -10,20 +10,16 @@ mainClassName = "com.coinbase.exchange.api.GdaxApiApplication"
 buildscript {
     repositories {
         mavenCentral()
-        maven { url "http://repo.maven.apache.org/maven2" }
         maven { url "https://repo.spring.io/release" }
-
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.3.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.6.RELEASE"
     }
 }
 
 repositories {
-    maven { url "http://central.maven.org/maven2/"}
-    maven { url "http://repo1.maven.org/maven2/" }
+    mavenCentral()
     maven { url "https://repo.spring.io/release/"}
-
 }
 
 project.archivesBaseName = 'gdax-java'
@@ -31,20 +27,18 @@ project.applicationName = 'gdax-java'
 
 dependencies {
     compile 'junit:junit:4.12'
-    compile 'com.google.code.gson:gson:2.8.5'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.9.8'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.8'
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.8'
-    compile 'org.springframework.boot:spring-boot-starter-web:2.1.3.RELEASE'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.10.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.10.3'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.10.3'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.3'
+    compile 'org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE'
     compile 'org.springframework:spring-context:5.1.5.RELEASE'
-    compile 'joda-time:joda-time:2.9.7'
     compile 'org.slf4j:slf4j-api:1.7.26'
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'ch.qos.logback:logback-core:1.2.3'
 
     testCompile 'org.springframework:spring-test:5.1.5.RELEASE'
-    testCompile 'org.springframework.boot:spring-boot-test:2.1.3.RELEASE'
+    testCompile 'org.springframework.boot:spring-boot-test:2.2.6.RELEASE'
 }
 
 tasks.withType(Jar) {
