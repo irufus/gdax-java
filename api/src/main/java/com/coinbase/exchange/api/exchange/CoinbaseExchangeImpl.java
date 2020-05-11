@@ -1,6 +1,7 @@
 package com.coinbase.exchange.api.exchange;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -99,8 +100,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
     @Override
     public <T, R> T post(String resourcePath,  ParameterizedTypeReference<T> responseType, R jsonObj) {
-        Gson gson = new Gson();
-        String jsonBody = gson.toJson(jsonObj);
+        String jsonBody = toJson(jsonObj);
 
         try {
             ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
@@ -158,5 +158,16 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
         curlTest += "-X " + method + " " + getBaseUrl() + resource;
         log.debug(curlTest);
+    }
+
+    private String toJson(Object object) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json = objectMapper.writeValueAsString(object);
+            return json;
+        } catch (JsonProcessingException e) {
+            log.error("Unable to serialize", e);
+            throw new RuntimeException("Unable to serialize");
+        }
     }
 }

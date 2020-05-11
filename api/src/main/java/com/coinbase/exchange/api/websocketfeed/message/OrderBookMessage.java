@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  * so the relevant parts can be determined and the messages typed.
  * Created by robevansuk on 15/03/2017.
  */
-public class OrderBookMessage implements Comparable {
+public class OrderBookMessage extends FeedMessage  implements Comparable {
     String type;
     String time;
     String product_id;
@@ -69,7 +69,8 @@ public class OrderBookMessage implements Comparable {
                             BigDecimal remaining_size, String maker_order_id,
                             String taker_order_id, String taker_user_id, String user_id,
                             String taker_profile_id, String profile_id, String last_trade_id,
-                            String client_oid, String stp, String message,
+                            String client_oid, String stp,
+                            String message,
                             String open_24h, String volume_24h, String low_24h,
                             String high_24h, String volume_30d, String best_bid,
                             String best_ask, String last_size, Channel[] channels) {
@@ -310,7 +311,6 @@ public class OrderBookMessage implements Comparable {
     public void setProfile_id(String profile_id) {
         this.profile_id = profile_id;
     }
-
     public String getLast_trade_id() {
         return last_trade_id;
     }
@@ -400,12 +400,7 @@ public class OrderBookMessage implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        return this.getSequence().compareTo(((OrderBookMessage) o).getSequence());
-//        if (getSide().equals("buy")) {
-//            return result;
-//        } else {
-//            return result * -1;
-//        }
+    public int compareTo(OrderBookMessage other) {
+        return this.getSequence().compareTo(other.getSequence());
     }
 }
