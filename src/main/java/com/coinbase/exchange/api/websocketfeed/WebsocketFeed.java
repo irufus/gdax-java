@@ -38,16 +38,24 @@ public class WebsocketFeed {
     String websocketUrl;
     String passphrase;
     String key;
-
+    ObjectMapper objectMapper;
+  
     @Autowired
     public WebsocketFeed(@Value("${websocket.baseUrl}") String websocketUrl,
                          @Value("${gdax.key}") String key,
                          @Value("${gdax.passphrase}") String passphrase,
+                         ObjectMapper objectMapper,
                          Signature signature) {
         this.key = key;
+        // TODO replace with @Nonnull if these values are essential
+        if (key != null && !key.isBlank()) {
+          // fail-fast if key is missing
+          throw new IllegalStateException("API key missing from configuration gdax.key");
+        }
         this.passphrase = passphrase;
         this.websocketUrl = websocketUrl;
         this.signature = signature;
+        this.objectMapper = objectMapper(new JavaTimeModule());
     }
 
     public void connect() {
@@ -192,15 +200,15 @@ public class WebsocketFeed {
 
     // TODO - get this into postHandle interceptor.
     public String signObject(Subscribe jsonObj) {
-        if (key != null && !key.isBlank()) {
-            String jsonString = toJson(jsonObj);
 
-            String timestamp = Instant.now().getEpochSecond() + "";
-            jsonObj.setKey(key);
-            jsonObj.setTimestamp(timestamp);
-            jsonObj.setPassphrase(passphrase);
-            jsonObj.setSignature(signature.generate("", "GET", jsonString, timestamp));
-        }
+        String jsonString = toJson(jsonObj);
+
+        String timestamp = Instant.now().getEpochSecond() + "";
+        jsonObj.setKey(key);
+        jsonObj.setTimestamp(timestamp);
+        jsonObj.setPassphrase(passphrase);
+        jsonObj.setSignature(signature.generate("", "GET", jsonString, timestamp));
+
         return toJson(jsonObj);
     }
 
@@ -217,8 +225,6 @@ public class WebsocketFeed {
 
     private String toJson(Object object) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
             String json = objectMapper.writeValueAsString(object);
             return json;
         } catch (JsonProcessingException e) {
