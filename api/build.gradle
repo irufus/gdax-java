@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url "http://repo.maven.apache.org/maven2" }
         maven { url "https://repo.spring.io/release" }
     }
 }

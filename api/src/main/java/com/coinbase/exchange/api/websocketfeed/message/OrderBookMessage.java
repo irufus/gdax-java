@@ -43,14 +43,14 @@ public class OrderBookMessage implements Comparable {
     String stp;
 
     String message;
-    String open_24h; //"0.01770000",
-    String volume_24h; //"227.10129703",
-    String low_24h; //"0.01767000",
-    String high_24h; //"130.00000000",
-    String volume_30d; //"606472.35955714",
-    String best_bid; //"0.01905",
-    String best_ask; //"0.01907",
-    String last_size; //"0.01"
+    String open_24h;
+    String volume_24h;
+    String low_24h;
+    String high_24h;
+    String volume_30d;
+    String best_bid;
+    String best_ask;
+    String last_size;
     Channel[] channels;
 
     public OrderBookMessage() { }

@@ -48,7 +48,7 @@ Where do you start?
 
 Add this template, add the relevant tests you want, then begin implementing your code.
 
-Note Dependency injection is far more predictable in spring if constructor injection is used (i.e. put the @Autowired annotation on the constructor rather than a field in your class).
+Note Dependency injection is far more predictable in spring if constructor injection is used (i.e. put the @Autowired/@Inject annotation on the constructor rather than a field in your class).
 
 ```
 @Component
