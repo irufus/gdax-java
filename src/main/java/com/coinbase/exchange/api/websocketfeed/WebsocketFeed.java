@@ -6,6 +6,7 @@ import com.coinbase.exchange.api.websocketfeed.message.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,28 +38,34 @@ public class WebsocketFeed {
     String websocketUrl;
     String passphrase;
     String key;
-    boolean guiEnabled;
-
+    ObjectMapper objectMapper;
+  
     @Autowired
     public WebsocketFeed(@Value("${websocket.baseUrl}") String websocketUrl,
                          @Value("${gdax.key}") String key,
                          @Value("${gdax.passphrase}") String passphrase,
-                         @Value("${gui.enabled}") boolean guiEnabled,
+                         ObjectMapper objectMapper,
                          Signature signature) {
         this.key = key;
+        // TODO replace with @Nonnull if these values are essential
+        if (key != null && !key.isBlank()) {
+          // fail-fast if key is missing
+          throw new IllegalStateException("API key missing from configuration gdax.key");
+        }
         this.passphrase = passphrase;
         this.websocketUrl = websocketUrl;
         this.signature = signature;
-        this.guiEnabled = guiEnabled;
+        this.objectMapper = objectMapper(new JavaTimeModule());
+    }
 
-        if (guiEnabled) {
-            try {
-                WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-                container.connectToServer(this, new URI(websocketUrl));
-            } catch (Exception e) {
-                System.out.println("Could not connect to remote server: " + e.getMessage() + ", " + e.getLocalizedMessage());
-                e.printStackTrace();
-            }
+    public void connect() {
+        try {
+            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            container.setDefaultMaxBinaryMessageBufferSize(1024 * 1024);
+            container.setDefaultMaxTextMessageBufferSize(1024 * 1024);
+            container.connectToServer(this, new URI(websocketUrl));
+        } catch (Exception e) {
+            log.error("Could not connect to remote server", e);
         }
     }
 
@@ -69,19 +76,24 @@ public class WebsocketFeed {
      */
     @OnOpen
     public void onOpen(Session userSession) {
+        log.info("opened websocket");
         this.userSession = userSession;
     }
 
     /**
      * Callback hook for Connection close events.
      *
-     * @param userSession the userSession which is getting closed.
      * @param reason      the reason for connection close
      */
     @OnClose
-    public void onClose(Session userSession, CloseReason reason) {
-        System.out.println("closing websocket");
+    public void onClose(CloseReason reason) {
+        log.info("closing websocket " + reason);
         this.userSession = null;
+    }
+
+    @OnError
+    public void onError(Throwable t) {
+        log.error("websocket error", t);
     }
 
     /**
@@ -111,83 +123,84 @@ public class WebsocketFeed {
      * @param message
      */
     public void sendMessage(String message) {
+        log.info("send: " + message);
         this.userSession.getAsyncRemote().sendText(message);
     }
 
 
-    public void subscribe(Subscribe msg, OrderBookView orderBook) {
-        String jsonSubscribeMessage = signObject(msg);
-
+    public void subscribe(Subscribe subscribeReq, OrderBookView orderBook) {
         addMessageHandler(json -> {
 
-            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
                 public Void doInBackground() {
-                    OrderBookMessage message = getObject(json, new TypeReference<OrderBookMessage>() {});
+                    log.info("received: " + json);
+                    FeedMessage message = getObject(json, FeedMessage.class);
 
-                    String type = message.getType();
-
-                    if (type.equals("heartbeat"))
+                    if (message instanceof HeartBeat)
                     {
                         log.info("heartbeat");
-                        orderBook.heartBeat(getObject(json, new TypeReference<HeartBeat>() {}));
+                        HeartBeat heartBeat = (HeartBeat) message;
+                        orderBook.heartBeat(heartBeat);
                     }
-                    else if (type.equals("received"))
+                    else if (message instanceof OrderReceivedOrderBookMessage)
                     {
                         // received orders are not necessarily live orders - so I'm ignoring these msgs as they're
                         // subject to change.
                         log.info("order received {}", json);
 
                     }
-                    else if (type.equals("open"))
+                    else if (message instanceof OrderOpenOrderBookMessage)
                     {
                         log.info("Order opened: " + json );
-                        orderBook.updateOrderBook(getObject(json, new TypeReference<OrderOpenOrderBookMessage>() {}));
+                        OrderOpenOrderBookMessage openOrderBookMessage = (OrderOpenOrderBookMessage) message;
+                        orderBook.updateOrderBook(openOrderBookMessage);
                     }
-                    else if (type.equals("done"))
+                    else if (message instanceof OrderDoneOrderBookMessage)
                     {
                         log.info("Order done: " + json);
-                        if (!message.getReason().equals("filled")) {
-                            OrderBookMessage doneOrder = getObject(json, new TypeReference<OrderDoneOrderBookMessage>() {});
+                        OrderBookMessage doneOrder = (OrderDoneOrderBookMessage) message;
+                        if (!doneOrder.getReason().equals("filled")) {
                             orderBook.updateOrderBook(doneOrder);
                         }
                     }
-                    else if (type.equals("match"))
+                    else if (message instanceof  OrderMatchOrderBookMessage)
                     {
                         log.info("Order matched: " + json);
-                        OrderBookMessage matchedOrder = getObject(json, new TypeReference<OrderMatchOrderBookMessage>(){});
+                        OrderBookMessage matchedOrder = (OrderBookMessage) message;
                         orderBook.updateOrderBook(matchedOrder);
                     }
-                    else if (type.equals("change"))
+                    else if (message instanceof  OrderChangeOrderBookMessage)
                     {
                         // TODO - possibly need to provide implementation for this to work in real time.
-                         log.info("Order Changed {}", json);
-                        // orderBook.updateOrderBookWithChange(getObject(json, new TypeReference<OrderChangeOrderBookMessage>(){}));
+                        log.info("Order Changed {}", json);
+                        OrderChangeOrderBookMessage changeOrderMessage = (OrderChangeOrderBookMessage) message;
+                        // orderBook.updateOrderBookWithChange(changeOrderMessage);
                     }
-                    else
+                    else if (message instanceof  ErrorOrderBookMessage)
                     {
                         // Not sure this is required unless I'm attempting to place orders
                         // ERROR
                         log.error("Error {}", json);
-                        // orderBook.orderBookError(getObject(json, new TypeReference<ErrorOrderBookMessage>(){}));
+                        ErrorOrderBookMessage errorMessage = (ErrorOrderBookMessage) message;
+                        // orderBook.orderBookError(errorMessage);
+                    } else {
+                        log.warn("Unsupported message " + message);
                     }
                     return null;
-                }
-
-                public void done() {
-
                 }
             };
             worker.execute();
         });
 
         // send message to websocket
+        String jsonSubscribeMessage = signObject(subscribeReq);
         sendMessage(jsonSubscribeMessage);
-
     }
 
     // TODO - get this into postHandle interceptor.
     public String signObject(Subscribe jsonObj) {
+
         String jsonString = toJson(jsonObj);
 
         String timestamp = Instant.now().getEpochSecond() + "";
@@ -199,19 +212,19 @@ public class WebsocketFeed {
         return toJson(jsonObj);
     }
 
-    public <T> T getObject(String json, TypeReference<T> type) {
+    public <T> T getObject(String json, Class<T> type) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
             return objectMapper.readValue(json, type);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Parsing failed", e);
         }
         return null;
     }
 
     private String toJson(Object object) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(object);
             return json;
         } catch (JsonProcessingException e) {

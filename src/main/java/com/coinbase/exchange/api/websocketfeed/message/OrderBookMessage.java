@@ -2,86 +2,35 @@ package com.coinbase.exchange.api.websocketfeed.message;
 
 import java.math.BigDecimal;
 
-/**
- * Generic message that will be passed as an argument to other message types
- * so the relevant parts can be determined and the messages typed.
- * Created by robevansuk on 15/03/2017.
- */
-public class OrderBookMessage implements Comparable {
-    String type;
-    String time;
-    String product_id;
-    String trade_id;
-    Long sequence;
-    String side;
-    String order_id;
-    String order_type;
+public class OrderBookMessage extends FeedMessage implements Comparable<OrderBookMessage> {
+    private String trade_id;
+    private String side;
+    private String order_id;
+    /** limit/market order types. */
+    private String order_type;
 
-    BigDecimal funds;
+    private BigDecimal funds;
 
-    BigDecimal size;
-    BigDecimal price;
+    private BigDecimal size;
+    private BigDecimal price;
 
-    BigDecimal new_size;
-    BigDecimal old_size;
-    BigDecimal new_funds;
-    BigDecimal old_funds;
+    private BigDecimal new_size;
+    private BigDecimal old_size;
+    private BigDecimal new_funds;
+    private BigDecimal old_funds;
 
-    String reason;
-    BigDecimal remaining_size;
+    private String reason;
+    private BigDecimal remaining_size;
 
-    String maker_order_id;
-    String taker_order_id;
-    String taker_user_id;
-    String user_id;
-    String taker_profile_id;
-    String profile_id;
+    private String maker_order_id;
+    private String taker_order_id;
+    private String taker_user_id;
+    private String taker_profile_id;
+    private String user_id;
+    private String profile_id;
 
-    String last_trade_id;
-
-    String client_oid;
-    String stp;
-
-    public OrderBookMessage() { }
-
-    public OrderBookMessage(String type, String time, String product_id,
-                            String trade_id, Long sequence, String side,
-                            String order_id, String order_type, BigDecimal funds,
-                            BigDecimal size, BigDecimal price, BigDecimal new_size,
-                            BigDecimal old_size, BigDecimal new_funds,
-                            BigDecimal old_funds, String reason,
-                            BigDecimal remaining_size, String maker_order_id,
-                            String taker_order_id, String taker_user_id, String user_id,
-                            String taker_profile_id, String profile_id, String last_trade_id,
-                            String client_oid, String stp) {
-        this.type = type;
-        this.time = time;
-        this.product_id = product_id;
-        this.trade_id = trade_id;
-        this.sequence = sequence;
-        this.side = side;
-        this.order_id = order_id;
-        this.order_type = order_type;
-        this.funds = funds;
-        this.size = size;
-        this.price = price;
-        this.new_size = new_size;
-        this.old_size = old_size;
-        this.new_funds = new_funds;
-        this.old_funds = old_funds;
-        this.reason = reason;
-        this.remaining_size = remaining_size;
-        this.maker_order_id = maker_order_id;
-        this.taker_order_id = taker_order_id;
-        this.taker_user_id = taker_user_id;
-        this.user_id = user_id;
-        this.taker_profile_id = taker_profile_id;
-        this.profile_id = profile_id;
-        this.last_trade_id = last_trade_id;
-        this.client_oid = client_oid;
-        this.stp = stp;
-
-    }
+    private String client_oid;
+    private String stp;
 
     public String getClient_oid() {
         return client_oid;
@@ -99,44 +48,12 @@ public class OrderBookMessage implements Comparable {
         this.stp = stp;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
-    }
-
     public String getTrade_id() {
         return trade_id;
     }
 
     public void setTrade_id(String trade_id) {
         this.trade_id = trade_id;
-    }
-
-    public Long getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Long sequence) {
-        this.sequence = sequence;
     }
 
     public String getSide() {
@@ -283,17 +200,9 @@ public class OrderBookMessage implements Comparable {
         this.profile_id = profile_id;
     }
 
-    public String getLast_trade_id() {
-        return last_trade_id;
-    }
-
-    public void setLast_trade_id(String last_trade_id) {
-        this.last_trade_id = last_trade_id;
-    }
-
     @Override
-    public int compareTo(Object o) {
-        return this.getSequence().compareTo(((OrderBookMessage) o).getSequence());
+    public int compareTo(OrderBookMessage other) {
+        return this.getSequence().compareTo(other.getSequence());
 //        if (getSide().equals("buy")) {
 //            return result;
 //        } else {
