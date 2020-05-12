@@ -1,7 +1,7 @@
 package com.coinbase.exchange.api.transfers;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
-import jdk.nashorn.internal.ir.annotations.Ignore;
+import org.junit.Ignore;
 
 /**
  * See class doc for BaseIntegrationTest

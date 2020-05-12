@@ -1,10 +1,10 @@
 package com.coinbase.exchange.api.withdrawals;
 
-import com.coinbase.exchange.api.entity.CoinbasePaymentRequest;
-import com.coinbase.exchange.api.entity.CryptoPaymentRequest;
-import com.coinbase.exchange.api.entity.MonetaryRequest;
-import com.coinbase.exchange.api.entity.PaymentRequest;
-import com.coinbase.exchange.api.entity.PaymentResponse;
+import com.coinbase.exchange.model.CoinbasePaymentRequest;
+import com.coinbase.exchange.model.CryptoPaymentRequest;
+import com.coinbase.exchange.model.MonetaryRequest;
+import com.coinbase.exchange.model.PaymentRequest;
+import com.coinbase.exchange.model.PaymentResponse;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
 

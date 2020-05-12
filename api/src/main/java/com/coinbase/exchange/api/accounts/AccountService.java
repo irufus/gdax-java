@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.accounts;
 
-import com.coinbase.exchange.api.entity.Hold;
+import com.coinbase.exchange.model.Hold;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
 

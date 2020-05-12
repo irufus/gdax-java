@@ -1,8 +1,8 @@
 package com.coinbase.exchange.api.orders;
 
-import com.coinbase.exchange.api.entity.Fill;
-import com.coinbase.exchange.api.entity.Hold;
-import com.coinbase.exchange.api.entity.NewOrderSingle;
+import com.coinbase.exchange.model.Fill;
+import com.coinbase.exchange.model.Hold;
+import com.coinbase.exchange.model.NewOrderSingle;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
 

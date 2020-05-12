@@ -1,6 +1,6 @@
 package com.coinbase.exchange.api.products;
 
-import com.coinbase.exchange.api.entity.Product;
+import com.coinbase.exchange.model.Product;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
 

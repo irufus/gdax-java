@@ -1,7 +1,7 @@
 package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
-import com.coinbase.exchange.api.entity.Hold;
+import com.coinbase.exchange.model.Hold;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

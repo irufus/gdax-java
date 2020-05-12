@@ -2,4 +2,6 @@ rootProject.name = 'coinbase-pro-java'
 
 include 'api'
 include 'gui'
+include 'websocketfeed'
+include 'model'
 

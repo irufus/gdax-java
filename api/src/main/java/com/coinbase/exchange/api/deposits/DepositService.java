@@ -1,7 +1,7 @@
 package com.coinbase.exchange.api.deposits;
 
-import com.coinbase.exchange.api.entity.CoinbasePaymentRequest;
-import com.coinbase.exchange.api.entity.PaymentResponse;
+import com.coinbase.exchange.model.CoinbasePaymentRequest;
+import com.coinbase.exchange.model.PaymentResponse;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import org.springframework.core.ParameterizedTypeReference;
 

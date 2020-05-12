@@ -1,7 +1,7 @@
 package com.coinbase.exchange.api.marketdata;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
-import com.coinbase.exchange.api.entity.Product;
+import com.coinbase.exchange.model.Product;
 import com.coinbase.exchange.api.products.ProductService;
 import org.junit.jupiter.api.Test;
 

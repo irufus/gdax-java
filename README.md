@@ -73,7 +73,7 @@ To run the gdax-java codebase from a .jar you'll need to pass all config via dir
 
 `java -jar -Dgdax.key="yourKey" -Dgdax.secret="youSecret" -Dgdax.passphrase="yourPassphrase" -Dgdax.api.baseUrl="https://api.gdax.com/" -Dgui.enabled=true -Dliveorderbook.defaultProduct="BTC-GBP" -Dliveorderbook.timeout=15 -Dwebsocket.baseUrl="wss://we-feed.gdax.com/" -Dwebsocket.enabled=true build/gdax-java-{VERSION}.jar`
 
-If the config changes from the above you should see a relevant error message in the output informing you.
+If the config changes from the above you should see a relevant error com.coinbase.exchange.api.websocketfeed.message in the output informing you.
 
 The other alternative is to include all config in the application.yml, build the jar and export it somewhere.
 
@@ -171,7 +171,7 @@ The WebsocketFeed is implemented and works. There are techniques to using it suc
 
 
 From the GDAX API documentation:
-  Send a subscribe message for the product(s) of interest and the full channel.
+  Send a subscribe com.coinbase.exchange.api.websocketfeed.message for the product(s) of interest and the full channel.
   Queue any messages received over the websocket stream.
   Make a REST request for the order book snapshot from the REST feed.
   Playback queued messages, discarding sequence numbers before or equal to the snapshot sequence number.
