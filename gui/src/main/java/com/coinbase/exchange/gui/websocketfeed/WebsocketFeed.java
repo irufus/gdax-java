@@ -1,8 +1,8 @@
 package com.coinbase.exchange.gui.websocketfeed;
 
 import com.coinbase.exchange.api.exchange.Signature;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,24 +29,24 @@ import java.time.Instant;
 @ClientEndpoint
 public class WebsocketFeed {
 
-    static final Logger log = LoggerFactory.getLogger(WebsocketFeed.class);
+    private static final Logger log = LoggerFactory.getLogger(WebsocketFeed.class);
 
-    final String websocketUrl;
-    final String passphrase;
-    final String key;
-    final boolean guiEnabled;
-    final Signature signature;
+    private final String websocketUrl;
+    private final String passphrase;
+    private final String key;
+    private final boolean guiEnabled;
+    private final Signature signature;
 
-    Session userSession;
-    MessageHandler messageHandler;
-    ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
+    private Session userSession;
+    private MessageHandler messageHandler;
 
-    public WebsocketFeed(String websocketUrl,
-                         String key,
-                         String passphrase,
-                         boolean guiEnabled,
-                         Signature signature,
-                         ObjectMapper objectMapper) {
+    public WebsocketFeed(final String websocketUrl,
+                         final String key,
+                         final String passphrase,
+                         final boolean guiEnabled,
+                         final Signature signature,
+                         final ObjectMapper objectMapper) {
         this.key = key;
         this.passphrase = passphrase;
         this.websocketUrl = websocketUrl;
@@ -137,8 +137,7 @@ public class WebsocketFeed {
 
     // TODO - get this into postHandle interceptor.
     public String signObject(Subscribe jsonObj) {
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(jsonObj);
+        String jsonString = toJson(jsonObj);
 
         String timestamp = Instant.now().getEpochSecond() + "";
         jsonObj.setKey(key);
@@ -146,7 +145,17 @@ public class WebsocketFeed {
         jsonObj.setPassphrase(passphrase);
         jsonObj.setSignature(signature.generate("", "GET", jsonString, timestamp));
 
-        return gson.toJson(jsonObj);
+        return toJson(jsonObj);
+    }
+
+    private String toJson(Object object) {
+        try {
+            String json = objectMapper.writeValueAsString(object);
+            return json;
+        } catch (JsonProcessingException e) {
+            log.error("Unable to serialize", e);
+            throw new RuntimeException("Unable to serialize");
+        }
     }
 
     /**

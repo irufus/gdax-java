@@ -7,10 +7,8 @@ test {
 
 dependencies {
     compile project(':api')
-//    compile project(':model')
-    compile project(path: ':model', configuration: 'compile')
+    compile project(':model')
     compile project(':websocketfeed')
-    implementation 'com.google.code.gson:gson'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework:spring-context'
 
