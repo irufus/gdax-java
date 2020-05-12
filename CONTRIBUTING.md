@@ -50,7 +50,7 @@ Add this template, add the relevant tests you want, then begin implementing your
 
 Note Dependency injection is far more predictable in spring if constructor injection is used (i.e. put the @Autowired/@Inject annotation on the constructor rather than a field in your class).
 
-```
+```java
 @Component
 public class NewComponent {
 
@@ -63,7 +63,7 @@ public class NewComponent {
 
 Now if you want to utilise some of the already implemented features of this codebase like getting your account details, you can autowire in the already existent (@)component `AccountService`
 
-```
+```java
 @Component
 public class NewComponent {
 
@@ -84,7 +84,7 @@ public class NewComponent {
 
 You can now add more code to the main method of this codebase and interact with your new code. You'll need a reference to the new code which can be obtained with:
 
-```
+```java
     ConfigurableApplicationContext ctx = new SpringApplicationBuilder(GdaxApiApplication.class)
                 .headless(false).run(args);
 

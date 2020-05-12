@@ -1,11 +1,9 @@
-package com.coinbase.exchange.gui.websocketfeed;
-
-import com.coinbase.exchange.websocketfeed.Channel;
+package com.coinbase.exchange.websocketfeed;
 
 import static com.coinbase.exchange.websocketfeed.ChannelName.full;
 
 /**
- * To begin receiving feed messages, you must first send a subscribe com.coinbase.exchange.api.websocketfeed.message
+ * To begin receiving feed messages, you must first send a subscribe message
  * indicating which channels and products to receive.
  * Example:
  * Subscribe to ETH-USD and ETH-EUR with the level2, heartbeat and ticker channels,
@@ -41,7 +39,7 @@ public class Subscribe {
     private String[] product_ids;
     private Channel[] channels;
 
-    // Used for signing the subscribe com.coinbase.exchange.api.websocketfeed.message to the Websocket feed
+    // Used for signing the subscribe message to the Websocket feed
     private String signature;
     private String passphrase;
     private String timestamp;

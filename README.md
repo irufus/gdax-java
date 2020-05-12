@@ -85,9 +85,11 @@ The API and this code follows MVC design pattern - model, view, control.
 At present the classes match the interface specified in the Coinbase Pro api here: [https://docs.pro.coinbase.com/#api](https://docs.pro.coinbase.com/#api)
 
 e.g. 
-`public OrderService orderService(){
+```java
+public OrderService orderService() {
     new OrderService();
-}`
+}
+```
 
 Each `Service` class requires the `CoinbaseExchange` object so that methods calling the REST endpoints can be made, using a `RestTemplate` that has
 the correct headers and signatures is used.
@@ -130,6 +132,7 @@ To use the WSF check out the API documentation and look at usages of `websocketF
 - decoupling the `websocketfeed` code from the api implementation
 - decoupling the `gui` desktop app built on the api from the `api` code
 - multiproject gradle build
+- centralised dependency versioning in the root build.gradle - easier to manage them in one location
 - segregating the unit tests from the integration tests
 - updated api/sandbox-api endpoints
 - renaming project to to Coinbase-Pro-java in the `settings.gradle` file
@@ -164,11 +167,9 @@ To use the WSF check out the API documentation and look at usages of `websocketF
 ## TODO
 -------
 - add pagination versions of all endpoints, or offer a way to append to the endpoint urls.
-- smarted up the GUI
 
-
-From the GDAX API documentation:
-  Send a subscribe com.coinbase.exchange.api.websocketfeed.message for the product(s) of interest and the full channel.
+From the GDAX API documentation the Websocket implementation follows the following implementation:
+  Send a subscribe message for the product(s) of interest and the full channel.
   Queue any messages received over the websocket stream.
   Make a REST request for the order book snapshot from the REST feed.
   Playback queued messages, discarding sequence numbers before or equal to the snapshot sequence number.

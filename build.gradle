@@ -35,7 +35,6 @@ configure(subprojects.findAll { true }) {
 
     dependencies {
         constraints {
-            implementation 'com.google.code.gson:gson:2.8.6'
             implementation 'com.fasterxml.jackson.core:jackson-core:2.11.0'
             implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.0'
             implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
@@ -45,7 +44,6 @@ configure(subprojects.findAll { true }) {
             implementation 'ch.qos.logback:logback-core:1.2.3'
             implementation 'org.springframework.boot:spring-boot-starter-web:2.2.7.RELEASE'
             implementation 'org.springframework:spring-context:5.2.6.RELEASE'
-            implementation 'joda-time:joda-time:2.9.7'
 
             // --------------------------------------
             testImplementation 'junit:junit:4.12'

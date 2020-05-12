@@ -1,17 +1,21 @@
 package com.coinbase.exchange.gui.liveorderbook.view;
 
-import com.coinbase.exchange.gui.liveorderbook.OrderBookModel;
-import com.coinbase.exchange.gui.websocketfeed.Subscribe;
-import com.coinbase.exchange.gui.websocketfeed.WebsocketFeed;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.marketdata.OrderItem;
+import com.coinbase.exchange.gui.liveorderbook.OrderBookModel;
+import com.coinbase.exchange.gui.websocketfeed.WebsocketFeed;
+import com.coinbase.exchange.websocketfeed.ChangedOrderBookMessage;
+import com.coinbase.exchange.websocketfeed.Channel;
 import com.coinbase.exchange.websocketfeed.DoneOrderBookMessage;
+import com.coinbase.exchange.websocketfeed.ErrorOrderBookMessage;
+import com.coinbase.exchange.websocketfeed.FeedMessage;
 import com.coinbase.exchange.websocketfeed.HeartBeat;
 import com.coinbase.exchange.websocketfeed.MatchedOrderBookMessage;
 import com.coinbase.exchange.websocketfeed.OpenedOrderBookMessage;
 import com.coinbase.exchange.websocketfeed.OrderBookMessage;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.coinbase.exchange.websocketfeed.ReceivedOrderBookMessage;
+import com.coinbase.exchange.websocketfeed.Subscribe;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +30,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.coinbase.exchange.websocketfeed.Channel.CHANNEL_FULL;
+
 /**
  * TODO - convert to JFX rather than using Swing.
  * <p>
@@ -34,6 +40,8 @@ import java.util.Map;
 public class OrderBookView extends JPanel {
 
     static final Logger log = LoggerFactory.getLogger(OrderBookView.class);
+    private final ObjectMapper objectMapper;
+
     static String[] productIds = new String[]{"BTC-GBP", "ETH-BTC"}; // make this configurable.
 
     private boolean isAlive;
@@ -56,8 +64,10 @@ public class OrderBookView extends JPanel {
 
     public OrderBookView(boolean guiEnabled,
                          MarketDataService marketDataService,
-                         WebsocketFeed websocketFeed) {
+                         WebsocketFeed websocketFeed,
+                         ObjectMapper objectMapper) {
         super();
+        this.objectMapper = objectMapper;
         if (guiEnabled) {
             this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -89,12 +99,12 @@ public class OrderBookView extends JPanel {
 
     /**
      * Gets the market data and loads in all the prices for the current order book,
-     * then submits a subscribe com.coinbase.exchange.api.websocketfeed.message to the server so that price updates are received.
+     * then submits a subscribe message to the server so that price updates are received.
      */
     public void load(boolean guiEnabled) {
-        OrderBookView thisOrderBook = this;
+        OrderBookView orderBook = this;
         if (guiEnabled) {
-            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
                 public Void doInBackground() {
 
@@ -125,12 +135,12 @@ public class OrderBookView extends JPanel {
 
                         JPanel orderBookPanelView = new JPanel();
                         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollerAsks, scrollerBids);
-                        int height = thisOrderBook.getHeight() / 2;
+                        int height = orderBook.getHeight() / 2;
                         splitPane.setDividerLocation(height);
                         orderBookPanelView.add(splitPane);
 
                         orderBookSplitPaneMap.put(productId, orderBookPanelView);
-                        maxSequenceIds.put(productId, new Long(0));
+                        maxSequenceIds.put(productId, 0L);
                     }
 
                     setLobViewer(productIds[0]);
@@ -144,61 +154,61 @@ public class OrderBookView extends JPanel {
                     }
 
                     log.info("*** Subscribing ***");
-                    websocketFeed.subscribe(new Subscribe(productIds));
-//                  websocketFeed.connect();
-//                  Subscribe subscribeRequest = new Subscribe();
-//                  subscribeRequest.setProduct_ids(productIds);
-//                  subscribeRequest.setChannels(new Channel[]{CHANNEL_FULL});
+                    websocketFeed.connect();
+                    Subscribe subscribeRequest = new Subscribe(productIds);
+                    subscribeRequest.setChannels(new Channel[]{CHANNEL_FULL});
                     // TODO - extract to external standalone class rather than having this mess in-line.
                     websocketFeed.addMessageHandler(new WebsocketFeed.MessageHandler() {
                         @Override
                         public void handleMessage(String json) {
-                            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                            SwingWorker<Void, Void> worker = new SwingWorker<>() {
                                 @Override
                                 public Void doInBackground() {
-                                    OrderBookMessage message = getObject(json, new TypeReference<OrderBookMessage>() {});
+                                    log.info("received: " + json);
+                                    FeedMessage message = getObject(json, FeedMessage.class);
 
-                                    String type = message.getType();
-
-                                    if (type.equals("heartbeat")) {
+                                    if (message instanceof HeartBeat) {
                                         log.info("heartbeat");
-                                        thisOrderBook.heartBeat(getObject(json, new TypeReference<HeartBeat>() {}));
-                                    } else if (type.equals("received")) {
-                                        // received orders are not necessarily live orders - so I'm ignoring these msgs as they're
-                                        // subject to change.
+                                        HeartBeat heartBeat = (HeartBeat) message;
+                                        orderBook.heartBeat(heartBeat);
+
+                                    } else if (message instanceof ReceivedOrderBookMessage) {
+                                        // received orders are not necessarily live orders -
+                                        // so ignore these msgs as they're unnecessary
                                         log.info("order received {}", json);
 
-                                    } else if (type.equals("open")) {
+                                    } else if (message instanceof OpenedOrderBookMessage) {
                                         log.info("Order opened: " + json);
-                                        thisOrderBook.updateOrderBook(getObject(json, new TypeReference<OpenedOrderBookMessage>() {
-                                        }));
-                                    } else if (type.equals("done")) {
+                                        OpenedOrderBookMessage openOrderBookMessage = (OpenedOrderBookMessage) message;
+                                        orderBook.updateOrderBook(openOrderBookMessage);
+
+                                    } else if (message instanceof DoneOrderBookMessage) {
                                         log.info("Order done: " + json);
-                                        if (!message.getReason().equals("filled")) {
-                                            OrderBookMessage doneOrder = getObject(json, new TypeReference<DoneOrderBookMessage>() {
-                                            });
-                                            thisOrderBook.updateOrderBook(doneOrder);
+                                        OrderBookMessage doneOrder = (DoneOrderBookMessage) message;
+                                        if (!doneOrder.getReason().equals("filled")) {
+                                            orderBook.updateOrderBook(doneOrder);
                                         }
-                                    } else if (type.equals("match")) {
+
+                                    } else if (message instanceof MatchedOrderBookMessage) {
                                         log.info("Order matched: " + json);
-                                        OrderBookMessage matchedOrder = getObject(json, new TypeReference<MatchedOrderBookMessage>() {
-                                        });
-                                        thisOrderBook.updateOrderBook(matchedOrder);
-                                    } else if (type.equals("change")) {
+                                        OrderBookMessage matchedOrder = getObject(json, MatchedOrderBookMessage.class);
+                                        orderBook.updateOrderBook(matchedOrder);
+
+                                    } else if (message instanceof ChangedOrderBookMessage) {
                                         // TODO - possibly need to provide implementation for this to work in real time.
                                         log.info("Order Changed {}", json);
-                                        // orderBook.updateOrderBookWithChange(getObject(json, new TypeReference<OrderChangeOrderBookMessage>(){}));
-                                    } else if (message.equals("error")) {
+
+                                    } else if (message instanceof ErrorOrderBookMessage) {
                                         // Not sure this is required unless I'm attempting to place orders
                                         // ERROR
-                                        log.error("Error {}", json);
-//                                        ErrorOrderBookMessage errorMessage = (ErrorOrderBookMessage) com.coinbase.exchange.api.websocketfeed.message;
-                                        // orderBook.orderBookError(errorMessage);
+                                        log.warn("Error {}", json);
+                                        ErrorOrderBookMessage errorMessage = (ErrorOrderBookMessage) message;
+
                                     }  else {
                                         // Not sure this is required unless I'm attempting to place orders
                                         // ERROR
-                                        log.warn("Unsupported com.coinbase.exchange.api.websocketfeed.message type {}", json);
-                                        // orderBook.orderBookError(getObject(json, new TypeReference<ErrorOrderBookMessage>(){}));
+                                        log.error("Unsupported message type {}", json);
+
                                     }
                                     return null;
                                 }
@@ -210,6 +220,9 @@ public class OrderBookView extends JPanel {
                             worker.execute();
                         }
                     });
+                    // send message to websocket
+                    String jsonSubscribeMessage = websocketFeed.signObject(subscribeRequest);
+                    websocketFeed.sendMessage(jsonSubscribeMessage);
                     return null;
                 }
 
@@ -223,13 +236,13 @@ public class OrderBookView extends JPanel {
         }
     }
 
-    public <T> T getObject(String json, TypeReference<T> type) {
+
+    public <T> T getObject(String json, Class<T> type) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             log.info(json);
             return objectMapper.readValue(json, type);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Parsing {} Failed: {}", type, e);
         }
         return null;
     }

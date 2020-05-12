@@ -415,7 +415,7 @@ public class OrderBookModelTest {
         assertEquals(1, testObject.getRowCount());
         assertEquals(1L, testObject.getLastOrders().get(0).getSequence());
 
-        // third com.coinbase.exchange.api.websocketfeed.message will be received before 2nd com.coinbase.exchange.api.websocketfeed.message
+        // third com.coinbase.exchange.api.websocketfeed.message will be received before 2nd message
         OrderBookMessage message3 = new OrderBookMessage();
         message3.setType("limit");
         message3.setPrice(new BigDecimal("1.1"));
@@ -429,7 +429,7 @@ public class OrderBookModelTest {
         assertEquals(1L, testObject.getLastOrders().get(0).getSequence());
         assertEquals(3L, testObject.getLastOrders().get(1).getSequence());
 
-        // 2nd com.coinbase.exchange.api.websocketfeed.message arrived late...
+        // 2nd message arrived late...
         OrderBookMessage message2 = new OrderBookMessage();
         message2.setType("limit");
         message2.setPrice(new BigDecimal("1.3"));

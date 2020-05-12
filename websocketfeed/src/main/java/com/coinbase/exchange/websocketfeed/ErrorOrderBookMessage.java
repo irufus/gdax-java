@@ -1,13 +1,13 @@
 package com.coinbase.exchange.websocketfeed;
 
 /**
- * If you send a com.coinbase.exchange.api.websocketfeed.message that is not recognized or an error
- * occurs, the error com.coinbase.exchange.api.websocketfeed.message will be sent and you will be
+ * If you send a message that is not recognized or an error
+ * occurs, the error message will be sent and you will be
  * disconnected.
  * <pre>
  * {
  *     "type": "error",
- *     "com.coinbase.exchange.api.websocketfeed.message": "error com.coinbase.exchange.api.websocketfeed.message"
+ *     "message": "error message"
  * }
  * </pre>
  */

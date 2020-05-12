@@ -21,7 +21,7 @@ package com.coinbase.exchange.websocketfeed;
  *    "side": "sell"
  *  }
  * </pre>
- * If authenticated, and you were the taker, the com.coinbase.exchange.api.websocketfeed.message would also have
+ * If authenticated, and you were the taker, the message would also have
  * the following fields:
  * <pre>
  *  taker_user_id: "5844eceecf7e803e259d0365",

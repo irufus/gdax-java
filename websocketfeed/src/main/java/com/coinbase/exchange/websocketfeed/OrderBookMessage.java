@@ -1,18 +1,16 @@
 package com.coinbase.exchange.websocketfeed;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 /**
- * Generic com.coinbase.exchange.api.websocketfeed.message that will be passed as an argument to other com.coinbase.exchange.api.websocketfeed.message types
+ * Generic message that will be passed as an argument to other message types
  * so the relevant parts can be determined and the messages typed.
  * Created by robevansuk on 15/03/2017.
  */
-public class OrderBookMessage implements Comparable {
-    String type;
-    String time;
-    String product_id;
+public class OrderBookMessage extends FeedMessage implements Comparable<OrderBookMessage> {
+
     String trade_id;
-    Long sequence;
     String side;
     String order_id;
     String order_type;
@@ -55,8 +53,7 @@ public class OrderBookMessage implements Comparable {
 
     public OrderBookMessage() { }
 
-    public OrderBookMessage(String type, Channel[] channels) {
-        this.type = type;
+    public OrderBookMessage(Channel[] channels) {
         this.channels = channels;
     }
 
@@ -74,11 +71,11 @@ public class OrderBookMessage implements Comparable {
                             String open_24h, String volume_24h, String low_24h,
                             String high_24h, String volume_30d, String best_bid,
                             String best_ask, String last_size, Channel[] channels) {
-        this.type = type;
-        this.time = time;
-        this.product_id = product_id;
+        setType(type);
+        setTime(Instant.parse(time));
+        setProduct_id(product_id);
+        setSequence(sequence);
         this.trade_id = trade_id;
-        this.sequence = sequence;
         this.side = side;
         this.order_id = order_id;
         this.order_type = order_type;
@@ -128,44 +125,12 @@ public class OrderBookMessage implements Comparable {
         this.stp = stp;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
-    }
-
     public String getTrade_id() {
         return trade_id;
     }
 
     public void setTrade_id(String trade_id) {
         this.trade_id = trade_id;
-    }
-
-    public Long getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Long sequence) {
-        this.sequence = sequence;
     }
 
     public String getSide() {
@@ -400,7 +365,7 @@ public class OrderBookMessage implements Comparable {
     }
 
     @Override
-    public int compareTo(Object other) {
-        return this.getSequence().compareTo(((OrderBookMessage)other).getSequence());
+    public int compareTo(OrderBookMessage other) {
+        return this.getSequence().compareTo(other.getSequence());
     }
 }

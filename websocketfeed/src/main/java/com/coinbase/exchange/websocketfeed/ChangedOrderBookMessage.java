@@ -23,11 +23,11 @@ package com.coinbase.exchange.websocketfeed;
  * </pre>
  * change messages for received but not yet open orders can be
  * ignored when building a real-time order book. The side field
- * of a change com.coinbase.exchange.api.websocketfeed.message and price can be used as indicators for whether
- * the change com.coinbase.exchange.api.websocketfeed.message is relevant if building from a level 2 book.
+ * of a change message and price can be used as indicators for whether
+ * the change message is relevant if building from a level 2 book.
  *
- * Any change com.coinbase.exchange.api.websocketfeed.message where the price is null indicates that the change
- * com.coinbase.exchange.api.websocketfeed.message is for a market order. Change messages for limit orders will
+ * Any change message where the price is null indicates that the change
+ * message is for a market order. Change messages for limit orders will
  * always have a price specified.
  * <pre>
  * {

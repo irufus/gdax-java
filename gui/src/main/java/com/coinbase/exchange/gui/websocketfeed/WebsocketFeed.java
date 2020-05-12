@@ -1,6 +1,7 @@
 package com.coinbase.exchange.gui.websocketfeed;
 
 import com.coinbase.exchange.api.exchange.Signature;
+import com.coinbase.exchange.websocketfeed.Subscribe;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -9,16 +10,13 @@ import org.slf4j.LoggerFactory;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
 import javax.websocket.ContainerProvider;
-import javax.websocket.DeploymentException;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Instant;
 
 /**
@@ -53,15 +51,17 @@ public class WebsocketFeed {
         this.signature = signature;
         this.guiEnabled = guiEnabled;
         this.objectMapper = objectMapper;
+    }
 
+    public void connect() {
         if (guiEnabled) {
             try {
                 WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+                container.setDefaultMaxBinaryMessageBufferSize(1024 * 1024);
+                container.setDefaultMaxTextMessageBufferSize(1024 * 1024);
                 container.connectToServer(this, new URI(websocketUrl));
-            } catch (DeploymentException | IOException e) {
-                log.error("Could not connect to remote server: " + e.getMessage() + ", " + e.getLocalizedMessage(), e);
-            } catch (URISyntaxException e) {
-                log.error("Coinbase Pro MalFormed URL", e);
+            } catch (Exception e) {
+                log.error("Could not connect to remote server", e);
             }
         }
     }
@@ -96,9 +96,9 @@ public class WebsocketFeed {
 
 
     /**
-     * Callback hook for OrderBookMessage Events. This method will be invoked when a client send a com.coinbase.exchange.api.websocketfeed.message.
+     * Callback hook for OrderBookMessage Events. This method will be invoked when a client send a message.
      *
-     * @param message The text com.coinbase.exchange.api.websocketfeed.message
+     * @param message The text message
      */
     @OnMessage
     public void onMessage(String message) {
@@ -108,7 +108,7 @@ public class WebsocketFeed {
     }
 
     /**
-     * register com.coinbase.exchange.api.websocketfeed.message handler
+     * register message handler
      *
      * @param msgHandler
      */
@@ -117,7 +117,7 @@ public class WebsocketFeed {
     }
 
     /**
-     * Send a com.coinbase.exchange.api.websocketfeed.message.
+     * Send a message.
      *
      * @param message
      */
@@ -130,7 +130,7 @@ public class WebsocketFeed {
     public void subscribe(Subscribe msg) {
         String jsonSubscribeMessage = signObject(msg);
         log.info(jsonSubscribeMessage);
-        // send subscription com.coinbase.exchange.api.websocketfeed.message to websocket
+        // send subscription message to websocket
         sendMessage(jsonSubscribeMessage);
 
     }

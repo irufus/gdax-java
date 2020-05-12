@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 /**
- * An activate com.coinbase.exchange.api.websocketfeed.message is sent when a stop order is placed.
+ * An activate message is sent when a stop order is placed.
  * When the stop is triggered the order will be placed and go through the order lifecycle.
  * Example:
  * <pre>

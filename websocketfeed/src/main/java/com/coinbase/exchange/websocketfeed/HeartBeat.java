@@ -1,7 +1,7 @@
 package com.coinbase.exchange.websocketfeed;
 
 /**
- * A com.coinbase.exchange.api.websocketfeed.message sent once a second when heartbeat is turned on.
+ * A message sent once a second when heartbeat is turned on.
  * <pre>
  * {
  *     "type": "heartbeat",                   // inherited

@@ -25,6 +25,7 @@ import java.time.Instant;
         @JsonSubTypes.Type(value = L2UpdateMessage.class, name = "l2update"),
 })
 public abstract class FeedMessage {
+
     private String type;  // "received" | "open" | "done" | "match" | "change" | "activate"
     private Long sequence;
     private Instant time;

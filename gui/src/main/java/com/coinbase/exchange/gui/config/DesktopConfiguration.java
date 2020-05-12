@@ -50,9 +50,12 @@ public class DesktopConfiguration {
     }
 
     @Bean
-    public OrderBookView orderBookViewPanel(@Value("${gui.enabled}") boolean guiEnabled, CoinbaseExchange coinbasePro, WebsocketFeed websocketFeed) {
+    public OrderBookView orderBookViewPanel(@Value("${gui.enabled}") boolean guiEnabled,
+                                            CoinbaseExchange coinbasePro,
+                                            WebsocketFeed websocketFeed,
+                                            ObjectMapper objectMapper) {
         MarketDataService marketDataService = new MarketDataService(coinbasePro);
-        return new OrderBookView(guiEnabled, marketDataService, websocketFeed);
+        return new OrderBookView(guiEnabled, marketDataService, websocketFeed, objectMapper);
     }
 
     @Bean
