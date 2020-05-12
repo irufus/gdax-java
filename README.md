@@ -2,12 +2,12 @@
 
 [![Join the chat at https://gitter.im/irufus/gdax-java](https://badges.gitter.im/irufus/gdax-java.svg)](https://gitter.im/irufus/gdax-java?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Java based wrapper for the [GDAX API](https://docs.pro.coinbase.com/) that follows the development style similar to [coinbase-java](https://github.com/coinbase/coinbase-java)
+Java based wrapper for the [Coinbase Pro API](https://docs.pro.coinbase.com/)
 
 ## Notes:
 
 > Coinbase Pro primary data sources and servers run in the Amazon US East data center. To minimize latency for API access, we recommend making requests from servers located near the US East data center.
-> Some of the methods do not yet have tests and so may not work as expected until a later date. Please raise an issue in github if you want something in particular as a priority.
+> Some of the methods do not yet have tests and so may not work as expected until someone tries them and fixes them at a later date. Please raise an issue in github if you want something in particular as a priority.
 > This codebase is maintained independently of Coinbase. We are not in any way affiliated with coinbase or coinbase pro.
 
 ## Functions supported:
@@ -39,7 +39,8 @@ Java based wrapper for the [GDAX API](https://docs.pro.coinbase.com/) that follo
 
 Desktop client GUI.
 Check the issues on the repo for open items to work on.
-Please join the gitter channel if you have any questions. Support always welcome. Note the channel uses the legaxy name of 'gdax-java' rather than 'coinbase-pro-java'
+Please join the gitter channel if you have any questions. Support always welcome. 
+Note the channel uses the legacy name of 'gdax-java' rather than 'coinbase-pro-java'
 
 ### Contributing
 
@@ -50,55 +51,36 @@ Please see CONTRIBUTE.md if your interested in getting involved.
 
 To build and run the desktop client application you can use the gradle script - this requires no installation as the "gradle wrapper" is included as part of the source code. All you need to do is:
 
-1. supply your API key, secret and passphrase as environment or command line variables or in the `application.yml` file. There are placeholders ready to receive these parameters. Because you should NEVER commit these details, the `application.yml` file is included in the `.gitignore` so that changes to it should be ignored. Commiting your keys, secret and passphrase may result in you losing funds from your account(s). *If you commit your secure keys, passphrase or secrete, disable/delete them from Coinbase Pro immediately**.
+1. supply your API key, secret and passphrase as environment or command line variables or in the `application.yml` file. There are placeholders ready to receive these parameters. Because you should NEVER commit these details, the `application.yml` file is included in the `.gitignore` so that changes to it should be ignored. Commiting your keys, secret and passphrase may result in you losing funds from your account(s). **If you commit your secure keys, passphrase or secrete, disable/delete them from Coinbase Pro immediately**.
 
 Spring Boot will pick up the values of these variables from various places including the `application.yml` properties file, the system environment, command line variables and more.
 
 1. 1. For environment variables set: `gdax.key`, `gdax.passphrase`, `gdax.secret`
-1. 1. For command line variables `-Dgdax.key="apiKey" -Dgdax.passphrase="passphrase" -Dgdax.secret="secret"` should work
-1. 1. For command line variables with the gradle command use `-Pgdax.key="apiKey" -Pgdax.passphrase="passphrase" -Pgdax.secret="secret"` should work
+1. 1. For command line variables with java `-Dgdax.key="apiKey" -Dgdax.passphrase="passphrase" -Dgdax.secret="secret"`
+1. 1. For command line variables with the `gradle`/`gradlew` command use `-Pgdax.key="apiKey" -Pgdax.passphrase="passphrase" -Pgdax.secret="secret"`
 1. open a command line terminal
-1. navigate to the root directory of this project (where `build.gradle` is)
+1. navigate to the root directory of this project
 1. execute `./gradlew bootRun` (Mac/unix). For equivalent Windows commands just remove the `./` from the commands, since there's a gradlew.bat included as well.
 
-This won't actually do much on its own but the beginnings of a GUI have been developed and you can test this out by enabling the GUI in the `application.yml` config and restarting the application.
+This won't actually do much on its own but the beginnings of a GUI are in development and you can test this out by enabling the GUI in the `application.yml` config and restarting the application.
 
-1. tests can also be run with  `./gradlew test` - simple.
-
-## For a lib:
-
-1. If you'd rather work purely in java then you can build an executable jar file `./gradlew jar` and you should be able to find the jar in the build directory.
-
-To run the gdax-java codebase from a .jar you'll need to pass all config via directives. The following has been tested and works:
-
-`java -jar -Dgdax.key="yourKey" -Dgdax.secret="youSecret" -Dgdax.passphrase="yourPassphrase" -Dgdax.api.baseUrl="https://api.gdax.com/" -Dgui.enabled=true -Dliveorderbook.defaultProduct="BTC-GBP" -Dliveorderbook.timeout=15 -Dwebsocket.baseUrl="wss://we-feed.gdax.com/" -Dwebsocket.enabled=true build/gdax-java-{VERSION}.jar`
-
-If the config changes from the above you should see a relevant error com.coinbase.exchange.api.websocketfeed.message in the output informing you.
-
-The other alternative is to include all config in the application.yml, build the jar and export it somewhere.
+1. tests can also be run with  `./gradlew test`, and `./gradlew integrationTest` - simple.
 
 ## Examples
 
-To make use of this library you only need a reference to the Service that you want. For Accounts, get an instance of the AccountService. For MarketData, use the MarketDataService, and so on.
+To make use of this library you only need a reference to the Service that you want. 
+ - For Accounts, get an instance of the `AccountService`. 
+ - For MarketData, use the MarketDataService, and so on.
 
-In order to get an instance of the various services from the Spring Dependency Injector, you simply need to create a new component class, and then in your constructor add the Autowired annotation, then declare in the constructor signature the various services you want to have references to within your code, use variable setting then to store the references Autowiring will provide so you can use them in your class:
-
+In order to get an instance of the various services from the Spring Dependency Injector, you simply need to create a new component class, and then in your constructor add the `Autowired`/`Inject` annotation, then declare in the constructor signature the various services you want to have references to within your code, use variable setting then to store the references Autowiring will provide so you can use them in your class:
 
 The API and this code follows MVC design pattern - model, view, control.
 - Models are the data objects received from the API,
 - Views are the items you'll likely create on top of this codebase - e.g. Swing GUI or some webpage output
 - Control - all application logic goes in the control layer.
 
-## Notes:
-
-> GDAX primary data sources and servers run in the Amazon US East data center. To minimize latency for API access, we recommend making requests from servers located near the US East data center.
-
-> Some of the methods do not yet have tests and so may not work as expected until someone needs to use them and finds they are broken... and then fixes them for the next person. Please raise an issue in the github repository if you want something updated as a priority.
-
 ## Examples
 --------
-
-To make use of this library you only need a reference to the service that you want.
 
 At present the classes match the interface specified in the Coinbase Pro api here: [https://docs.pro.coinbase.com/#api](https://docs.pro.coinbase.com/#api)
 
@@ -128,18 +110,33 @@ This library is as set up as follows:
 - `PaymentService.getCoinbaseAccounts()` - gets the coinbase accounts for the logged in user
 - `PaymentService.getPaymentTypes()` - gets the payment types available for the logged in user
 - `ProductService.getProducts()` - returns a List of Products available from the exchange - BTC-USD, BTC-EUR, BTC-GBP, etc.
-- `ReportService.createReport(String product, String startDate, String endDate)` - not certain about this one as I've not tried it but presumably generates a report of a given product's trade history for the dates supplied
+- `ReportService.createReport(String product, String startDate, String endDate)` - not certain about this one as its untested but presumably it generates a report of a given product's trade history for the dates supplied - dates are assumed to be ISO 8601 compliant
+- `TransferService.transfer(String type, BigDecimal amount, String coinbaseAccountId)` - initiates a transfer to your (standard) Coinbase account. 
+- `UserAccountService.getTrailingVolume()` - Returns the 30 day trailing volume information from all accounts
+- `WithdrawalsService` - methods that enable Withdrawals from a Coinbase-Pro account to a Coinbase Account/Payment method
 
 
 ## WebsocketFeed API
 ---------------------
 
-The WebsocketFeed is implemented and works. There are techniques to using it successfully for production use - e.g. monitoring for 'heartbeats'. To use the WSF check out the API documentation and look at usages of `websocketFeed.subscribe(String)` as an example that already works.
+The WebsocketFeed is implemented and works. However, there are techniques to using it successfully for production use - e.g. monitoring for 'heartbeats'. 
+
+To use the WSF check out the API documentation and look at usages of `websocketFeed.subscribe(String)` as an example that already works.
 
 ## Updates - v 0.11.0
 -------------------
-- decoupling the `api` `integration code from the spring boot desktop client application
-- multiproject gradle build now in place
+- decoupling the `api` code from the spring boot desktop client application so it can be used as a library.
+- decoupling `model` code so that the shared/common elements can be depended upon by multiple projects and make building out a FIX client potentially easier
+- decoupling the `websocketfeed` code from the api implementation
+- decoupling the `gui` desktop app built on the api from the `api` code
+- multiproject gradle build
+- segregating the unit tests from the integration tests
+- updated api/sandbox-api endpoints
+- renaming project to to Coinbase-Pro-java in the `settings.gradle` file
+- remove joda time lib in favour of the standard library Instant implementation
+- updated libraries to latest versions: spring boot, jackson, gson, etc.
+- removal of Gson in favour of jackson libs
+
 
 ## Updates - v 0.9.1
 -------------------

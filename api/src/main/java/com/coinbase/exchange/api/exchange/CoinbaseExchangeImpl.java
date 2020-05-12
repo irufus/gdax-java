@@ -16,6 +16,8 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 /**
  * This class acts as a central point for providing user configuration and making GET/POST/PUT requests as well as
  * getting responses as Lists of objects rather than arrays.
@@ -24,20 +26,23 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
     static final Logger log = LoggerFactory.getLogger(CoinbaseExchangeImpl.class.getName());
 
-    final String publicKey;
-    final String passphrase;
-    final String baseUrl;
-    final Signature signature;
-    final RestTemplate restTemplate;
+    private final String publicKey;
+    private final String passphrase;
+    private final String baseUrl;
+    private final Signature signature;
+    private final ObjectMapper objectMapper;
+    private final RestTemplate restTemplate;
 
     public CoinbaseExchangeImpl(final String publicKey,
                                 final String passphrase,
                                 final String baseUrl,
-                                final Signature signature) {
+                                final Signature signature,
+                                final ObjectMapper objectMapper) {
         this.publicKey = publicKey;
         this.passphrase = passphrase;
         this.baseUrl = baseUrl;
         this.signature = signature;
+        this.objectMapper = objectMapper;
         this.restTemplate = new RestTemplate();
     }
 
@@ -61,7 +66,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     public <T> List<T> getAsList(String resourcePath, ParameterizedTypeReference<T[]> responseType) {
        T[] result = get(resourcePath, responseType);
 
-       return result == null ? Arrays.asList() : Arrays.asList(result);
+       return result == null ? emptyList() : Arrays.asList(result);
     }
 
     @Override
@@ -81,7 +86,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
                           Integer pageNumber,
                           Integer limit) {
         T[] result = pagedGet(resourcePath, responseType, beforeOrAfter, pageNumber, limit );
-        return result == null ? Arrays.asList() : Arrays.asList(result);
+        return result == null ? emptyList() : Arrays.asList(result);
     }
 
     @Override
@@ -143,17 +148,13 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
      * Purely here for logging an equivalent curl request for debugging
      * note that the signature is time-sensitive and has a time to live of about 1 minute after which the request
      * is no longer valid.
-     * @param method
-     * @param jsonBody
-     * @param headers
-     * @param resource
      */
     private void curlRequest(String method, String jsonBody, HttpHeaders headers, String resource) {
         String curlTest = "curl ";
         for (String key : headers.keySet()){
             curlTest +=  "-H '" + key + ":" + headers.get(key).get(0) + "' ";
         }
-        if (!jsonBody.equals(""))
+        if (jsonBody!=null && !jsonBody.equals(""))
             curlTest += "-d '" + jsonBody + "' ";
 
         curlTest += "-X " + method + " " + getBaseUrl() + resource;
@@ -162,9 +163,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
 
     private String toJson(Object object) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json = objectMapper.writeValueAsString(object);
-            return json;
+            return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             log.error("Unable to serialize", e);
             throw new RuntimeException("Unable to serialize");

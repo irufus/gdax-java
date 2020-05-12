@@ -24,8 +24,9 @@ public class DesktopConfiguration {
     public CoinbaseExchange coinbasePro(@Value("${exchange.key}") String publicKey,
                                         @Value("${exchange.passphrase}") String passphrase,
                                         @Value("${exchange.api.baseUrl}") String baseUrl,
-                                        Signature signature) {
-        return new CoinbaseExchangeImpl(publicKey, passphrase, baseUrl, signature);
+                                        Signature signature,
+                                        ObjectMapper objectMapper) {
+        return new CoinbaseExchangeImpl(publicKey, passphrase, baseUrl, signature, objectMapper);
     }
 
     @Bean
