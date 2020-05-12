@@ -19,7 +19,7 @@ public class UserAccountService {
     }
 
     /**
-     * Returns the 30 day trailing volume information from all accounts for the key provided
+     * Returns the 30 day trailing volume information from all accounts
      * @return UserAccountData
      */
     public List<UserAccountData> getTrailingVolume(){
