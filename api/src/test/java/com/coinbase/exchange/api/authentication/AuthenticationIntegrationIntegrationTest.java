@@ -4,10 +4,10 @@ import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -24,7 +24,7 @@ public class AuthenticationIntegrationIntegrationTest extends BaseIntegrationTes
     @Test
     public void simpleAuthenticationTest(){
         List<Account> accounts = accountService.getAccounts();
-        assertTrue(accounts != null);
+        assertNotNull(accounts);
         assertTrue(accounts.size() > 0);
     }
 

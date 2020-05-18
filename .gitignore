@@ -5,4 +5,4 @@
 **/classes/
 **/build/
 **/out/
-application*.yml
+**/application.*.yml

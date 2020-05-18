@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * See class doc for BaseIntegrationTest
@@ -22,6 +22,6 @@ public class UserAccountServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     public void getTrailingVolume(){
         List<UserAccountData> data = userAccountService.getTrailingVolume();
-        assertTrue(data != null);
+        assertNotNull(data);
     }
 }

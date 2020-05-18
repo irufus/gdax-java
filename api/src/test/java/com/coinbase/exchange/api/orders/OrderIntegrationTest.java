@@ -3,12 +3,12 @@ package com.coinbase.exchange.api.orders;
 import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
-import com.coinbase.exchange.model.Fill;
-import com.coinbase.exchange.model.NewLimitOrderSingle;
-import com.coinbase.exchange.model.NewMarketOrderSingle;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.products.ProductService;
+import com.coinbase.exchange.model.Fill;
+import com.coinbase.exchange.model.NewLimitOrderSingle;
+import com.coinbase.exchange.model.NewMarketOrderSingle;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -105,8 +105,10 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
     public void shouldGetFilledByOrderIdWhenMakingMarketOrderBuy() {
         NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "buy", new BigDecimal(0.01));
         Order order = testee.createOrder(marketOrder);
+
         List<Fill> fills = testee.getFillByOrderId(order.getId(), 100);
-        assertTrue(fills.size() == 1);
+
+        assertEquals(1, fills.size());
     }
 
     @Ignore
@@ -114,11 +116,11 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
         NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "buy", new BigDecimal(0.01));
         Order order = testee.createOrder(marketOrder);
 
-        assertTrue(order != null); //make sure we created an order
+        assertNotNull(order); //make sure we created an order
         String orderId = order.getId();
         assertTrue(orderId.length() > 0); //ensure we have an actual orderId
         Order filledOrder = testee.getOrder(orderId);
-        assertTrue(filledOrder != null); //ensure our order hit the system
+        assertNotNull(filledOrder); //ensure our order hit the system
         assertTrue(new BigDecimal(filledOrder.getSize()).compareTo(BigDecimal.ZERO) > 0); //ensure we got a fill
         log.info("Order opened and filled: " + filledOrder.getSize() + " @ " + filledOrder.getExecuted_value()
                 + " at the cost of " + filledOrder.getFill_fees());
@@ -128,11 +130,11 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
     public void createMarketOrderSell() {
         NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "sell", new BigDecimal(0.01));
         Order order = testee.createOrder(marketOrder);
-        assertTrue(order != null); //make sure we created an order
+        assertNotNull(order); //make sure we created an order
         String orderId = order.getId();
         assertTrue(orderId.length() > 0); //ensure we have an actual orderId
         Order filledOrder = testee.getOrder(orderId);
-        assertTrue(filledOrder != null); //ensure our order hit the system
+        assertNotNull(filledOrder); //ensure our order hit the system
         assertTrue(new BigDecimal(filledOrder.getSize()).compareTo(BigDecimal.ZERO) > 0); //ensure we got a fill
         log.info("Order opened and filled: " + filledOrder.getSize() + " @ " + filledOrder.getExecuted_value()
                 + " at the cost of " + filledOrder.getFill_fees());

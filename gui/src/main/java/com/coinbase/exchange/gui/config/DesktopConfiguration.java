@@ -3,11 +3,12 @@ package com.coinbase.exchange.gui.config;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
 import com.coinbase.exchange.api.exchange.CoinbaseExchangeImpl;
 import com.coinbase.exchange.api.exchange.Signature;
+import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.gui.frame.GuiFrame;
 import com.coinbase.exchange.gui.liveorderbook.view.OrderBookView;
 import com.coinbase.exchange.gui.websocketfeed.WebsocketFeed;
-import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,9 @@ public class DesktopConfiguration {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 
     @Bean

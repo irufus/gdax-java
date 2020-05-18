@@ -2,9 +2,9 @@ package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.deposits.DepositService;
-import com.coinbase.exchange.model.PaymentResponse;
 import com.coinbase.exchange.api.payments.CoinbaseAccount;
 import com.coinbase.exchange.api.payments.PaymentService;
+import com.coinbase.exchange.model.PaymentResponse;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -48,7 +49,7 @@ public class DepositIntegrationTest extends BaseIntegrationTest {
         gdaxAccount = accountService.getAccount(gdaxAccount.getId());
 
         // then
-        assertTrue(initGDAXValue.add(depositAmount).compareTo(gdaxAccount.getBalance()) == 0);
+        assertEquals(0, initGDAXValue.add(depositAmount).compareTo(gdaxAccount.getBalance()));
     }
 
     private Account getAccount(List<Account> gdaxAccountList) {

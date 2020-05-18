@@ -1,22 +1,18 @@
 package com.coinbase.exchange.api.marketdata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Created by ren7881 on 20/03/2017.
  */
 public class OrderItemDeserializerTest {
 
-    private ObjectMapper mapper;
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        mapper = new ObjectMapper();// TODO   could be obtained from the spring context
-    }
+    private ObjectMapper mapper = new ObjectMapper();
 
     /**
      * This is now out of date - the api delivers a list of strings - amount, price, order Id. NOT number of orders as this test shows.
@@ -37,5 +33,8 @@ public class OrderItemDeserializerTest {
                 "}";
 
         MarketData marketData = mapper.readValue(test, MarketData.class);
+        assertEquals(marketData.getAsks().size(), 2);
+        assertEquals(marketData.getBids().size(), 2);
+        assertEquals(marketData.getSequence(), 3L);
     }
 }

@@ -1,11 +1,11 @@
 package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
-import com.coinbase.exchange.model.PaymentResponse;
 import com.coinbase.exchange.api.payments.CoinbaseAccount;
 import com.coinbase.exchange.api.payments.PaymentService;
 import com.coinbase.exchange.api.payments.PaymentType;
 import com.coinbase.exchange.api.withdrawals.WithdrawalsService;
+import com.coinbase.exchange.model.PaymentResponse;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -48,7 +49,7 @@ public class WithdrawalIntegrationTest extends BaseIntegrationTest {
         assertTrue(response.getId().length() > 0 && response.getAmount().compareTo(withdrawAmount) == 0);
         log.info("Returned: " + response.getId());
         gdaxAccount = accountService.getAccount(gdaxAccount.getId());
-        assertTrue(gdaxUSDValue.subtract(withdrawAmount).compareTo(gdaxAccount.getBalance()) == 0);
+        assertEquals(0, gdaxUSDValue.subtract(withdrawAmount).compareTo(gdaxAccount.getBalance()));
     }
 
     private CoinbaseAccount getUsdCoinbaseAccount(List<CoinbaseAccount> coinbaseAccounts) {

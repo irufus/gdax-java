@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -20,28 +21,28 @@ public class AccountsIntegrationTest extends BaseIntegrationTest {
     @Test
     public void canGetAccounts() {
         List<Account> accounts  = accountService.getAccounts();
-        assertTrue(accounts != null);
+        assertNotNull(accounts);
     }
 
     @Test
     public void getAccount() {
         List<Account> accounts  = accountService.getAccounts();
         Account account = accountService.getAccount(accounts.get(0).getId());
-        assertTrue(account != null);
+        assertNotNull(account);
     }
 
     @Test
     public void canGetAccountHistory() {
         List<Account> accounts = accountService.getAccounts();
         List<AccountHistory> history = accountService.getAccountHistory(accounts.get(0).getId());
-        assertTrue(history != null); // anything but null/error.
+        assertNotNull(history); // anything but null/error.
     }
 
     @Test
     public void canGetAccountHolds() {
         List<Account> accounts = accountService.getAccounts();
         List<Hold> holds = accountService.getHolds(accounts.get(0).getId());
-        assertTrue(holds != null);
+        assertNotNull(holds);
         // only check the holds if they exist
         if (holds.size()>0) {
             assertTrue(holds.get(0).getAmount().floatValue() >= 0.0f);
@@ -61,7 +62,7 @@ public class AccountsIntegrationTest extends BaseIntegrationTest {
         int limit = 5;
         List<AccountHistory> firstPageAccountHistory = accountService.getPagedAccountHistory(accounts.get(0).getId(),
                 beforeOrAfter, pageNumber, limit);
-        assertTrue(firstPageAccountHistory != null);
+        assertNotNull(firstPageAccountHistory);
         assertTrue(firstPageAccountHistory.size() <= limit);
     }
 
@@ -81,7 +82,7 @@ public class AccountsIntegrationTest extends BaseIntegrationTest {
                 pageNumber,
                 limit);
 
-        assertTrue(firstPageOfHolds != null);
+        assertNotNull(firstPageOfHolds);
         assertTrue(firstPageOfHolds.size() <= limit);
     }
 }

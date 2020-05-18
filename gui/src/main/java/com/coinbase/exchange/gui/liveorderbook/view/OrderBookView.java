@@ -175,6 +175,7 @@ public class OrderBookView extends JPanel {
                                     } else if (message instanceof ReceivedOrderBookMessage) {
                                         // received orders are not necessarily live orders -
                                         // so ignore these msgs as they're unnecessary
+                                        // https://docs.pro.coinbase.com/#the-full-channel see here for more details
                                         log.info("order received {}", json);
 
                                     } else if (message instanceof OpenedOrderBookMessage) {
@@ -204,7 +205,7 @@ public class OrderBookView extends JPanel {
                                         log.warn("Error {}", json);
                                         ErrorOrderBookMessage errorMessage = (ErrorOrderBookMessage) message;
 
-                                    }  else {
+                                    } else {
                                         // Not sure this is required unless I'm attempting to place orders
                                         // ERROR
                                         log.error("Unsupported message type {}", json);

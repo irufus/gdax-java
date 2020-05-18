@@ -42,13 +42,13 @@ Code that has very little in the way of testing is more likely to be rejected.
 
 The current codebase tests what is sensible and possible to test. Mainly getting things. Testing items are submitted to the server isn't ideal as the GDAX sandbox no longer exists so it isn't particularly safe to do this especially for placing orders.
 
-# I want to create some new element in the codebase
+## I want to create some new element in the codebase
 
 Where do you start?
 
 Add this template, add the relevant tests you want, then begin implementing your code.
 
-Note Dependency injection is far more predictable in spring if constructor injection is used (i.e. put the @Autowired/@Inject annotation on the constructor rather than a field in your class).
+Note Dependency injection is far more predictable in spring if constructor injection is used (i.e. put the @Autowired/@Inject annotation on the constructor rather than a field in your class - if a class only has one constructor the @Autowired annotation is not necessary).
 
 ```java
 @Component
@@ -61,7 +61,7 @@ public class NewComponent {
 }
 ```
 
-Now if you want to utilise some of the already implemented features of this codebase like getting your account details, you can autowire in the already existent (@)component `AccountService`
+If you want to utilise a current Service like getting your account details, you can autowire in the already existing (@)Component `AccountService`
 
 ```java
 @Component
@@ -78,11 +78,12 @@ public class NewComponent {
         List<Account> accounts = accountService.getAccounts();
         for(Account account: accounts) {
             System.out.println(accounts.getBalance());
+        }
     }
 }
 ```
 
-You can now add more code to the main method of this codebase and interact with your new code. You'll need a reference to the new code which can be obtained with:
+You can now add more code to a method of this codebase and interact with your new code. You'll need a reference to the new code which can be obtained with:
 
 ```java
     ConfigurableApplicationContext ctx = new SpringApplicationBuilder(GdaxApiApplication.class)
@@ -92,3 +93,7 @@ You can now add more code to the main method of this codebase and interact with 
     newComponent.printMyAccounts();
     ... etc.
 ```
+
+Of course, its always a good idea to let the tests drive the necessary code into your code base. If you can do TDD, great. If not, add it after you're solution.
+
+Tests all follow a given, when, then style... *given* some preconditions X, *when* I exercise a given method Y, *then* the results are expected to be Z (if not the test fails).

@@ -12,8 +12,10 @@ import javax.swing.table.TableModel;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import static java.util.stream.Collectors.toList;
@@ -22,23 +24,36 @@ import static java.util.stream.Collectors.toList;
 public class OrderBookModel implements TableModel, TableModelListener {
 
     static final Logger log = LoggerFactory.getLogger(OrderBookModel.class);
+
+    public static final int PRICE_COLUMN = 0;
+    public static final int SIZE_COLUMN = 1;
+    public static final int ORDER_QTY_COLUMN = 2;
+
+
+
     static final int PRICE_DECIMAL_PLACES = 5;
     static final int SIZE_DECIMAL_PLACES = 8;
+    static final Comparator<OrderBookMessage> priceComparator = (o1, o2) -> o1.getPrice().compareTo(o2.getPrice()) * -1;
+    static final Comparator<OrderBookMessage> sequenceComparator = (o1, o2) -> o2.getSequence().compareTo(o1.getSequence()) * -1;
 
-    public Vector<Vector> data;
+    public Vector<Vector> tableData;
 
-    private static String[] columnNames = {
+    private static final String[] columnNames = {
             "price",
             "size",
             "#orders"
     };
 
-    List<OrderBookMessage> lastOrders;
+    List<OrderBookMessage> receivedOrders;
+    Map<Long, OrderBookMessage> historicOrdersMap;
+    Map<OrderBookMessage, Integer> priceIndexMap;
 
     public OrderBookModel() {
-        data = new Vector<>();
+        tableData = new Vector<>();
         addTableModelListener(this);
-        this.lastOrders = new LinkedList<>();
+        this.receivedOrders = new LinkedList<>();
+        this.historicOrdersMap = new HashMap<>();
+        this.priceIndexMap = new HashMap<>();
     }
 
     EventListenerList listenerList = new EventListenerList();
@@ -79,12 +94,12 @@ public class OrderBookModel implements TableModel, TableModelListener {
     }
 
     public int getRowCount() {
-        return data.size();
+        return tableData.size();
     }
 
 
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return data.get(rowIndex).get(columnIndex);
+        return tableData.get(rowIndex).get(columnIndex);
     }
 
     public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -93,41 +108,30 @@ public class OrderBookModel implements TableModel, TableModelListener {
 
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if (rowIndex >= getRowCount()) {
-            data.add(new Vector(3));
-            for (int i = 0; i < 3; i++) {
-                data.get(rowIndex).add("");
-            }
+            tableData.add(emptyEntry());
         }
 
         if (aValue instanceof String) {
-            data.get(rowIndex).set(columnIndex, (String) aValue);
+            tableData.get(rowIndex).set(columnIndex, (String) aValue);
         }
 
         fireAllChanged();
     }
 
     public void removeRow(int index) {
-        data.remove(index);
+        tableData.remove(index);
     }
 
     public void tableChanged(TableModelEvent e) {
-        switch (e.getType()) {
-            case TableModelEvent.DELETE: {
-
+        if (isInsertORUpdateORDeleteOrderType(e)) {
                 fireAllChanged();
-                break;
-            }
-            case TableModelEvent.INSERT: {
-
-                fireAllChanged();
-                break;
-            }
-            case TableModelEvent.UPDATE: {
-
-                fireAllChanged();
-                break;
-            }
         }
+    }
+
+    private boolean isInsertORUpdateORDeleteOrderType(TableModelEvent e) {
+        return e.getType() == TableModelEvent.DELETE
+            || e.getType() == TableModelEvent.INSERT
+            ||  e.getType() == TableModelEvent.UPDATE;
     }
 
     protected void fireAllChanged() {
@@ -137,18 +141,23 @@ public class OrderBookModel implements TableModel, TableModelListener {
 
     public void insertRowAt(OrderItem item, int rowIndex) {
 
-        Vector vector = new Vector(3);
-        for (int i = 0; i < 3; i++) {
-            vector.add("");
-        }
+        Vector emptyEntry = emptyEntry();
 
-        data.insertElementAt(vector, rowIndex);
+        tableData.insertElementAt(emptyEntry, rowIndex);
 
-        setValueAt(item.getPrice().setScale(PRICE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP).toString(), rowIndex, 0);
-        setValueAt(item.getSize().setScale(SIZE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP).toString(), rowIndex, 1);
-        setValueAt(item.getNum().toString(), rowIndex, 2);
+        setValueAt(item.getPrice().setScale(PRICE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP).toString(), rowIndex, PRICE_COLUMN);
+        setValueAt(item.getSize().setScale(SIZE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP).toString(), rowIndex, SIZE_COLUMN);
+        setValueAt(item.getNum().toString(), rowIndex, ORDER_QTY_COLUMN);
 
         fireAllChanged();
+    }
+
+    private Vector emptyEntry() {
+        Vector emptyEntry = new Vector(3);
+        emptyEntry.add("");
+        emptyEntry.add("");
+        emptyEntry.add("");
+        return emptyEntry;
     }
 
     public BigDecimal getOrderSize(OrderBookMessage msg) {
@@ -156,7 +165,7 @@ public class OrderBookModel implements TableModel, TableModelListener {
         if (msg.getSize() != null) {
             result = msg.getSize();
         }
-        if (msg.getRemaining_size()!=null){
+        if (msg.getRemaining_size() != null){
             result = msg.getRemaining_size();
         }
         return result.setScale(SIZE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
@@ -166,175 +175,192 @@ public class OrderBookModel implements TableModel, TableModelListener {
         return msg.getPrice().setScale(PRICE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
     }
 
+    /**
+     * TODO
+     * Using a binary search for every order that comes in is in-efficient when applied to all orders
+     * Convert to lookup historic orders in a map
+     * @param msg
+     * @return
+     */
     public int checkSequence(OrderBookMessage msg) {
+        // Checks if the price point already exists
+        int sequenceEntryIndex = getPriceEntryIndex(receivedOrders, msg, sequenceComparator);
 
-        Comparator<OrderBookMessage> comparator = new Comparator<OrderBookMessage>(){
-            @Override
-            public int compare(OrderBookMessage o1, OrderBookMessage o2) {
-                return o1.getSequence().compareTo(o2.getSequence());
-            }
-        };
-
-        int index = Collections.binarySearch(lastOrders, msg, comparator);
-
-        if (index <0) {
-            // item did not exist so negative index for the insertion point was returned
-            // insert item at this point
-            index = (index+1) * -1;
-            lastOrders.add(index, msg);
-        } else if (index == 0) {
-            lastOrders.add(index, msg);
+        if (sequenceEntryIndex < 0) {
+            // message did not exist in historicOrders so negative index
+            // for the insertion point was returned insert item at this point
+            sequenceEntryIndex = invertIndex(sequenceEntryIndex);
+            receivedOrders.add(sequenceEntryIndex, msg);
+        } else if (sequenceEntryIndex == 0) {
+            receivedOrders.add(sequenceEntryIndex, msg);
         } else {
-            log.error("Sequence number already seen {}: {}", index, msg);
+            log.warn("Sequence number already seen {}: {}", sequenceEntryIndex, msg);
         }
-        return index;
+        return sequenceEntryIndex;
+    }
+
+    private Integer getPriceEntryIndex(List listToSearch, OrderBookMessage msg, Comparator comparator) {
+        // check the index to insert the order at.
+//        if (!historicOrdersMap.containsKey(msg.getSequence())) {
+//            historicOrdersMap.put(msg.getSequence(), msg);
+//        } else {
+//            priceIndexMap.get(msg);
+//        }
+        return Collections.binarySearch(listToSearch, msg, comparator);
     }
 
     public int insertInto(OrderBookMessage msg) {
 
-        List<OrderBookMessage> orderIndex = data.stream()
-                .map(w -> {
-                    OrderBookMessage message = new OrderBookMessage();
-                    message.setPrice(getPriceAsBigDecimal((String)w.get(0)));
-                    message.setSide(msg.getSide());
-                    return message;
-                })
-                .collect(toList());
+        // take a list of all prices on the current live orderbook.
+        int priceEntryIndex = getPriceEntryIndex(livePriceEntriesList(msg), msg, priceComparator);
 
-        Comparator<OrderBookMessage> comparator = new Comparator<OrderBookMessage>(){
-            @Override
-            public int compare(OrderBookMessage o1, OrderBookMessage o2) {
-                return o1.getPrice().compareTo(o2.getPrice()) * -1; // reverse order by price
-            }
-        };
-
-        int index = Collections.binarySearch(orderIndex, msg, comparator);
-
-        if (index < 0) {
+        // only insert new row entry into table data if its at a new price point or the insertion point is 0 and the table is empty.
+        if (priceEntryIndex < 0) {
             // item did not exist so negative index for the insertion point was returned
             // insert item at this point
-            log.info("Inserting order at new price point {}: {}, {}", index, getOrderPrice(msg), msg);
-            index = (index * -1) - 1;
-            insert(index, msg);
+            log.info("Inserting order at new price point {}: {}, {}", priceEntryIndex, getOrderPrice(msg), msg.toString());
+            priceEntryIndex = invertIndex(priceEntryIndex);
+            insert(priceEntryIndex, msg);
 
-        } else if (index == 0) {
-            if (getRowCount() == 0) {
-                insert(index, msg);
-            }
+        } else if (priceEntryIndex == 0 && getRowCount() == 0) {
+            insert(priceEntryIndex, msg);
         }
 
-        Integer currentQty = Integer.parseInt((String)getValueAt(index,2));
-        BigDecimal currentSize = new BigDecimal((String)getValueAt(index,1));
-        BigDecimal newOrderSize = new BigDecimal(0); // just an init
+        // get the qty and size values ready to update at the insertion/update index
+        Integer currentQty = Integer.parseInt((String)getValueAt(priceEntryIndex, ORDER_QTY_COLUMN));
+        BigDecimal currentSize = new BigDecimal((String)getValueAt(priceEntryIndex, SIZE_COLUMN));
 
-        int newQty = 0;
+        BigDecimal newOrderSize = getNewOrderSize(msg, currentSize); // just an init before we pick the right value
+        int newQty = getNewQuantity(msg.getType(), currentQty);
+
+        setValueAt(getOrderPrice(msg), priceEntryIndex, PRICE_COLUMN);
+        setValueAt(getPriceAsString(newOrderSize), priceEntryIndex, SIZE_COLUMN);
+        setValueAt(newQty + "", priceEntryIndex, ORDER_QTY_COLUMN);
+
+        validateOrderBookElseRemoveRow(priceEntryIndex);
+
+        return priceEntryIndex;
+    }
+
+    private List<OrderBookMessage> livePriceEntriesList(OrderBookMessage msg) {
+        return tableData.stream()
+                .map(tableRow ->
+                    new OrderBookMessage.OrderBookMessageBuilder()
+                               .setPrice(getPriceAsBigDecimal((String)tableRow.get(PRICE_COLUMN)))
+                               .setSide(msg.getSide()).build())
+                .collect(toList());
+    }
+
+    private BigDecimal getNewOrderSize(OrderBookMessage msg, BigDecimal currentSize) {
         if (msg.getType() != null) {
             if (msg.getType().equals("done") || msg.getType().equals("matched") || msg.getType().equals("invert")) {
 
                 if (msg.getRemaining_size()!=null){
-                    newOrderSize = msg.getRemaining_size();
+                    return msg.getRemaining_size();
                 } else {
                     if (msg.getSize() != null) {
-                        newOrderSize = getOrderSize(msg).negate().add(currentSize);
+                        return getOrderSize(msg).negate().add(currentSize); // subtract if we have one of the order types above
                     } else {
-                        newOrderSize = new BigDecimal(0);
+                       return new BigDecimal(0);
                     }
                 }
-                newQty = currentQty - 1;
 
             } else {
                 if (msg.getRemaining_size()!=null){
-                    newOrderSize = msg.getRemaining_size();
+                    return msg.getRemaining_size();
                 } else {
                     if (msg.getSize()!=null) {
-                        newOrderSize = msg.getSize().add(currentSize);
+                        return msg.getSize().add(currentSize); // add for orders that are not done, matched, invert.
                     }
+                    return new BigDecimal(0);
                 }
-                newQty = currentQty + 1;
             }
         } else {
             if (msg.getRemaining_size()!=null){
-                newOrderSize = msg.getRemaining_size();
+               return msg.getRemaining_size();
             } else {
-                newOrderSize = getOrderSize(msg).add(currentSize);
+               return getOrderSize(msg).add(currentSize);
             }
-            newQty = currentQty + 1;
         }
+    }
 
-        setValueAt(getOrderPrice(msg), index, 0);
-        setValueAt(getPriceAsString(newOrderSize), index, 1);
-        setValueAt(newQty + "", index, 2);
+    private int getNewQuantity(String type, int currentQty) {
+        if (type != null) {
+            if (type.equals("done") || type.equals("matched") || type.equals("invert")) {
+                return currentQty - 1;
+            } else {
+                return currentQty + 1;
+            }
+        } else {
+            return currentQty + 1;
+        }
+    }
 
-        validateOrderBookElseRemoveRow(index);
-
-        return index;
+    private int invertIndex(int index) {
+        return (index * -1) - 1;
     }
 
     private void insert(int index, OrderBookMessage message) {
         if (index >= getRowCount()
-                || !(data.get(index).get(0)).equals(getOrderPrice(message))){
-            data.add(index, new Vector(3));
-            for (int i = 0; i < 3; i++) {
-                data.get(index).add("");
-            }
+                || !(tableData.get(index).get(PRICE_COLUMN)).equals(getOrderPrice(message))){
+            tableData.add(index, emptyEntry());
         }
-        setValueAt(getPriceAsString(message.getPrice()), index, 0);
-        setValueAt("0", index, 1);
-        setValueAt("0", index, 2);
+        setValueAt(getPriceAsString(message.getPrice()), index, PRICE_COLUMN);
+        setValueAt("0", index, SIZE_COLUMN);
+        setValueAt("0", index, ORDER_QTY_COLUMN);
     }
 
-    public List<OrderBookMessage> getLastOrders(){
-        return lastOrders;
+    public List<OrderBookMessage> getReceivedOrders(){
+        return receivedOrders;
     }
 
     private void validateOrderBookElseRemoveRow(int rowUpdated) {
-        BigDecimal currentPrice = getPriceAsBigDecimal((String)getValueAt(rowUpdated, 1));
-        Integer currentQty = Integer.parseInt((String)getValueAt(rowUpdated, 2));
-        if (currentPrice.compareTo(new BigDecimal(0)) <= 0
-                || currentQty <= 0) {
+        BigDecimal currentPrice = getPriceAsBigDecimal((String)getValueAt(rowUpdated, SIZE_COLUMN));
+        Integer currentQty = Integer.parseInt((String)getValueAt(rowUpdated, ORDER_QTY_COLUMN));
+        if (currentPrice.compareTo(new BigDecimal(0)) <= 0 || currentQty <= 0) {
             removeRow(rowUpdated);
         }
-    }
-
-    private BigDecimal getPriceAsBigDecimal(OrderBookMessage msg) {
-        return msg.getPrice().setScale(PRICE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
-    }
-
-    private BigDecimal getSizeAsBigDecimal(OrderBookMessage msg) {
-        return msg.getSize().setScale(SIZE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
     }
 
     private BigDecimal getPriceAsBigDecimal(String priceString) {
         return new BigDecimal(priceString).setScale(PRICE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
     }
 
-    private BigDecimal getSizeAsBigDecimal(String sizeString) {
-        return new BigDecimal(sizeString).setScale(SIZE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
-    }
-
     private String getPriceAsString(BigDecimal bigDecimal) {
         return bigDecimal.setScale(PRICE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP).toString();
     }
 
-    private String getSizeAsString(BigDecimal bigDecimal) {
-        return bigDecimal.setScale(SIZE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP).toString();
+    public void incomingOrder(OrderBookMessage msg) {
+        int i = checkSequence(msg);
+        applyOrdersFrom(i);
     }
 
-    // apply the inverse of all but the seqIndex to the end of the list.
-    public void replayFrom(int index) {
+    /**
+     * apply the inverse of all but the seqIndex to the end of the list, then reapply all orders in sequence to remain in sync
+     **/
+    public void applyOrdersFrom(int index) {
 
-        log.warn("Replaying orders from {}, index: {} of {}",  lastOrders.get(index).getSequence(), index, lastOrders.size()-1);
+        int historicOrdersLastElementId = receivedOrders.size() - 1;
+        log.warn("Replaying orders from {}, index: {} of {}",  receivedOrders.get(index).getSequence(), index+1, historicOrdersLastElementId+1);
 
-        // undo all orders beyond this one
-        for (int i=lastOrders.size()-1; i>index; i--){
-            log.warn("Inverting order {}, {} of {}", lastOrders.get(i).getSequence(), i, lastOrders.size()-1);
-            insertInto(invertOrder(lastOrders.get(i)));
-        }
+        // undo all orders applied after this one
+        undoOrdersToIndexExclusive(index, historicOrdersLastElementId);
 
         // re apply all orders following this one
-        for (int i=index; i<lastOrders.size(); i++){
-            log.info("Applying order {}, {} of {}", lastOrders.get(i).getSequence(), i, lastOrders.size()-1);
-            insertInto(lastOrders.get(i));
+        applyOrdersFromIndexInclusive(index, historicOrdersLastElementId);
+    }
+
+    private void applyOrdersFromIndexInclusive(int index, int historicOrdersLastElementId) {
+        for (int i = index; i < receivedOrders.size(); i++){
+            log.info("Applying order {}, {} of {}", receivedOrders.get(i).getSequence(), i+1, historicOrdersLastElementId+1);
+            insertInto(receivedOrders.get(i));
+        }
+    }
+
+    private void undoOrdersToIndexExclusive(int index, int lastIndex) {
+        for (int i = lastIndex; i > index; i--) {
+            log.warn("Inverting order {}, {} of {}", receivedOrders.get(i).getSequence(), i+1, lastIndex+1);
+            insertInto(invertOrder(receivedOrders.get(i)));
         }
     }
 
@@ -344,10 +370,5 @@ public class OrderBookModel implements TableModel, TableModelListener {
         invertOrder.setSize(getOrderSize(orderBookMessage).negate());
         invertOrder.setPrice(getOrderPrice(orderBookMessage));
         return invertOrder;
-    }
-
-    public void incomingOrder(OrderBookMessage msg) {
-        int i = checkSequence(msg);
-        replayFrom(i);
     }
 }

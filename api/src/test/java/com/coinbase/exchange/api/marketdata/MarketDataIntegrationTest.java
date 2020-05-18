@@ -1,8 +1,8 @@
 package com.coinbase.exchange.api.marketdata;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
-import com.coinbase.exchange.model.Product;
 import com.coinbase.exchange.api.products.ProductService;
+import com.coinbase.exchange.model.Product;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -53,11 +53,11 @@ public class MarketDataIntegrationTest extends BaseIntegrationTest {
             MarketData data = testee.getMarketDataOrderBook(product.getId(), "1");
             assertNotNull(data);
 
-            if(data.getBids().size() > 0 && data.getAsks().size() > 0)
+            if(data.getBids().size() > 0 && data.getAsks().size() > 0) {
                 System.out.print(" B: " + data.getBids().get(0).getPrice() + " A: " + data.getAsks().get(0).getPrice());
-            else
+            } else {
                 System.out.print(" NO DATA ");
-
+            }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

@@ -53,6 +53,8 @@ public class OrderBookMessage extends FeedMessage implements Comparable<OrderBoo
 
     public OrderBookMessage() { }
 
+
+
     public OrderBookMessage(Channel[] channels) {
         this.channels = channels;
     }
@@ -367,5 +369,54 @@ public class OrderBookMessage extends FeedMessage implements Comparable<OrderBoo
     @Override
     public int compareTo(OrderBookMessage other) {
         return this.getSequence().compareTo(other.getSequence());
+    }
+
+    @Override
+    public String toString() {
+        return "OrderBookMessage{" +
+                "side='" + side + '\'' +
+                ", order_type='" + order_type + '\'' +
+                ", size=" + size +
+                ", price=" + price +
+                ", remaining_size=" + remaining_size +
+                ", sequence=" + getSequence() +
+                '}';
+    }
+
+    public static class OrderBookMessageBuilder {
+        private final OrderBookMessage message = new OrderBookMessage();
+
+        public OrderBookMessageBuilder setType(String type) {
+            message.setType(type);
+            return this;
+        }
+        public OrderBookMessageBuilder setSide(String side) {
+            message.setSide(side);
+            return this;
+        }
+
+        public OrderBookMessageBuilder setPrice(BigDecimal price) {
+            message.setPrice(price);
+            return this;
+        }
+
+        public OrderBookMessageBuilder setSize(BigDecimal size) {
+            message.setSize(size);
+            return this;
+        }
+
+        public OrderBookMessageBuilder setRemainingSize(BigDecimal remaininSize) {
+            message.setRemaining_size(remaininSize);
+            return this;
+        }
+
+        public OrderBookMessageBuilder setSequence(Long id) {
+            message.setSequence(id);
+            return this;
+        }
+
+        public OrderBookMessage build() {
+            return message;
+        }
     }
 }
