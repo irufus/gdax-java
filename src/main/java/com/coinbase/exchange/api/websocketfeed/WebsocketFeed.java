@@ -4,7 +4,6 @@ import com.coinbase.exchange.api.exchange.Signature;
 import com.coinbase.exchange.api.gui.orderbook.OrderBookView;
 import com.coinbase.exchange.api.websocketfeed.message.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
@@ -55,7 +54,7 @@ public class WebsocketFeed {
         this.passphrase = passphrase;
         this.websocketUrl = websocketUrl;
         this.signature = signature;
-        this.objectMapper = objectMapper(new JavaTimeModule());
+        this.objectMapper = objectMapper.registerModule(new JavaTimeModule());
     }
 
     public void connect() {

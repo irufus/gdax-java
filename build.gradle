@@ -3,7 +3,9 @@ apply plugin: 'application'
 
 group = 'irufus'
 description = 'Client for the GDAX API'
-version = '0.10.0'
+version = '0.95.15'
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 mainClassName = "com.coinbase.exchange.api.GdaxApiApplication"
 
