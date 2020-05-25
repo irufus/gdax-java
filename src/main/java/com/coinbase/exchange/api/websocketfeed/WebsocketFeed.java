@@ -55,7 +55,7 @@ public class WebsocketFeed {
         this.passphrase = passphrase;
         this.websocketUrl = websocketUrl;
         this.signature = signature;
-        this.objectMapper = objectMapper(new JavaTimeModule());
+        this.objectMapper = objectMapper;
     }
 
     public void connect() {
