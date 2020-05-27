@@ -18,9 +18,9 @@ public class MarketDataService {
 
     public static final String PRODUCT_ENDPOINT = "/products";
 
-    public MarketData getMarketDataOrderBook(String productId, String level) {
+    public MarketData getMarketDataOrderBook(String productId, int level) {
         String marketDataEndpoint = PRODUCT_ENDPOINT + "/" + productId + "/book";
-        if(level != null && !level.equals("") && !level.equals("1"))
+        if(level != 1)
             marketDataEndpoint += "?level=" + level;
        return exchange.get(marketDataEndpoint, new ParameterizedTypeReference<MarketData>(){});
     }

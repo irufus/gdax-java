@@ -49,9 +49,9 @@ public class PriceTracker {
 
         SwingUtilities.invokeLater(() -> {
             while(true) {
-                String btcPrice = marketDataService.getMarketDataOrderBook("BTC-USD", "1").getAsks().get(0).getPrice().toString();
-                String ethPrice = marketDataService.getMarketDataOrderBook("ETH-USD", "1").getAsks().get(0).getPrice().toString();
-                String ltcPrice = marketDataService.getMarketDataOrderBook("LTC-USD", "1").getAsks().get(0).getPrice().toString();
+                String btcPrice = marketDataService.getMarketDataOrderBook("BTC-USD", 1).getAsks().get(0).getPrice().toString();
+                String ethPrice = marketDataService.getMarketDataOrderBook("ETH-USD", 1).getAsks().get(0).getPrice().toString();
+                String ltcPrice = marketDataService.getMarketDataOrderBook("LTC-USD", 1).getAsks().get(0).getPrice().toString();
                 prices.setText(String.format("BTC: ${} | ETH: ${} | LTC: ${}", btcPrice, ethPrice, ltcPrice));
             }
         });

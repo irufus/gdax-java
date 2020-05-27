@@ -3,18 +3,12 @@ package com.coinbase.exchange.gui.liveorderbook.view;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.marketdata.OrderItem;
+import com.coinbase.exchange.gui.exceptions.CoinbaseDesktopAppException;
 import com.coinbase.exchange.gui.liveorderbook.OrderBookModel;
 import com.coinbase.exchange.gui.websocketfeed.WebsocketFeed;
-import com.coinbase.exchange.websocketfeed.ChangedOrderBookMessage;
-import com.coinbase.exchange.websocketfeed.Channel;
-import com.coinbase.exchange.websocketfeed.DoneOrderBookMessage;
-import com.coinbase.exchange.websocketfeed.ErrorOrderBookMessage;
-import com.coinbase.exchange.websocketfeed.FeedMessage;
+import com.coinbase.exchange.gui.websocketfeed.WebsocketMessageHandler;
 import com.coinbase.exchange.websocketfeed.HeartBeat;
-import com.coinbase.exchange.websocketfeed.MatchedOrderBookMessage;
-import com.coinbase.exchange.websocketfeed.OpenedOrderBookMessage;
 import com.coinbase.exchange.websocketfeed.OrderBookMessage;
-import com.coinbase.exchange.websocketfeed.ReceivedOrderBookMessage;
 import com.coinbase.exchange.websocketfeed.Subscribe;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -22,15 +16,17 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
-import static com.coinbase.exchange.websocketfeed.Channel.CHANNEL_FULL;
+import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 
 /**
  * TODO - convert to JFX rather than using Swing.
@@ -39,41 +35,49 @@ import static com.coinbase.exchange.websocketfeed.Channel.CHANNEL_FULL;
  */
 public class OrderBookView extends JPanel {
 
-    static final Logger log = LoggerFactory.getLogger(OrderBookView.class);
-    private final ObjectMapper objectMapper;
+    private static final Logger log = LoggerFactory.getLogger(OrderBookView.class);
+    public static final int FULL_ORDER_BOOK = 3;
 
-    static String[] productIds = new String[]{"BTC-GBP", "ETH-BTC"}; // make this configurable.
+    private String productId;
 
-    private boolean isAlive;
+    private boolean isWebsocketAlive;
+    private boolean isOrderbookReady;
 
-    WebsocketFeed websocketFeed;
-    MarketDataService marketDataService;
+    private ObjectMapper objectMapper;
+    private WebsocketFeed websocketFeed;
+    private MarketDataService marketDataService;
 
-    Map<String, JPanel> orderBookSplitPaneMap;
-    Map<String, JTable> tables;
+    private Map<String, JTable> bidAskTables;
+    private Map<String, JScrollPane> scrollPanes;
 
-    Map<String, List<OrderItem>> bids;
-    Map<String, List<OrderItem>> asks;
-
-    Map<String, JScrollPane> scrollPanes;
+    private List<OrderItem> bids;
+    private List<OrderItem> asks;
 
     // limit order book viewer
-    JPanel lobViewer;
-    JPanel productSelectionPanel;
-    Map<String, Long> maxSequenceIds;
+    private JPanel rootPanel;
+    private JPanel productSelectionPanel;
+    private Long maxSequenceId;
+    private boolean guiEnabled;
+    private OrderBookView orderBook;
+    private SwingWorker<Void, Void> websocketFeedStarter;
+
 
     public OrderBookView(boolean guiEnabled,
+                         String currentProductSelected,
                          MarketDataService marketDataService,
                          WebsocketFeed websocketFeed,
                          ObjectMapper objectMapper) {
         super();
-        this.objectMapper = objectMapper;
         if (guiEnabled) {
+            this.guiEnabled = guiEnabled;
             this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            this.productId = currentProductSelected;
+            this.orderBook = this;
+            this.objectMapper = objectMapper;
+            this.rootPanel = new JPanel();
+            this.add(rootPanel);
 
-            this.lobViewer = new JPanel();
-            this.add(lobViewer);
-
+            // TODO this should be a drop down list on a menu bar rather than buttons
             this.productSelectionPanel = new JPanel();
             this.productSelectionPanel.setLayout(new BoxLayout(productSelectionPanel, BoxLayout.X_AXIS));
             this.add(productSelectionPanel);
@@ -81,16 +85,15 @@ public class OrderBookView extends JPanel {
             this.websocketFeed = websocketFeed;
             this.marketDataService = marketDataService;
 
-            this.orderBookSplitPaneMap = new HashMap<>();
-            this.maxSequenceIds = new HashMap<>();
-            this.tables = new HashMap<>();
-            this.bids = new HashMap<>();
-            this.asks = new HashMap<>();
+            this.bidAskTables = new HashMap<>();
             this.scrollPanes = new HashMap<>();
+            this.bids = new ArrayList<>();
+            this.asks = new ArrayList<>();
             this.setVisible(true);
 
             try {
-                SwingUtilities.invokeAndWait(() -> load(guiEnabled));
+                log.info("*********** OrderBookView.load()");
+                SwingUtilities.invokeAndWait(() -> load());
             } catch (InterruptedException | InvocationTargetException e) {
                 log.error("Something went wrong whilst starting the OrderBookView", e);
             }
@@ -101,129 +104,41 @@ public class OrderBookView extends JPanel {
      * Gets the market data and loads in all the prices for the current order book,
      * then submits a subscribe message to the server so that price updates are received.
      */
-    public void load(boolean guiEnabled) {
-        OrderBookView orderBook = this;
+    public void load() {
         if (guiEnabled) {
-            SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            isOrderbookReady = false;
+            websocketFeedStarter = new SwingWorker<>() {
                 @Override
                 public Void doInBackground() {
+                    // Queue up websocketFeed messages before getting market data
+                    try {
+                        openWebsocket(orderBook);
 
-                    log.info("*********** OrderBookView.load()");
-                    for (String productId : productIds) {
+                        log.info("******** Initialising view for: {}", productId);
+                        MarketData marketData = getMarketData();
+                        setMaxSequenceId(marketData.getSequence());
 
-                        log.info("******** Getting the view for: " + productId);
-                        MarketData marketData = marketDataService.getMarketDataOrderBook(productId, "2");
-
-                        Collections.sort(marketData.getAsks());
-
-                        bids.put(productId, new LinkedList<>(marketData.getBids())); // list of order book items
-                        asks.put(productId, new LinkedList<>(marketData.getAsks())); // list of order book items
-
-                        log.info("Populating ASK table for: " + productId);
-                        JTable askTable = initTable(asks.get(productId));
-                        tables.put("sell_" + productId, askTable);
-
-                        log.info("Populating BID table for: " + productId);
-                        JTable bidTable = initTable(bids.get(productId));
-                        tables.put("buy_" + productId, bidTable);
-
-                        JScrollPane scrollerAsks = new JScrollPane(askTable);
-                        JScrollPane scrollerBids = new JScrollPane(bidTable);
-
-                        scrollPanes.put("sell_" + productId, scrollerAsks);
-                        scrollPanes.put("buy_" + productId, scrollerBids);
+                        JScrollPane scrollableAsks = addToScrollPane("sell", getAskTable());
+                        JScrollPane scrollableBids = addToScrollPane("buy", getBidTable());
 
                         JPanel orderBookPanelView = new JPanel();
-                        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollerAsks, scrollerBids);
-                        int height = orderBook.getHeight() / 2;
-                        splitPane.setDividerLocation(height);
-                        orderBookPanelView.add(splitPane);
+                        JSplitPane splitScrollableTables = getSplitScrollableTables(scrollableAsks, scrollableBids);
+                        orderBookPanelView.add(splitScrollableTables);
 
-                        orderBookSplitPaneMap.put(productId, orderBookPanelView);
-                        maxSequenceIds.put(productId, 0L);
+                        /**
+                         * This adds the two tables in scrollPanes within the split view
+                         */
+                        setLimitOrderBookViewer(orderBookPanelView);
+                        log.info("******** Activate Orderbook");
+                        log.info("Market Data Sequence: {}, Product: {}", maxSequenceId, productId);
+                        isOrderbookReady = true;
+                        Long marketBookSequenceId = marketData.getSequence();
+                        List<OrderBookMessage> unappliedMessages = websocketFeed.getOrdersAfter(marketBookSequenceId);
+                        unappliedMessages.stream().forEach(msg -> updateOB(msg));
+
+                    } catch (CoinbaseDesktopAppException e) {
+                        e.printStackTrace();
                     }
-
-                    setLobViewer(productIds[0]);
-                    log.info("******** Opening Websocket Feed");
-
-                    for (String productId : productIds) {
-                        JButton button = new JButton(productId);
-                        button.setFont(new Font("Calibri", Font.PLAIN, 11));
-                        productSelectionPanel.add(button);
-                        button.addActionListener(event -> setLobViewer(event.getActionCommand()));
-                    }
-
-                    log.info("*** Subscribing ***");
-                    websocketFeed.connect();
-                    Subscribe subscribeRequest = new Subscribe(productIds);
-                    subscribeRequest.setChannels(new Channel[]{CHANNEL_FULL});
-                    // TODO - extract to external standalone class rather than having this mess in-line.
-                    websocketFeed.addMessageHandler(new WebsocketFeed.MessageHandler() {
-                        @Override
-                        public void handleMessage(String json) {
-                            SwingWorker<Void, Void> worker = new SwingWorker<>() {
-                                @Override
-                                public Void doInBackground() {
-                                    log.info("received: " + json);
-                                    FeedMessage message = getObject(json, FeedMessage.class);
-
-                                    if (message instanceof HeartBeat) {
-                                        log.info("heartbeat");
-                                        HeartBeat heartBeat = (HeartBeat) message;
-                                        orderBook.heartBeat(heartBeat);
-
-                                    } else if (message instanceof ReceivedOrderBookMessage) {
-                                        // received orders are not necessarily live orders -
-                                        // so ignore these msgs as they're unnecessary
-                                        // https://docs.pro.coinbase.com/#the-full-channel see here for more details
-                                        log.info("order received {}", json);
-
-                                    } else if (message instanceof OpenedOrderBookMessage) {
-                                        log.info("Order opened: " + json);
-                                        OpenedOrderBookMessage openOrderBookMessage = (OpenedOrderBookMessage) message;
-                                        orderBook.updateOrderBook(openOrderBookMessage);
-
-                                    } else if (message instanceof DoneOrderBookMessage) {
-                                        log.info("Order done: " + json);
-                                        OrderBookMessage doneOrder = (DoneOrderBookMessage) message;
-                                        if (!doneOrder.getReason().equals("filled")) {
-                                            orderBook.updateOrderBook(doneOrder);
-                                        }
-
-                                    } else if (message instanceof MatchedOrderBookMessage) {
-                                        log.info("Order matched: " + json);
-                                        OrderBookMessage matchedOrder = getObject(json, MatchedOrderBookMessage.class);
-                                        orderBook.updateOrderBook(matchedOrder);
-
-                                    } else if (message instanceof ChangedOrderBookMessage) {
-                                        // TODO - possibly need to provide implementation for this to work in real time.
-                                        log.info("Order Changed {}", json);
-
-                                    } else if (message instanceof ErrorOrderBookMessage) {
-                                        // Not sure this is required unless I'm attempting to place orders
-                                        // ERROR
-                                        log.warn("Error {}", json);
-                                        ErrorOrderBookMessage errorMessage = (ErrorOrderBookMessage) message;
-
-                                    } else {
-                                        // Not sure this is required unless I'm attempting to place orders
-                                        // ERROR
-                                        log.error("Unsupported message type {}", json);
-
-                                    }
-                                    return null;
-                                }
-
-                                public void done() {
-
-                                }
-                            };
-                            worker.execute();
-                        }
-                    });
-                    // send message to websocket
-                    String jsonSubscribeMessage = websocketFeed.signObject(subscribeRequest);
-                    websocketFeed.sendMessage(jsonSubscribeMessage);
                     return null;
                 }
 
@@ -233,19 +148,67 @@ public class OrderBookView extends JPanel {
                     updateUI();
                 }
             };
-            worker.execute();
+            websocketFeedStarter.execute();
         }
     }
 
+    private JSplitPane getSplitScrollableTables(JScrollPane scrollableAsks, JScrollPane scrollableBids) {
+        JSplitPane splitPane = new JSplitPane(VERTICAL_SPLIT, scrollableAsks, scrollableBids);
+        int height = orderBook.getHeight() / 2;
+        splitPane.setDividerLocation(height);
+        return splitPane;
+    }
 
-    public <T> T getObject(String json, Class<T> type) {
+    private void openWebsocket(OrderBookView orderBook) throws CoinbaseDesktopAppException {
         try {
-            log.info(json);
-            return objectMapper.readValue(json, type);
-        } catch (IOException e) {
-            log.error("Parsing {} Failed: {}", type, e);
+            CompletableFuture.runAsync(() -> {
+                log.info("*** Opening To Websocket ***");
+                websocketFeed.connect();
+
+                // Messages are handled here:
+                WebsocketMessageHandler messageHandler = new WebsocketMessageHandler(orderBook, objectMapper);
+                websocketFeed.addMessageHandler(messageHandler);
+
+                Subscribe subscribeRequest = new Subscribe(new String[]{productId}); // full channel by default
+                String signedSubscribeMsg = websocketFeed.signObject(subscribeRequest);
+                websocketFeed.sendMessage(signedSubscribeMsg);
+            }).get();
+        } catch (InterruptedException | ExecutionException e) {
+            log.error("Websocket Connection failed");
+            throw new CoinbaseDesktopAppException("Websocket connection failed", e);
         }
-        return null;
+    }
+
+    private void setMaxSequenceId(Long sequenceId) {
+        this.maxSequenceId = sequenceId;
+    }
+
+    private JScrollPane addToScrollPane(String side, JTable table) {
+        JScrollPane jScrollPane = new JScrollPane(table);
+        scrollPanes.put(side + "_" + productId, jScrollPane);
+        return jScrollPane;
+    }
+
+    private JTable getBidTable() {
+        log.info("Populating BID table for: " + productId);
+        JTable bidTable = initTable(bids);
+        bidAskTables.put("buy_" + productId, bidTable);
+        return bidTable;
+    }
+
+    private JTable getAskTable() {
+        log.info("Populating ASK table for: " + productId);
+        JTable askTable = initTable(asks);
+        bidAskTables.put("sell_" + productId, askTable);
+        return askTable;
+    }
+
+    private MarketData getMarketData() {
+        MarketData marketData = marketDataService.getMarketDataOrderBook(productId, FULL_ORDER_BOOK);
+        Collections.sort(marketData.getAsks());
+        bids = new LinkedList<>(marketData.getBids());
+        asks = new LinkedList<>(marketData.getAsks());
+        return marketData;
     }
 
     private JTable initTable(List<OrderItem> marketData) {
@@ -253,7 +216,7 @@ public class OrderBookView extends JPanel {
 
         int index = 0;
         for (OrderItem item : marketData) {
-            log.info("Inserting new OrderItem row at index: {}, {}, {}", item.getPrice(), item.getSize(), item.getNum());
+            log.info("Inserting new OrderItem row at index: {}, price: {}, size: {}, qty: {}", index, item.getPrice(), item.getSize(), item.getNum());
             model.insertRowAt(item, index);
             index++;
         }
@@ -264,7 +227,7 @@ public class OrderBookView extends JPanel {
     }
 
     public void heartBeat(HeartBeat heartBeat) {
-        isAlive = true;
+        isWebsocketAlive = true;
     }
 
     /**
@@ -272,7 +235,7 @@ public class OrderBookView extends JPanel {
      */
     public void updateOB(OrderBookMessage msg) {
         log.info("OrderBookView.updateOrderBook");
-        OrderBookModel model = ((OrderBookModel) tables.get(msg.getSide() + "_" + msg.getProduct_id()).getModel());
+        OrderBookModel model = ((OrderBookModel) bidAskTables.get(msg.getSide() + "_" + msg.getProduct_id()).getModel());
 
         model.incomingOrder(msg);
 
@@ -301,13 +264,23 @@ public class OrderBookView extends JPanel {
         worker.execute();
     }
 
-    public void setLobViewer(String productId) {
-        JPanel splitPane = orderBookSplitPaneMap.get(productId);
-        lobViewer.removeAll();
-        lobViewer.add(splitPane);
+    public void setLimitOrderBookViewer(JPanel splitPane) {
+        rootPanel.removeAll();
+        rootPanel.add(splitPane);
         repaint();
         updateUI();
     }
 
 
+    public void switchProduct(String productId) {
+        isOrderbookReady = false;
+        this.productId = productId;
+        rootPanel.removeAll();
+        load();
+        // TODO open new tab / Replace existing panel?
+    }
+
+    public boolean isOrderBookReady() {
+        return isOrderbookReady;
+    }
 }

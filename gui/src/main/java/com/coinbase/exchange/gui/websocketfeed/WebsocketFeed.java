@@ -1,6 +1,7 @@
 package com.coinbase.exchange.gui.websocketfeed;
 
 import com.coinbase.exchange.api.exchange.Signature;
+import com.coinbase.exchange.websocketfeed.OrderBookMessage;
 import com.coinbase.exchange.websocketfeed.Subscribe;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +19,7 @@ import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 import java.net.URI;
 import java.time.Instant;
+import java.util.List;
 
 /**
  * Websocketfeed adapted from someone else's code
@@ -132,7 +134,6 @@ public class WebsocketFeed {
         log.info(jsonSubscribeMessage);
         // send subscription message to websocket
         sendMessage(jsonSubscribeMessage);
-
     }
 
     // TODO - get this into postHandle interceptor.
@@ -158,6 +159,12 @@ public class WebsocketFeed {
         }
     }
 
+
+    public List<OrderBookMessage> getOrdersAfter(Long sequenceId) {
+        return messageHandler.getQueuedMessages(sequenceId);
+    }
+
+
     /**
      * OrderBookMessage handler.
      *
@@ -165,5 +172,7 @@ public class WebsocketFeed {
      */
     public interface MessageHandler {
         public void handleMessage(String message);
+
+        List<OrderBookMessage> getQueuedMessages(Long sequenceId);
     }
 }

@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import static com.coinbase.exchange.api.marketdata.MessageEX.MessageType.DONE;
+import static com.coinbase.exchange.api.marketdata.MessageEX.MessageType.MATCH;
 import static java.util.stream.Collectors.toList;
 
 
@@ -29,12 +31,12 @@ public class OrderBookModel implements TableModel, TableModelListener {
     public static final int SIZE_COLUMN = 1;
     public static final int ORDER_QTY_COLUMN = 2;
 
-
-
     static final int PRICE_DECIMAL_PLACES = 5;
     static final int SIZE_DECIMAL_PLACES = 8;
     static final Comparator<OrderBookMessage> priceComparator = (o1, o2) -> o1.getPrice().compareTo(o2.getPrice()) * -1;
     static final Comparator<OrderBookMessage> sequenceComparator = (o1, o2) -> o2.getSequence().compareTo(o1.getSequence()) * -1;
+    public static final String INVERT = "invert";
+    private static final String CANCELED = "canceled";
 
     public Vector<Vector> tableData;
 
@@ -218,23 +220,22 @@ public class OrderBookModel implements TableModel, TableModelListener {
         if (priceEntryIndex < 0) {
             // item did not exist so negative index for the insertion point was returned
             // insert item at this point
-            log.info("Inserting order at new price point {}: {}, {}", priceEntryIndex, getOrderPrice(msg), msg.toString());
+            log.info("Inserting order at new price point {}: {}, {}, {}", priceEntryIndex, getOrderPrice(msg), msg.toString(), msg.getReason());
             priceEntryIndex = invertIndex(priceEntryIndex);
-            insert(priceEntryIndex, msg);
+            insertNewPricePoint(priceEntryIndex, msg);
 
         } else if (priceEntryIndex == 0 && getRowCount() == 0) {
-            insert(priceEntryIndex, msg);
+            insertNewPricePoint(priceEntryIndex, msg);
         }
 
         // get the qty and size values ready to update at the insertion/update index
         Integer currentQty = Integer.parseInt((String)getValueAt(priceEntryIndex, ORDER_QTY_COLUMN));
         BigDecimal currentSize = new BigDecimal((String)getValueAt(priceEntryIndex, SIZE_COLUMN));
 
-        BigDecimal newOrderSize = getNewOrderSize(msg, currentSize); // just an init before we pick the right value
-        int newQty = getNewQuantity(msg.getType(), currentQty);
+        BigDecimal newSize = getNewOrderSize(msg, currentSize);
+        Integer newQty = getNewQuantity(msg.getType(), currentQty);
 
-        setValueAt(getOrderPrice(msg), priceEntryIndex, PRICE_COLUMN);
-        setValueAt(getPriceAsString(newOrderSize), priceEntryIndex, SIZE_COLUMN);
+        setValueAt(newSize, priceEntryIndex, SIZE_COLUMN);
         setValueAt(newQty + "", priceEntryIndex, ORDER_QTY_COLUMN);
 
         validateOrderBookElseRemoveRow(priceEntryIndex);
@@ -253,15 +254,18 @@ public class OrderBookModel implements TableModel, TableModelListener {
 
     private BigDecimal getNewOrderSize(OrderBookMessage msg, BigDecimal currentSize) {
         if (msg.getType() != null) {
-            if (msg.getType().equals("done") || msg.getType().equals("matched") || msg.getType().equals("invert")) {
+            if (msg.getType().equals(DONE) || msg.getType().equals(MATCH) || msg.getType().equals(INVERT)) {
 
-                if (msg.getRemaining_size()!=null){
+                if (msg.getReason() !=null && msg.getReason().equals(CANCELED)) {
+                     return BigDecimal.ZERO;
+                }
+                if (msg.getRemaining_size()!=null) {
                     return msg.getRemaining_size();
                 } else {
                     if (msg.getSize() != null) {
                         return getOrderSize(msg).negate().add(currentSize); // subtract if we have one of the order types above
                     } else {
-                       return new BigDecimal(0);
+                        return BigDecimal.ZERO;
                     }
                 }
 
@@ -286,7 +290,7 @@ public class OrderBookModel implements TableModel, TableModelListener {
 
     private int getNewQuantity(String type, int currentQty) {
         if (type != null) {
-            if (type.equals("done") || type.equals("matched") || type.equals("invert")) {
+            if (type.equals(DONE) || type.equals(MATCH) || type.equals(INVERT)) {
                 return currentQty - 1;
             } else {
                 return currentQty + 1;
@@ -300,7 +304,7 @@ public class OrderBookModel implements TableModel, TableModelListener {
         return (index * -1) - 1;
     }
 
-    private void insert(int index, OrderBookMessage message) {
+    private void insertNewPricePoint(int index, OrderBookMessage message) {
         if (index >= getRowCount()
                 || !(tableData.get(index).get(PRICE_COLUMN)).equals(getOrderPrice(message))){
             tableData.add(index, emptyEntry());
@@ -341,10 +345,12 @@ public class OrderBookModel implements TableModel, TableModelListener {
     public void applyOrdersFrom(int index) {
 
         int historicOrdersLastElementId = receivedOrders.size() - 1;
-        log.warn("Replaying orders from {}, index: {} of {}",  receivedOrders.get(index).getSequence(), index+1, historicOrdersLastElementId+1);
+        //log.warn("Replaying orders from {}, index: {} of {}",  receivedOrders.get(index).getSequence(), index+1, historicOrdersLastElementId+1);
 
         // undo all orders applied after this one
-        undoOrdersToIndexExclusive(index, historicOrdersLastElementId);
+//        if (index != historicOrdersLastElementId) {
+            undoOrdersToIndexExclusive(index, historicOrdersLastElementId);
+//        }
 
         // re apply all orders following this one
         applyOrdersFromIndexInclusive(index, historicOrdersLastElementId);
@@ -352,14 +358,14 @@ public class OrderBookModel implements TableModel, TableModelListener {
 
     private void applyOrdersFromIndexInclusive(int index, int historicOrdersLastElementId) {
         for (int i = index; i < receivedOrders.size(); i++){
-            log.info("Applying order {}, {} of {}", receivedOrders.get(i).getSequence(), i+1, historicOrdersLastElementId+1);
+//            log.info("Applying order {}, {} of {}", receivedOrders.get(i).getSequence(), i+1, historicOrdersLastElementId+1);
             insertInto(receivedOrders.get(i));
         }
     }
 
     private void undoOrdersToIndexExclusive(int index, int lastIndex) {
         for (int i = lastIndex; i > index; i--) {
-            log.warn("Inverting order {}, {} of {}", receivedOrders.get(i).getSequence(), i+1, lastIndex+1);
+//            log.warn("Inverting order {}, {} of {}", receivedOrders.get(i).getSequence(), i+1, lastIndex+1);
             insertInto(invertOrder(receivedOrders.get(i)));
         }
     }

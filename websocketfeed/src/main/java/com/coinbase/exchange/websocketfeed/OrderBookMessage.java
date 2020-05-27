@@ -53,8 +53,6 @@ public class OrderBookMessage extends FeedMessage implements Comparable<OrderBoo
 
     public OrderBookMessage() { }
 
-
-
     public OrderBookMessage(Channel[] channels) {
         this.channels = channels;
     }
@@ -375,7 +373,7 @@ public class OrderBookMessage extends FeedMessage implements Comparable<OrderBoo
     public String toString() {
         return "OrderBookMessage{" +
                 "side='" + side + '\'' +
-                ", order_type='" + order_type + '\'' +
+                ", type='" + getType() + '\'' +
                 ", size=" + size +
                 ", price=" + price +
                 ", remaining_size=" + remaining_size +
