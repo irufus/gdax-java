@@ -149,7 +149,7 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
     }
 
     private MarketData getMarketDataOrderBook(String product) {
-        return marketDataService.getMarketDataOrderBook(product, "1");
+        return marketDataService.getMarketDataOrderBook(product, 1);
     }
 
     private NewLimitOrderSingle getNewLimitOrderSingle(String productId, BigDecimal price, BigDecimal size) {

@@ -22,14 +22,14 @@ public class MarketDataIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void canGetMarketDataForLevelOneBidAndAsk() {
-        MarketData marketData = testee.getMarketDataOrderBook("BTC-GBP", "1");
+        MarketData marketData = testee.getMarketDataOrderBook("BTC-GBP", 1);
         System.out.println(marketData);
         assertTrue(marketData.getSequence() > 0);
     }
 
     @Test
     public void canGetMarketDataForLevelTwoBidAndAsk() {
-        MarketData marketData = testee.getMarketDataOrderBook("BTC-GBP", "2");
+        MarketData marketData = testee.getMarketDataOrderBook("BTC-GBP", 2);
         System.out.println(marketData);
         assertTrue(marketData.getSequence() > 0);
     }
@@ -40,7 +40,7 @@ public class MarketDataIntegrationTest extends BaseIntegrationTest {
      */
     @Test
     public void canGetMarketDataForLevelThreeBidAndAsk() {
-        MarketData marketData = testee.getMarketDataOrderBook("BTC-GBP", "3");
+        MarketData marketData = testee.getMarketDataOrderBook("BTC-GBP", 3);
         System.out.println(marketData);
         assertTrue(marketData.getSequence() > 0);
     }
@@ -50,7 +50,7 @@ public class MarketDataIntegrationTest extends BaseIntegrationTest {
         List<Product> products = productService.getProducts();
         for(Product product : products){
             System.out.print("\nTesting: " + product.getId());
-            MarketData data = testee.getMarketDataOrderBook(product.getId(), "1");
+            MarketData data = testee.getMarketDataOrderBook(product.getId(), 1);
             assertNotNull(data);
 
             if(data.getBids().size() > 0 && data.getAsks().size() > 0) {
