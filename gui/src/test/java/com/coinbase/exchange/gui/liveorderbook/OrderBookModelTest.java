@@ -231,7 +231,7 @@ public class OrderBookModelTest {
                 .setRemainingSize(new BigDecimal("0.43400"))
                 .setSequence(1L).build();
 
-        testObject.checkSequence(message);
+        testObject.insertSequencedMessage(message,0);
 
         assertEquals(1, testObject.getReceivedOrders().size());
     }
@@ -246,14 +246,14 @@ public class OrderBookModelTest {
                 .setSide("buy")
                 .setSequence(1L).build();
 
-        testObject.checkSequence(message);
+        testObject.insertSequencedMessage(message,0);
 
         assertEquals(1, testObject.getReceivedOrders().size());
 
         OrderBookMessage newMessage = new OrderBookMessage();
         newMessage.setSequence(2L);
 
-        testObject.checkSequence(newMessage);
+        testObject.insertSequencedMessage(newMessage,1);
 
         assertEquals(2, testObject.getReceivedOrders().size());
         assertEquals(1L, testObject.getReceivedOrders().get(0).getSequence());
@@ -270,13 +270,13 @@ public class OrderBookModelTest {
                 .setSide("buy")
                 .setSequence(1L).build();
 
-        testObject.checkSequence(message);
+        testObject.insertSequencedMessage(message,0);
 
         assertEquals(1, testObject.getReceivedOrders().size());
 
         OrderBookMessage newMessage = new OrderBookMessage.OrderBookMessageBuilder().setSequence(0L).build();
 
-        testObject.checkSequence(newMessage);
+        testObject.insertSequencedMessage(newMessage,0);
 
         assertEquals(2, testObject.getReceivedOrders().size());
         assertEquals(0L, testObject.getReceivedOrders().get(0).getSequence());

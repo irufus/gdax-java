@@ -80,12 +80,10 @@ public class DesktopConfiguration {
         return new OrderBookViewController(CURRENT_PRODUCT_SELECTED, productService, orderBookView);
     }
 
-
     @Bean
     public GuiFrame gui(@Value("${gui.enabled}") boolean guiEnabled,
                         OrderBookView orderBookView,
                         OrderBookViewController orderBookViewController) {
         return new GuiFrame(guiEnabled, orderBookView, orderBookViewController);
     }
-
 }

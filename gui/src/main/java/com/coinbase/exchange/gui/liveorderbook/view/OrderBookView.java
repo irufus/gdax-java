@@ -36,7 +36,7 @@ import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 public class OrderBookView extends JPanel {
 
     private static final Logger log = LoggerFactory.getLogger(OrderBookView.class);
-    public static final int FULL_ORDER_BOOK = 3;
+    private static final int FULL_ORDER_BOOK = 3;
 
     private String productId;
 

@@ -27,16 +27,18 @@ public class OrderBookModel implements TableModel, TableModelListener {
 
     static final Logger log = LoggerFactory.getLogger(OrderBookModel.class);
 
-    public static final int PRICE_COLUMN = 0;
-    public static final int SIZE_COLUMN = 1;
-    public static final int ORDER_QTY_COLUMN = 2;
-
-    static final int PRICE_DECIMAL_PLACES = 5;
-    static final int SIZE_DECIMAL_PLACES = 8;
-    static final Comparator<OrderBookMessage> priceComparator = (o1, o2) -> o1.getPrice().compareTo(o2.getPrice()) * -1;
-    static final Comparator<OrderBookMessage> sequenceComparator = (o1, o2) -> o2.getSequence().compareTo(o1.getSequence()) * -1;
-    public static final String INVERT = "invert";
     private static final String CANCELED = "canceled";
+    private static final String INVERT = "invert";
+
+    private static final int PRICE_COLUMN = 0;
+    private static final int SIZE_COLUMN = 1;
+    private static final int ORDER_QTY_COLUMN = 2;
+
+    private static final int PRICE_DECIMAL_PLACES = 5;
+    private static final int SIZE_DECIMAL_PLACES = 8;
+
+    private static final Comparator<OrderBookMessage> priceComparator = (o1, o2) -> o1.getPrice().compareTo(o2.getPrice()) * -1;
+    private static final Comparator<OrderBookMessage> sequenceComparator = (o1, o2) -> o2.getSequence().compareTo(o1.getSequence()) * -1;
 
     public Vector<Vector> tableData;
 
@@ -79,7 +81,6 @@ public class OrderBookModel implements TableModel, TableModelListener {
     }
 
     // contents stuff
-
     public Class getColumnClass(int columnIndex) {
         if (getRowCount() > 0)
             return getValueAt(0, columnIndex).getClass();
@@ -184,21 +185,18 @@ public class OrderBookModel implements TableModel, TableModelListener {
      * @param msg
      * @return
      */
-    public int checkSequence(OrderBookMessage msg) {
-        // Checks if the price point already exists
-        int sequenceEntryIndex = getPriceEntryIndex(receivedOrders, msg, sequenceComparator);
-
+    public void insertSequencedMessage(OrderBookMessage msg, int sequenceEntryIndex) {
         if (sequenceEntryIndex < 0) {
             // message did not exist in historicOrders so negative index
             // for the insertion point was returned insert item at this point
             sequenceEntryIndex = invertIndex(sequenceEntryIndex);
-            receivedOrders.add(sequenceEntryIndex, msg);
+            receivedOrders.add(sequenceEntryIndex, msg);//new entry
         } else if (sequenceEntryIndex == 0) {
-            receivedOrders.add(sequenceEntryIndex, msg);
+            receivedOrders.add(sequenceEntryIndex, msg);//new entry
         } else {
             log.warn("Sequence number already seen {}: {}", sequenceEntryIndex, msg);
         }
-        return sequenceEntryIndex;
+        // sequence ID already exists
     }
 
     private Integer getPriceEntryIndex(List listToSearch, OrderBookMessage msg, Comparator comparator) {
@@ -335,8 +333,12 @@ public class OrderBookModel implements TableModel, TableModelListener {
     }
 
     public void incomingOrder(OrderBookMessage msg) {
-        int i = checkSequence(msg);
-        applyOrdersFrom(i);
+        // Checks if the price point already exists
+        int sequenceIndex = getPriceEntryIndex(receivedOrders, msg, sequenceComparator);
+
+        insertSequencedMessage(msg, sequenceIndex);
+
+        applyOrdersFrom(sequenceIndex);
     }
 
     /**
