@@ -10,6 +10,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -20,6 +21,9 @@ import java.util.Vector;
 
 import static com.coinbase.exchange.api.marketdata.MessageEX.MessageType.DONE;
 import static com.coinbase.exchange.api.marketdata.MessageEX.MessageType.MATCH;
+import static com.coinbase.exchange.gui.liveorderbook.OrderBookConstants.ORDER_QTY_COLUMN;
+import static com.coinbase.exchange.gui.liveorderbook.OrderBookConstants.PRICE_COLUMN;
+import static com.coinbase.exchange.gui.liveorderbook.OrderBookConstants.SIZE_COLUMN;
 import static java.util.stream.Collectors.toList;
 
 
@@ -29,10 +33,6 @@ public class OrderBookModel implements TableModel, TableModelListener {
 
     private static final String CANCELED = "canceled";
     private static final String INVERT = "invert";
-
-    private static final int PRICE_COLUMN = 0;
-    private static final int SIZE_COLUMN = 1;
-    private static final int ORDER_QTY_COLUMN = 2;
 
     private static final int PRICE_DECIMAL_PLACES = 5;
     private static final int SIZE_DECIMAL_PLACES = 8;
@@ -148,8 +148,8 @@ public class OrderBookModel implements TableModel, TableModelListener {
 
         tableData.insertElementAt(emptyEntry, rowIndex);
 
-        setValueAt(item.getPrice().setScale(PRICE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP).toString(), rowIndex, PRICE_COLUMN);
-        setValueAt(item.getSize().setScale(SIZE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP).toString(), rowIndex, SIZE_COLUMN);
+        setValueAt(item.getPrice().setScale(PRICE_DECIMAL_PLACES, RoundingMode.HALF_UP).toString(), rowIndex, PRICE_COLUMN);
+        setValueAt(item.getSize().setScale(SIZE_DECIMAL_PLACES, RoundingMode.HALF_UP).toString(), rowIndex, SIZE_COLUMN);
         setValueAt(item.getNum().toString(), rowIndex, ORDER_QTY_COLUMN);
 
         fireAllChanged();
@@ -171,11 +171,11 @@ public class OrderBookModel implements TableModel, TableModelListener {
         if (msg.getRemaining_size() != null){
             result = msg.getRemaining_size();
         }
-        return result.setScale(SIZE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
+        return result.setScale(SIZE_DECIMAL_PLACES, RoundingMode.HALF_UP);
     }
 
     public BigDecimal getOrderPrice(OrderBookMessage msg) {
-        return msg.getPrice().setScale(PRICE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
+        return msg.getPrice().setScale(PRICE_DECIMAL_PLACES, RoundingMode.HALF_UP);
     }
 
     /**
@@ -325,11 +325,11 @@ public class OrderBookModel implements TableModel, TableModelListener {
     }
 
     private BigDecimal getPriceAsBigDecimal(String priceString) {
-        return new BigDecimal(priceString).setScale(PRICE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
+        return new BigDecimal(priceString).setScale(PRICE_DECIMAL_PLACES, RoundingMode.HALF_UP);
     }
 
     private String getPriceAsString(BigDecimal bigDecimal) {
-        return bigDecimal.setScale(PRICE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP).toString();
+        return bigDecimal.setScale(PRICE_DECIMAL_PLACES, RoundingMode.HALF_UP).toString();
     }
 
     public void incomingOrder(OrderBookMessage msg) {
