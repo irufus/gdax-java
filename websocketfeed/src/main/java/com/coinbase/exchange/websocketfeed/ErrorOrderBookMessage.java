@@ -15,6 +15,21 @@ public class ErrorOrderBookMessage extends FeedMessage {
 
     private String message;
 
+    public ErrorOrderBookMessage() {
+        setType("error");
+    }
+
+    public ErrorOrderBookMessage(String message) {
+        this();
+        this.message = message;
+    }
+
+    //    @JsonCreator
+//    public ErrorOrderBookMessage(String type, Long sequence, Instant time, String product_id, String message) {
+//        super(type, sequence, time, product_id);
+//        this.message = message;
+//    }
+
     public String getMessage() {
         return message;
     }
