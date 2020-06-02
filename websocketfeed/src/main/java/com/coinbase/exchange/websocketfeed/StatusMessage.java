@@ -63,8 +63,19 @@ import com.coinbase.exchange.model.Product;
  * </pre>
  */
 public class StatusMessage extends FeedMessage {
+
     private Product[] products;
     private Currency[] currencies;
+
+    public StatusMessage() {
+        setType("status");
+    }
+
+    public StatusMessage(Product[] products, Currency[] currencies) {
+        this();
+        this.products = products;
+        this.currencies = currencies;
+    }
 
     public Product[] getProducts() {
         return products;

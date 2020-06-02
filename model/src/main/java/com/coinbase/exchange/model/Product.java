@@ -33,19 +33,17 @@ public class Product {
     private Double base_min_size;
     private Double base_max_size;
     private Double quote_increment;
-
-/**
- *   TODO
- *   Object base_increment;
- *   Object display_name;
- *   Object status;
- *   Object status_message;
- *   Object min_market_funds;
- *   Object max_market_funds;
- *   Object post_only;
- *   Object limit_only;
- *   Object cancel_only;
- **/
+    private double base_increment;
+    private String display_name;
+    private String status;
+    private Boolean margin_enabled;
+    private String status_message;
+    private Integer min_market_funds;
+    private Integer max_market_funds;
+    private Boolean post_only;
+    private Boolean limit_only;
+    private Boolean cancel_only;
+    private String type;
 
     public Double getQuote_increment() {
         return quote_increment;
@@ -93,5 +91,93 @@ public class Product {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setBase_increment(double base_increment) {
+        this.base_increment = base_increment;
+    }
+
+    public double getBase_increment() {
+        return base_increment;
+    }
+
+    public void setDisplay_name(String display_name) {
+        this.display_name = display_name;
+    }
+
+    public String getDisplay_name() {
+        return display_name;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Boolean getMargin_enabled() {
+        return margin_enabled;
+    }
+
+    public void setMargin_enabled(Boolean margin_enabled) {
+        this.margin_enabled = margin_enabled;
+    }
+
+    public String getStatus_message() {
+        return status_message;
+    }
+
+    public void setStatus_message(String status_message) {
+        this.status_message = status_message;
+    }
+
+    public Integer getMin_market_funds() {
+        return min_market_funds;
+    }
+
+    public void setMin_market_funds(Integer min_market_funds) {
+        this.min_market_funds = min_market_funds;
+    }
+
+    public Integer getMax_market_funds() {
+        return max_market_funds;
+    }
+
+    public void setMax_market_funds(Integer max_market_funds) {
+        this.max_market_funds = max_market_funds;
+    }
+
+    public Boolean getPost_only() {
+        return post_only;
+    }
+
+    public void setPost_only(Boolean post_only) {
+        this.post_only = post_only;
+    }
+
+    public Boolean getLimit_only() {
+        return limit_only;
+    }
+
+    public void setLimit_only(Boolean limit_only) {
+        this.limit_only = limit_only;
+    }
+
+    public Boolean getCancel_only() {
+        return cancel_only;
+    }
+
+    public void setCancel_only(Boolean cancel_only) {
+        this.cancel_only = cancel_only;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

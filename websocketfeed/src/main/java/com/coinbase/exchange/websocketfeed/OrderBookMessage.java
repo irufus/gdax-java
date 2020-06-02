@@ -51,10 +51,8 @@ public class OrderBookMessage extends FeedMessage implements Comparable<OrderBoo
     String last_size;
     Channel[] channels;
 
-    public OrderBookMessage() { }
+    public OrderBookMessage() {
 
-    public OrderBookMessage(Channel[] channels) {
-        this.channels = channels;
     }
 
     public OrderBookMessage(String type, String time, String product_id,

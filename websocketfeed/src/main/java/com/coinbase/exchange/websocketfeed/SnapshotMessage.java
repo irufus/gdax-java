@@ -13,8 +13,19 @@ package com.coinbase.exchange.websocketfeed;
  * </pre>
  */
 public class SnapshotMessage extends FeedMessage {
+
     private String[][] bids;
     private String[][] asks;
+
+    public SnapshotMessage() {
+        setType("snapshot");
+    }
+
+    public SnapshotMessage(String[][] bids, String[][] asks) {
+        this();
+        this.bids = bids;
+        this.asks = asks;
+    }
 
     public String[][] getBids() {
         return bids;

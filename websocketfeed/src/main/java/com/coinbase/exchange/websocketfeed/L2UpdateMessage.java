@@ -21,7 +21,17 @@ package com.coinbase.exchange.websocketfeed;
  * </pre>
  */
 public class L2UpdateMessage extends FeedMessage {
+
     private String[][] changes;
+
+    public L2UpdateMessage() {
+        setType("l2update");
+    }
+
+    public L2UpdateMessage(String[][] changes) {
+        this();
+        this.changes = changes;
+    }
 
     public String[][] getChanges() {
         return changes;

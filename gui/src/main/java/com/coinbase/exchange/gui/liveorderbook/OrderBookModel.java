@@ -117,6 +117,9 @@ public class OrderBookModel implements TableModel, TableModelListener {
         if (aValue instanceof String) {
             tableData.get(rowIndex).set(columnIndex, (String) aValue);
         }
+        if (aValue instanceof BigDecimal) {
+            tableData.get(rowIndex).set(columnIndex, getPriceAsString((BigDecimal) aValue));
+        }
 
         fireAllChanged();
     }
@@ -257,7 +260,7 @@ public class OrderBookModel implements TableModel, TableModelListener {
                 if (msg.getReason() !=null && msg.getReason().equals(CANCELED)) {
                      return BigDecimal.ZERO;
                 }
-                if (msg.getRemaining_size()!=null) {
+                if (msg.getRemaining_size() != null) {
                     return msg.getRemaining_size();
                 } else {
                     if (msg.getSize() != null) {
@@ -268,17 +271,17 @@ public class OrderBookModel implements TableModel, TableModelListener {
                 }
 
             } else {
-                if (msg.getRemaining_size()!=null){
+                if (msg.getRemaining_size() != null){
                     return msg.getRemaining_size();
                 } else {
-                    if (msg.getSize()!=null) {
+                    if (msg.getSize() != null) {
                         return msg.getSize().add(currentSize); // add for orders that are not done, matched, invert.
                     }
                     return new BigDecimal(0);
                 }
             }
         } else {
-            if (msg.getRemaining_size()!=null){
+            if (msg.getRemaining_size() != null){
                return msg.getRemaining_size();
             } else {
                return getOrderSize(msg).add(currentSize);
@@ -350,9 +353,9 @@ public class OrderBookModel implements TableModel, TableModelListener {
         //log.warn("Replaying orders from {}, index: {} of {}",  receivedOrders.get(index).getSequence(), index+1, historicOrdersLastElementId+1);
 
         // undo all orders applied after this one
-//        if (index != historicOrdersLastElementId) {
+        if (index != historicOrdersLastElementId) {
             undoOrdersToIndexExclusive(index, historicOrdersLastElementId);
-//        }
+        }
 
         // re apply all orders following this one
         applyOrdersFromIndexInclusive(index, historicOrdersLastElementId);

@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static com.coinbase.exchange.gui.liveorderbook.OrderBookConstants.ORDER_QTY_COLUMN;
+import static com.coinbase.exchange.gui.liveorderbook.OrderBookConstants.PRICE_COLUMN;
+import static com.coinbase.exchange.gui.liveorderbook.OrderBookConstants.SIZE_COLUMN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -373,15 +376,28 @@ public class OrderBookModelTest {
         assertEquals(3L, testObject.getReceivedOrders().get(2).getSequence());
     }
 
+    @Test
+    public void shouldUpdatePriceForOpenOrder() {
+        testObject.insertInto(new OrderBookMessage.OrderBookMessageBuilder()
+                .setType("open")
+                .setSide("buy")
+                .setPrice(new BigDecimal(2.0))
+                .setSize(new BigDecimal(3.0))
+                .setRemainingSize(new BigDecimal(1.5)) // open orders depend on remaining size not size
+                .build());
+
+        assertRowValues(FIRST_ROW, "2.00000", "1.50000", "1");
+    }
+
     private void assertRowValues(int rowIndex, String price, String size, String qty) {
-        assertEquals(price, ((String) testObject.getValueAt(rowIndex, OrderBookModel.PRICE_COLUMN)));
-        assertEquals(size, ((String) testObject.getValueAt(rowIndex, OrderBookModel.SIZE_COLUMN)));
-        assertEquals(qty, ((String) testObject.getValueAt(rowIndex, OrderBookModel.ORDER_QTY_COLUMN)));
+        assertEquals(price, ((String) testObject.getValueAt(rowIndex, PRICE_COLUMN)));
+        assertEquals(size, ((String) testObject.getValueAt(rowIndex, SIZE_COLUMN)));
+        assertEquals(qty, ((String) testObject.getValueAt(rowIndex, ORDER_QTY_COLUMN)));
     }
 
     private void addEntry(int rowIndex, String price, String size, String qty) {
-        testObject.setValueAt(price, rowIndex, OrderBookModel.PRICE_COLUMN);
-        testObject.setValueAt(size, rowIndex, OrderBookModel.SIZE_COLUMN);
-        testObject.setValueAt(qty, rowIndex, OrderBookModel.ORDER_QTY_COLUMN);
+        testObject.setValueAt(price, rowIndex, PRICE_COLUMN);
+        testObject.setValueAt(size, rowIndex, SIZE_COLUMN);
+        testObject.setValueAt(qty, rowIndex, ORDER_QTY_COLUMN);
     }
 }

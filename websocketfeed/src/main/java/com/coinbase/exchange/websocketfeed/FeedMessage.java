@@ -31,13 +31,6 @@ public abstract class FeedMessage {
     private Instant time;
     private String product_id;
 
-//    public FeedMessage(String type, Long sequence, Instant time, String product_id) {
-//        this.type = type;
-//        this.sequence = sequence;
-//        this.time = time;
-//        this.product_id = product_id;
-//    }
-
     public String getType() {
         return type;
     }
