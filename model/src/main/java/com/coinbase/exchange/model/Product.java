@@ -2,6 +2,8 @@ package com.coinbase.exchange.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.math.BigDecimal;
+
 /**
  * <pre>
  *     {
@@ -38,7 +40,7 @@ public class Product {
     private String status;
     private Boolean margin_enabled;
     private String status_message;
-    private Integer min_market_funds;
+    private BigDecimal min_market_funds;
     private Integer max_market_funds;
     private Boolean post_only;
     private Boolean limit_only;
@@ -133,11 +135,11 @@ public class Product {
         this.status_message = status_message;
     }
 
-    public Integer getMin_market_funds() {
+    public BigDecimal getMin_market_funds() {
         return min_market_funds;
     }
 
-    public void setMin_market_funds(Integer min_market_funds) {
+    public void setMin_market_funds(BigDecimal min_market_funds) {
         this.min_market_funds = min_market_funds;
     }
 
