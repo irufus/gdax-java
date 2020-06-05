@@ -1,6 +1,11 @@
 package com.coinbase.exchange.gui.liveorderbook;
 
+import com.coinbase.exchange.websocketfeed.DoneOrderBookMessage;
+import com.coinbase.exchange.websocketfeed.OpenedOrderBookMessage;
 import com.coinbase.exchange.websocketfeed.OrderBookMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,10 +22,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class OrderBookModelTest {
 
     OrderBookModel testObject;
-    public static final int FIRST_ROW = 0;
+    private static final int FIRST_ROW = 0;
+
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     public void setup() {
+        this.objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         testObject = new OrderBookModel();
     }
 
@@ -236,7 +245,7 @@ public class OrderBookModelTest {
 
         testObject.insertSequencedMessage(message,0);
 
-        assertEquals(1, testObject.getReceivedOrders().size());
+        assertEquals(1, testObject.getSequentiallyOrderedMessages().size());
     }
 
     @Test
@@ -251,16 +260,16 @@ public class OrderBookModelTest {
 
         testObject.insertSequencedMessage(message,0);
 
-        assertEquals(1, testObject.getReceivedOrders().size());
+        assertEquals(1, testObject.getSequentiallyOrderedMessages().size());
 
         OrderBookMessage newMessage = new OrderBookMessage();
         newMessage.setSequence(2L);
 
         testObject.insertSequencedMessage(newMessage,1);
 
-        assertEquals(2, testObject.getReceivedOrders().size());
-        assertEquals(1L, testObject.getReceivedOrders().get(0).getSequence());
-        assertEquals(2L, testObject.getReceivedOrders().get(1).getSequence());
+        assertEquals(2, testObject.getSequentiallyOrderedMessages().size());
+        assertEquals(1L, testObject.getSequentiallyOrderedMessages().get(0).getSequence());
+        assertEquals(2L, testObject.getSequentiallyOrderedMessages().get(1).getSequence());
     }
 
     @Test
@@ -275,15 +284,15 @@ public class OrderBookModelTest {
 
         testObject.insertSequencedMessage(message,0);
 
-        assertEquals(1, testObject.getReceivedOrders().size());
+        assertEquals(1, testObject.getSequentiallyOrderedMessages().size());
 
         OrderBookMessage newMessage = new OrderBookMessage.OrderBookMessageBuilder().setSequence(0L).build();
 
         testObject.insertSequencedMessage(newMessage,0);
 
-        assertEquals(2, testObject.getReceivedOrders().size());
-        assertEquals(0L, testObject.getReceivedOrders().get(0).getSequence());
-        assertEquals(1L, testObject.getReceivedOrders().get(1).getSequence());
+        assertEquals(2, testObject.getSequentiallyOrderedMessages().size());
+        assertEquals(0L, testObject.getSequentiallyOrderedMessages().get(0).getSequence());
+        assertEquals(1L, testObject.getSequentiallyOrderedMessages().get(1).getSequence());
     }
 
     @Test
@@ -299,7 +308,7 @@ public class OrderBookModelTest {
         testObject.incomingOrder(message);
 
         assertEquals(1, testObject.getRowCount());
-        assertEquals(1L, testObject.getReceivedOrders().get(0).getSequence());
+        assertEquals(1L, testObject.getSequentiallyOrderedMessages().get(0).getSequence());
     }
 
     @Test
@@ -315,7 +324,7 @@ public class OrderBookModelTest {
         testObject.incomingOrder(message1);
 
         assertEquals(1, testObject.getRowCount());
-        assertEquals(1L, testObject.getReceivedOrders().get(0).getSequence());
+        assertEquals(1L, testObject.getSequentiallyOrderedMessages().get(0).getSequence());
 
         OrderBookMessage message2 = new OrderBookMessage.OrderBookMessageBuilder()
                 .setType("limit")
@@ -327,8 +336,8 @@ public class OrderBookModelTest {
         testObject.incomingOrder(message2);
 
         assertEquals(2, testObject.getRowCount());
-        assertEquals(1L, testObject.getReceivedOrders().get(0).getSequence());
-        assertEquals(2L, testObject.getReceivedOrders().get(1).getSequence());
+        assertEquals(1L, testObject.getSequentiallyOrderedMessages().get(0).getSequence());
+        assertEquals(2L, testObject.getSequentiallyOrderedMessages().get(1).getSequence());
     }
 
     @Test
@@ -344,7 +353,7 @@ public class OrderBookModelTest {
         testObject.incomingOrder(message1);
 
         assertEquals(1, testObject.getRowCount());
-        assertEquals(1L, testObject.getReceivedOrders().get(0).getSequence());
+        assertEquals(1L, testObject.getSequentiallyOrderedMessages().get(0).getSequence());
 
         // third message will be received before 2nd message
         OrderBookMessage message3 = new OrderBookMessage.OrderBookMessageBuilder()
@@ -357,8 +366,8 @@ public class OrderBookModelTest {
         testObject.incomingOrder(message3);
 
         assertEquals(2, testObject.getRowCount());
-        assertEquals(1L, testObject.getReceivedOrders().get(0).getSequence());
-        assertEquals(3L, testObject.getReceivedOrders().get(1).getSequence());
+        assertEquals(1L, testObject.getSequentiallyOrderedMessages().get(0).getSequence());
+        assertEquals(3L, testObject.getSequentiallyOrderedMessages().get(1).getSequence());
 
         // 2nd message arrived late
         OrderBookMessage message2 = new OrderBookMessage.OrderBookMessageBuilder()
@@ -371,9 +380,9 @@ public class OrderBookModelTest {
         testObject.incomingOrder(message2);
 
         assertEquals(3, testObject.getRowCount());
-        assertEquals(1L, testObject.getReceivedOrders().get(0).getSequence());
-        assertEquals(2L, testObject.getReceivedOrders().get(1).getSequence());
-        assertEquals(3L, testObject.getReceivedOrders().get(2).getSequence());
+        assertEquals(1L, testObject.getSequentiallyOrderedMessages().get(0).getSequence());
+        assertEquals(2L, testObject.getSequentiallyOrderedMessages().get(1).getSequence());
+        assertEquals(3L, testObject.getSequentiallyOrderedMessages().get(2).getSequence());
     }
 
     @Test
@@ -387,6 +396,41 @@ public class OrderBookModelTest {
                 .build());
 
         assertRowValues(FIRST_ROW, "2.00000", "1.50000", "1");
+    }
+
+    /**
+     * This test passed first time, however in reality this websocket feed sequence didn't result in a correct live orderbook
+     * since some incoming messages were missed. This occurred because the full orderbook (market data (bids/asks)) was requested
+     * but only incoming messages were applied, not *all* messages following the orderbook's sequence ID collected since being active.
+     *
+     * This test remains as a way to demonstrate how we can test real websocket feed scenarios when applied to the orderbook.
+     * @throws JsonProcessingException
+     */
+    @Test
+    void shouldRemoveDoneOrderFromOrderbook() throws JsonProcessingException {
+        /**
+         * Scenario - we start with market data for a given price point and sequence ID associated
+         * with the MarketData bids/asks
+         */
+        //Insert new OrderItem row at index: 2751, price: 7639.06, size: 0.02678326, qty: 1, Sequence: 9299152159, Product: BTC-GBP
+        // given
+        testObject.insertInto(new OrderBookMessage.OrderBookMessageBuilder()
+                                .setPrice(new BigDecimal(7639.06000))
+                                .setSize(new BigDecimal(0.02678326))
+                                .setSequence(9299152159L)
+                                .setSide("sell")
+                                .build());
+        // then simulate real incoming orders from the websocket.
+        OpenedOrderBookMessage openedOrderBookMessage = objectMapper.readValue("{\"type\":\"open\",\"side\":\"sell\",\"product_id\":\"BTC-GBP\",\"time\":\"2020-06-05T22:32:18.640005Z\",\"sequence\":9299153605,\"price\":\"7639.06\",\"order_id\":\"99c058b8-e85d-431e-becc-7990867bd542\",\"remaining_size\":\"0.24160571\"}", OpenedOrderBookMessage.class);
+        DoneOrderBookMessage doneCancelledOrderBookMessage = objectMapper.readValue("{\"type\":\"done\",\"side\":\"sell\",\"product_id\":\"BTC-GBP\",\"time\":\"2020-06-05T22:32:19.792982Z\",\"sequence\":9299153673,\"order_id\":\"99c058b8-e85d-431e-becc-7990867bd542\",\"reason\":\"canceled\",\"price\":\"7639.06\",\"remaining_size\":\"0.24160571\"}", DoneOrderBookMessage.class);
+
+        // when
+        testObject.insertInto(openedOrderBookMessage);
+        testObject.insertInto(doneCancelledOrderBookMessage);
+
+        // then
+        assertEquals(0, testObject.getRowCount());
+
     }
 
     private void assertRowValues(int rowIndex, String price, String size, String qty) {

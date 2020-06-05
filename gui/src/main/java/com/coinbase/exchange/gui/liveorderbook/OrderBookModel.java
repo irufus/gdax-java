@@ -48,14 +48,14 @@ public class OrderBookModel implements TableModel, TableModelListener {
             "#orders"
     };
 
-    List<OrderBookMessage> receivedOrders;
+    List<OrderBookMessage> sequentiallyOrderedMessages;
     Map<Long, OrderBookMessage> historicOrdersMap;
     Map<OrderBookMessage, Integer> priceIndexMap;
 
     public OrderBookModel() {
         tableData = new Vector<>();
         addTableModelListener(this);
-        this.receivedOrders = new LinkedList<>();
+        this.sequentiallyOrderedMessages = new LinkedList<>();
         this.historicOrdersMap = new HashMap<>();
         this.priceIndexMap = new HashMap<>();
     }
@@ -190,19 +190,16 @@ public class OrderBookModel implements TableModel, TableModelListener {
      */
     public void insertSequencedMessage(OrderBookMessage msg, int sequenceEntryIndex) {
         if (sequenceEntryIndex < 0) {
-            // message did not exist in historicOrders so negative index
-            // for the insertion point was returned insert item at this point
+            // message did not exist in historicOrders so negative index for
+            // the insertion point was returned. ADD new item at inverted index point
             sequenceEntryIndex = invertIndex(sequenceEntryIndex);
-            receivedOrders.add(sequenceEntryIndex, msg);//new entry
-        } else if (sequenceEntryIndex == 0) {
-            receivedOrders.add(sequenceEntryIndex, msg);//new entry
+            sequentiallyOrderedMessages.add(sequenceEntryIndex, msg);//new entry
         } else {
             log.warn("Sequence number already seen {}: {}", sequenceEntryIndex, msg);
         }
-        // sequence ID already exists
     }
 
-    private Integer getPriceEntryIndex(List listToSearch, OrderBookMessage msg, Comparator comparator) {
+    private Integer getEntryIndex(List listToSearch, OrderBookMessage msg, Comparator comparator) {
         // check the index to insert the order at.
 //        if (!historicOrdersMap.containsKey(msg.getSequence())) {
 //            historicOrdersMap.put(msg.getSequence(), msg);
@@ -215,14 +212,14 @@ public class OrderBookModel implements TableModel, TableModelListener {
     public int insertInto(OrderBookMessage msg) {
 
         // take a list of all prices on the current live orderbook.
-        int priceEntryIndex = getPriceEntryIndex(livePriceEntriesList(msg), msg, priceComparator);
+        int priceEntryIndex = getEntryIndex(livePriceEntriesList(msg), msg, priceComparator);
 
         // only insert new row entry into table data if its at a new price point or the insertion point is 0 and the table is empty.
         if (priceEntryIndex < 0) {
             // item did not exist so negative index for the insertion point was returned
             // insert item at this point
-            log.info("Inserting order at new price point {}: {}, {}, {}", priceEntryIndex, getOrderPrice(msg), msg.toString(), msg.getReason());
             priceEntryIndex = invertIndex(priceEntryIndex);
+            log.info("Inserting order at NEW price point {}: {}, {}, {}", priceEntryIndex, getOrderPrice(msg), msg.toString(), msg.getReason());
             insertNewPricePoint(priceEntryIndex, msg);
 
         } else if (priceEntryIndex == 0 && getRowCount() == 0) {
@@ -315,8 +312,8 @@ public class OrderBookModel implements TableModel, TableModelListener {
         setValueAt("0", index, ORDER_QTY_COLUMN);
     }
 
-    public List<OrderBookMessage> getReceivedOrders(){
-        return receivedOrders;
+    public List<OrderBookMessage> getSequentiallyOrderedMessages(){
+        return sequentiallyOrderedMessages;
     }
 
     private void validateOrderBookElseRemoveRow(int rowUpdated) {
@@ -337,7 +334,7 @@ public class OrderBookModel implements TableModel, TableModelListener {
 
     public void incomingOrder(OrderBookMessage msg) {
         // Checks if the price point already exists
-        int sequenceIndex = getPriceEntryIndex(receivedOrders, msg, sequenceComparator);
+        int sequenceIndex = getEntryIndex(sequentiallyOrderedMessages, msg, sequenceComparator);
 
         insertSequencedMessage(msg, sequenceIndex);
 
@@ -349,7 +346,11 @@ public class OrderBookModel implements TableModel, TableModelListener {
      **/
     public void applyOrdersFrom(int index) {
 
-        int historicOrdersLastElementId = receivedOrders.size() - 1;
+        if (index < 0) {
+            index = invertIndex(index);
+        }
+
+        int historicOrdersLastElementId = sequentiallyOrderedMessages.size() - 1;
         //log.warn("Replaying orders from {}, index: {} of {}",  receivedOrders.get(index).getSequence(), index+1, historicOrdersLastElementId+1);
 
         // undo all orders applied after this one
@@ -362,16 +363,16 @@ public class OrderBookModel implements TableModel, TableModelListener {
     }
 
     private void applyOrdersFromIndexInclusive(int index, int historicOrdersLastElementId) {
-        for (int i = index; i < receivedOrders.size(); i++){
+        for (int i = index; i <= historicOrdersLastElementId; i++){
 //            log.info("Applying order {}, {} of {}", receivedOrders.get(i).getSequence(), i+1, historicOrdersLastElementId+1);
-            insertInto(receivedOrders.get(i));
+            insertInto(sequentiallyOrderedMessages.get(i));
         }
     }
 
     private void undoOrdersToIndexExclusive(int index, int lastIndex) {
         for (int i = lastIndex; i > index; i--) {
 //            log.warn("Inverting order {}, {} of {}", receivedOrders.get(i).getSequence(), i+1, lastIndex+1);
-            insertInto(invertOrder(receivedOrders.get(i)));
+            insertInto(invertOrder(sequentiallyOrderedMessages.get(i)));
         }
     }
 
