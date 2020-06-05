@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,8 +66,8 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
 
         assertNotNull(marketData);
 
-        BigDecimal price = getAskPrice(marketData).setScale(8, BigDecimal.ROUND_HALF_UP);
-        BigDecimal size = new BigDecimal("0.01").setScale(8, BigDecimal.ROUND_HALF_UP);
+        BigDecimal price = getAskPrice(marketData).setScale(8, RoundingMode.HALF_UP);
+        BigDecimal size = new BigDecimal("0.01").setScale(8, RoundingMode.HALF_UP);
 
         NewLimitOrderSingle limitOrder = getNewLimitOrderSingle(productId, price, size);
 
@@ -74,8 +75,8 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
 
         assertNotNull(order);
         assertEquals(productId, order.getProduct_id());
-        assertEquals(size, new BigDecimal(order.getSize()).setScale(8, BigDecimal.ROUND_HALF_UP));
-        assertEquals(price, new BigDecimal(order.getPrice()).setScale(8, BigDecimal.ROUND_HALF_UP));
+        assertEquals(size, new BigDecimal(order.getSize()).setScale(8, RoundingMode.HALF_UP));
+        assertEquals(price, new BigDecimal(order.getPrice()).setScale(8, RoundingMode.HALF_UP));
         assertEquals("limit", order.getType());
 
         testee.cancelOrder(order.getId());
@@ -167,7 +168,7 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
     }
 
     private BigDecimal getAskPrice(MarketData marketData) {
-        return marketData.getAsks().get(0).getPrice().setScale(4, BigDecimal.ROUND_HALF_UP);
+        return marketData.getAsks().get(0).getPrice().setScale(4, RoundingMode.HALF_UP);
     }
 
     /**

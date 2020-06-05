@@ -3,7 +3,6 @@ package com.coinbase.exchange.gui.liveorderbook.view;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.marketdata.OrderItem;
-import com.coinbase.exchange.gui.exceptions.CoinbaseDesktopAppException;
 import com.coinbase.exchange.gui.liveorderbook.OrderBookModel;
 import com.coinbase.exchange.gui.websocketfeed.WebsocketFeed;
 import com.coinbase.exchange.gui.websocketfeed.WebsocketMessageHandler;
@@ -23,8 +22,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 
@@ -111,34 +108,36 @@ public class OrderBookView extends JPanel {
                 @Override
                 public Void doInBackground() {
                     // Queue up websocketFeed messages before getting market data
-                    try {
-                        openWebsocket(orderBook);
+                    openWebsocket(orderBook);
 
-                        log.info("******** Initialising view for: {}", productId);
-                        MarketData marketData = getMarketData();
-                        setMaxSequenceId(marketData.getSequence());
+                    log.info("******** Initialising view for: {}", productId);
+                    MarketData marketData = getMarketData();
+                    setMaxSequenceId(marketData.getSequence());
 
-                        JScrollPane scrollableAsks = addToScrollPane("sell", getAskTable());
-                        JScrollPane scrollableBids = addToScrollPane("buy", getBidTable());
+                    JScrollPane scrollableAsks = addToScrollPane("sell", getAskTable());
+                    JScrollPane scrollableBids = addToScrollPane("buy", getBidTable());
 
-                        JPanel orderBookPanelView = new JPanel();
-                        JSplitPane splitScrollableTables = getSplitScrollableTables(scrollableAsks, scrollableBids);
-                        orderBookPanelView.add(splitScrollableTables);
+                    JPanel orderBookPanelView = new JPanel();
+                    JSplitPane splitScrollableTables = getSplitScrollableTables(scrollableAsks, scrollableBids);
+                    orderBookPanelView.add(splitScrollableTables);
 
-                        /**
-                         * This adds the two tables in scrollPanes within the split view
-                         */
-                        setLimitOrderBookViewer(orderBookPanelView);
-                        log.info("******** Activate Orderbook");
-                        log.info("Market Data Sequence: {}, Product: {}", maxSequenceId, productId);
-                        isOrderbookReady = true;
-                        Long marketBookSequenceId = marketData.getSequence();
-                        List<OrderBookMessage> unappliedMessages = websocketFeed.getOrdersAfter(marketBookSequenceId);
-                        unappliedMessages.stream().forEach(msg -> updateOB(msg));
-
-                    } catch (CoinbaseDesktopAppException e) {
-                        e.printStackTrace();
-                    }
+                    /**
+                     * This adds the two tables in scrollPanes within the split view
+                     */
+                    setLimitOrderBookViewer(orderBookPanelView);
+                    log.info("******** Activate Orderbook");
+                    log.info("Market Data Sequence: {}, Product: {}", maxSequenceId, productId);
+                    isOrderbookReady = true;
+                    Long marketDataSequenceId = marketData.getSequence();
+                    List<OrderBookMessage> unappliedMessages = websocketFeed.getOrdersAfter(marketDataSequenceId);
+                    unappliedMessages.stream().forEach(msg -> {
+                        log.info("Applying unapplied messages after {}: sequenceId: {}, price: {}, size: {}",
+                                marketDataSequenceId,
+                                msg.getSequence(),
+                                msg.getPrice(),
+                                msg.getSize());
+                        updateOB(msg);
+                    });
                     return null;
                 }
 
@@ -159,24 +158,17 @@ public class OrderBookView extends JPanel {
         return splitPane;
     }
 
-    private void openWebsocket(OrderBookView orderBook) throws CoinbaseDesktopAppException {
-        try {
-            CompletableFuture.runAsync(() -> {
-                log.info("*** Opening To Websocket ***");
-                websocketFeed.connect();
+    private void openWebsocket(OrderBookView orderBook) {
+        log.info("*** Opening To Websocket ***");
+        websocketFeed.connect();
 
-                // Messages are handled here:
-                WebsocketMessageHandler messageHandler = new WebsocketMessageHandler(orderBook, objectMapper);
-                websocketFeed.addMessageHandler(messageHandler);
+        // Messages are handled here:
+        WebsocketMessageHandler messageHandler = new WebsocketMessageHandler(orderBook, objectMapper);
+        websocketFeed.addMessageHandler(messageHandler);
 
-                Subscribe subscribeRequest = new Subscribe(new String[]{productId}); // full channel by default
-                String signedSubscribeMsg = websocketFeed.signObject(subscribeRequest);
-                websocketFeed.sendMessage(signedSubscribeMsg);
-            }).get();
-        } catch (InterruptedException | ExecutionException e) {
-            log.error("Websocket Connection failed");
-            throw new CoinbaseDesktopAppException("Websocket connection failed", e);
-        }
+        Subscribe subscribeRequest = new Subscribe(new String[]{productId}); // full channel by default
+        String signedSubscribeMsg = websocketFeed.signObject(subscribeRequest);
+        websocketFeed.sendMessage(signedSubscribeMsg);
     }
 
     private void setMaxSequenceId(Long sequenceId) {
