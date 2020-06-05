@@ -255,7 +255,7 @@ public class OrderBookModel implements TableModel, TableModelListener {
             if (msg.getType().equals(DONE) || msg.getType().equals(MATCH) || msg.getType().equals(INVERT)) {
 
                 if (msg.getReason() !=null && msg.getReason().equals(CANCELED)) {
-                     return BigDecimal.ZERO;
+                     return currentSize.subtract(msg.getRemaining_size());
                 }
                 if (msg.getRemaining_size() != null) {
                     return msg.getRemaining_size();

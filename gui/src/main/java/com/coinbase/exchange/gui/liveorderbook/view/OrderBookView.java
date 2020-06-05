@@ -106,7 +106,7 @@ public class OrderBookView extends JPanel {
             isOrderbookReady = false;
             websocketFeedStarter = new SwingWorker<>() {
                 @Override
-                public Void doInBackground() {
+                public Void doInBackground() throws InterruptedException {
                     // Queue up websocketFeed messages before getting market data
                     openWebsocket(orderBook);
 
@@ -158,7 +158,7 @@ public class OrderBookView extends JPanel {
         return splitPane;
     }
 
-    private void openWebsocket(OrderBookView orderBook) {
+    private void openWebsocket(OrderBookView orderBook) throws InterruptedException {
         log.info("*** Opening To Websocket ***");
         websocketFeed.connect();
 
@@ -169,6 +169,7 @@ public class OrderBookView extends JPanel {
         Subscribe subscribeRequest = new Subscribe(new String[]{productId}); // full channel by default
         String signedSubscribeMsg = websocketFeed.signObject(subscribeRequest);
         websocketFeed.sendMessage(signedSubscribeMsg);
+        Thread.sleep(1000);
     }
 
     private void setMaxSequenceId(Long sequenceId) {
