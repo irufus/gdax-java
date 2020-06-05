@@ -31,6 +31,18 @@ public class ActivateOrderBookMessage extends OrderBookMessage {
     private BigDecimal stop_price;
     private Instant timestamp;
 
+    public ActivateOrderBookMessage() {
+        setType("activate");
+    }
+
+    public ActivateOrderBookMessage(String stop_type, BigDecimal stop_price, Instant timestamp, boolean privateFlag) {
+        this();
+        this.stop_type = stop_type;
+        this.stop_price = stop_price;
+        this.timestamp = timestamp;
+        this.privateFlag = privateFlag;
+    }
+
     @JsonProperty("private")
     private boolean privateFlag;
 
@@ -65,4 +77,5 @@ public class ActivateOrderBookMessage extends OrderBookMessage {
     public void setPrivateFlag(boolean privateFlag) {
         this.privateFlag = privateFlag;
     }
+
 }

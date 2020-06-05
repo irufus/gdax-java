@@ -31,4 +31,8 @@ package com.coinbase.exchange.websocketfeed;
  * </pre>
  */
 public class MatchedOrderBookMessage extends OrderBookMessage {
+
+    public MatchedOrderBookMessage() {
+        setType("match");
+    }
 }

@@ -45,4 +45,8 @@ package com.coinbase.exchange.websocketfeed;
  * </pre>
  */
 public class ReceivedOrderBookMessage extends OrderBookMessage {
+
+    public ReceivedOrderBookMessage() {
+        setType("received");
+    }
 }

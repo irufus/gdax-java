@@ -16,4 +16,7 @@ package com.coinbase.exchange.websocketfeed;
  */
 public class OpenedOrderBookMessage extends OrderBookMessage {
 
+    public OpenedOrderBookMessage() {
+        setType("open");
+    }
 }

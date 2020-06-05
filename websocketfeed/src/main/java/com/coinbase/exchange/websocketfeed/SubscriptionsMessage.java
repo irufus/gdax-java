@@ -32,7 +32,10 @@ package com.coinbase.exchange.websocketfeed;
  * </pre>
  */
 public class SubscriptionsMessage extends FeedMessage {
+
     private Channel[] channels;
+
+
 
     public Channel[] getChannels() {
         return channels;

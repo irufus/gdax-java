@@ -45,5 +45,8 @@ package com.coinbase.exchange.websocketfeed;
  */
 public class ChangedOrderBookMessage extends OrderBookMessage {
 
+    public ChangedOrderBookMessage() {
+        setType("change");
+    }
 
 }
