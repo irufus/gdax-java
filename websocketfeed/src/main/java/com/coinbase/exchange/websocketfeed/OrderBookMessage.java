@@ -1,6 +1,7 @@
 package com.coinbase.exchange.websocketfeed;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 
 /**
@@ -172,7 +173,7 @@ public class OrderBookMessage extends FeedMessage implements Comparable<OrderBoo
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.setScale(8, RoundingMode.HALF_UP);
     }
 
     public void setPrice(BigDecimal price) {
