@@ -6,7 +6,7 @@ import com.coinbase.exchange.api.exchange.Signature;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.products.ProductService;
 import com.coinbase.exchange.gui.frame.GuiFrame;
-import com.coinbase.exchange.gui.liveorderbook.view.OrderBookView;
+import com.coinbase.exchange.gui.liveorderbook.view.OrderBookPresentation;
 import com.coinbase.exchange.gui.liveorderbook.view.OrderBookViewController;
 import com.coinbase.exchange.gui.websocketfeed.WebsocketFeed;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,12 +57,12 @@ public class DesktopConfiguration {
     }
 
     @Bean
-    public OrderBookView orderBookViewPanel(@Value("${gui.enabled}") boolean guiEnabled,
-                                            CoinbaseExchange coinbasePro,
-                                            WebsocketFeed websocketFeed,
-                                            ObjectMapper objectMapper) {
+    public OrderBookPresentation orderBookViewPanel(@Value("${gui.enabled}") boolean guiEnabled,
+                                                    CoinbaseExchange coinbasePro,
+                                                    WebsocketFeed websocketFeed,
+                                                    ObjectMapper objectMapper) {
         MarketDataService marketDataService = new MarketDataService(coinbasePro);
-        return new OrderBookView(guiEnabled,
+        return new OrderBookPresentation(guiEnabled,
                 CURRENT_PRODUCT_SELECTED,
                 marketDataService,
                 websocketFeed,
@@ -76,14 +76,14 @@ public class DesktopConfiguration {
 
     @Bean
     public OrderBookViewController orderBookViewController(ProductService productService,
-                                                           OrderBookView orderBookView) {
-        return new OrderBookViewController(CURRENT_PRODUCT_SELECTED, productService, orderBookView);
+                                                           OrderBookPresentation orderBookPresentation) {
+        return new OrderBookViewController(CURRENT_PRODUCT_SELECTED, productService, orderBookPresentation);
     }
 
     @Bean
     public GuiFrame gui(@Value("${gui.enabled}") boolean guiEnabled,
-                        OrderBookView orderBookView,
+                        OrderBookPresentation orderBookPresentation,
                         OrderBookViewController orderBookViewController) {
-        return new GuiFrame(guiEnabled, orderBookView, orderBookViewController);
+        return new GuiFrame(guiEnabled, orderBookPresentation, orderBookViewController);
     }
 }

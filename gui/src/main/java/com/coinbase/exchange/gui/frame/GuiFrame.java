@@ -1,6 +1,6 @@
 package com.coinbase.exchange.gui.frame;
 
-import com.coinbase.exchange.gui.liveorderbook.view.OrderBookView;
+import com.coinbase.exchange.gui.liveorderbook.view.OrderBookPresentation;
 import com.coinbase.exchange.gui.liveorderbook.view.OrderBookViewController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +16,14 @@ public class GuiFrame {
 
     static final Logger log = LoggerFactory.getLogger(GuiFrame.class);
 
-    private OrderBookView orderBook;
+    private OrderBookPresentation orderBook;
     private Boolean guiEnabled;
     private OrderBookViewController orderBookViewController;
 
     JFrame frame;
 
     public GuiFrame(boolean guiEnabled,
-                    OrderBookView orderBook,
+                    OrderBookPresentation orderBook,
                     OrderBookViewController orderBookViewController) {
 
         this.guiEnabled = guiEnabled;

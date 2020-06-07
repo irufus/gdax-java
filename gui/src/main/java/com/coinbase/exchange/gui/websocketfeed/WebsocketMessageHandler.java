@@ -1,6 +1,6 @@
 package com.coinbase.exchange.gui.websocketfeed;
 
-import com.coinbase.exchange.gui.liveorderbook.view.OrderBookView;
+import com.coinbase.exchange.gui.liveorderbook.view.OrderBookPresentation;
 import com.coinbase.exchange.websocketfeed.ChangedOrderBookMessage;
 import com.coinbase.exchange.websocketfeed.DoneOrderBookMessage;
 import com.coinbase.exchange.websocketfeed.ErrorOrderBookMessage;
@@ -25,14 +25,14 @@ public class WebsocketMessageHandler implements WebsocketFeed.MessageHandler {
 
     public static final String FILLED = "filled";
     Logger log = LoggerFactory.getLogger(WebsocketMessageHandler.class);
-    private final OrderBookView orderBookView;
+    private final OrderBookPresentation orderBookPresentation;
     private final ObjectMapper objectMapper;
 
     private List<OrderBookMessage> orderMessageQueue;
 
-    public WebsocketMessageHandler(final OrderBookView orderBookView,
+    public WebsocketMessageHandler(final OrderBookPresentation orderBookPresentation,
                                    final ObjectMapper objectMapper){
-        this.orderBookView = orderBookView;
+        this.orderBookPresentation = orderBookPresentation;
         this.objectMapper = objectMapper;
         this.orderMessageQueue = new ArrayList<>();
     }
@@ -42,10 +42,9 @@ public class WebsocketMessageHandler implements WebsocketFeed.MessageHandler {
         SwingWorker<Void, Void> swingOrderBookMessageHandler = new SwingWorker<>() {
             @Override
             public Void doInBackground() {
-                log.info("INCOMING: {}", json);
                 FeedMessage message = getObject(json, FeedMessage.class);
 
-                if (!orderBookView.isOrderBookReady()) {
+                if (!orderBookPresentation.isOrderBookReady()) {
                     if (message instanceof OrderBookMessage) {
                         orderMessageQueue.add((OrderBookMessage) message);
                     } else {
@@ -86,7 +85,7 @@ public class WebsocketMessageHandler implements WebsocketFeed.MessageHandler {
 
     @Override
     public List<OrderBookMessage> getQueuedMessages(Long sequenceId) {
-        return orderMessageQueue.stream().filter(msg -> msg.getSequence()>sequenceId).collect(toList());
+        return orderMessageQueue.stream().filter(msg -> msg.getSequence().compareTo(sequenceId)<0).collect(toList());
     }
 
     private void handleError(ErrorOrderBookMessage message, String json) {
@@ -104,33 +103,33 @@ public class WebsocketMessageHandler implements WebsocketFeed.MessageHandler {
     private void handleMatched(String json) {
         log.info("MATCHED: {}", json);
         OrderBookMessage matchedOrder = getObject(json, MatchedOrderBookMessage.class);
-        orderBookView.updateOrderBook(matchedOrder);
+        orderBookPresentation.updateOrderBook(matchedOrder);
     }
 
     private void handleDone(DoneOrderBookMessage message, String json) {
         log.info("DONE: {}", json);
         DoneOrderBookMessage doneOrder = message;
         if (!doneOrder.getReason().equals(FILLED)) {
-            orderBookView.updateOrderBook(doneOrder);
+            orderBookPresentation.updateOrderBook(doneOrder);
         }
     }
 
     private void handleOpened(OpenedOrderBookMessage message, String json) {
         log.info("OPENED: {}", json);
         OpenedOrderBookMessage openOrderBookMessage = message;
-        orderBookView.updateOrderBook(openOrderBookMessage);
+        orderBookPresentation.updateOrderBook(openOrderBookMessage);
     }
 
     private void handleReceived(String json) {
         // received orders are not necessarily live orders -
         // so safe to ignore these msgs as they're unnecessary
         // https://docs.pro.coinbase.com/#the-full-channel see here for more details
-        log.info("RECEIVED {}", json);
+
     }
 
     private void handleHeartbeat(HeartBeat message) {
         HeartBeat heartBeat = message;
-        orderBookView.heartBeat(heartBeat);
+        orderBookPresentation.heartBeat(heartBeat);
         log.info("HEARTBEAT. Last trade id: {}", heartBeat.getLast_trade_id());
     }
 

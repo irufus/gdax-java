@@ -30,9 +30,9 @@ import static javax.swing.JSplitPane.VERTICAL_SPLIT;
  * <p>
  * Created by robevansuk on 10/03/2017.
  */
-public class OrderBookView extends JPanel {
+public class OrderBookPresentation extends JPanel {
 
-    private static final Logger log = LoggerFactory.getLogger(OrderBookView.class);
+    private static final Logger log = LoggerFactory.getLogger(OrderBookPresentation.class);
     private static final int FULL_ORDER_BOOK = 3;
 
     private String productId;
@@ -55,15 +55,15 @@ public class OrderBookView extends JPanel {
     private JPanel productSelectionPanel;
     private Long maxSequenceId;
     private boolean guiEnabled;
-    private OrderBookView orderBook;
+    private OrderBookPresentation orderBook;
     private SwingWorker<Void, Void> websocketFeedStarter;
 
 
-    public OrderBookView(boolean guiEnabled,
-                         String currentProductSelected,
-                         MarketDataService marketDataService,
-                         WebsocketFeed websocketFeed,
-                         ObjectMapper objectMapper) {
+    public OrderBookPresentation(boolean guiEnabled,
+                                 String currentProductSelected,
+                                 MarketDataService marketDataService,
+                                 WebsocketFeed websocketFeed,
+                                 ObjectMapper objectMapper) {
         super();
         if (guiEnabled) {
             this.guiEnabled = guiEnabled;
@@ -127,10 +127,12 @@ public class OrderBookView extends JPanel {
                     setLimitOrderBookViewer(orderBookPanelView);
                     log.info("******** Activate Orderbook");
                     log.info("Market Data Sequence: {}, Product: {}", maxSequenceId, productId);
-                    isOrderbookReady = true;
                     Long marketDataSequenceId = marketData.getSequence();
+                    isOrderbookReady = true;
+
+                    // Playback
                     List<OrderBookMessage> unappliedMessages = websocketFeed.getOrdersAfter(marketDataSequenceId);
-                    unappliedMessages.stream().forEach(msg -> {
+                    unappliedMessages.forEach(msg -> {
                         log.info("Applying unapplied messages after {}: sequenceId: {}, price: {}, size: {}",
                                 marketDataSequenceId,
                                 msg.getSequence(),
@@ -158,7 +160,7 @@ public class OrderBookView extends JPanel {
         return splitPane;
     }
 
-    private void openWebsocket(OrderBookView orderBook) throws InterruptedException {
+    private void openWebsocket(OrderBookPresentation orderBook) throws InterruptedException {
         log.info("*** Opening To Websocket ***");
         websocketFeed.connect();
 
@@ -223,21 +225,6 @@ public class OrderBookView extends JPanel {
         isWebsocketAlive = true;
     }
 
-    /**
-     * @param msg
-     */
-    public void updateOB(OrderBookMessage msg) {
-        log.info("OrderBookView.updateOrderBook");
-        OrderBookModel model = ((OrderBookModel) bidAskTables.get(msg.getSide() + "_" + msg.getProduct_id()).getModel());
-
-        model.incomingOrder(msg);
-
-        JScrollBar bidVerticalScrollBar = scrollPanes.get("buy_" + msg.getProduct_id()).getVerticalScrollBar();
-        JScrollBar askVerticalScrollBar = scrollPanes.get("sell_" + msg.getProduct_id()).getVerticalScrollBar();
-        askVerticalScrollBar.setValue(askVerticalScrollBar.getMaximum());
-        bidVerticalScrollBar.setValue(bidVerticalScrollBar.getMinimum());
-    }
-
     public void updateOrderBook(OrderBookMessage order) {
 
         SwingWorker worker = new SwingWorker<Void, Void>() {
@@ -257,13 +244,26 @@ public class OrderBookView extends JPanel {
         worker.execute();
     }
 
+    /**
+     * @param msg
+     */
+    public void updateOB(OrderBookMessage msg) {
+        OrderBookModel model = ((OrderBookModel) bidAskTables.get(msg.getSide() + "_" + msg.getProduct_id()).getModel());
+
+        model.incomingOrder(msg);
+
+        JScrollBar bidVerticalScrollBar = scrollPanes.get("buy_" + msg.getProduct_id()).getVerticalScrollBar();
+        JScrollBar askVerticalScrollBar = scrollPanes.get("sell_" + msg.getProduct_id()).getVerticalScrollBar();
+        askVerticalScrollBar.setValue(askVerticalScrollBar.getMaximum());
+        bidVerticalScrollBar.setValue(bidVerticalScrollBar.getMinimum());
+    }
+
     public void setLimitOrderBookViewer(JPanel splitPane) {
         rootPanel.removeAll();
         rootPanel.add(splitPane);
         repaint();
         updateUI();
     }
-
 
     public void switchProduct(String productId) {
         isOrderbookReady = false;

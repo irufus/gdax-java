@@ -17,17 +17,17 @@ public class OrderBookViewController extends JPanel {
     public static final Logger log = LoggerFactory.getLogger(OrderBookViewController.class);
 
     private final List<Product> productIds;
-    private final OrderBookView orderbookView;
+    private final OrderBookPresentation orderbookView;
 
     private String currentProductSelection;
     private CompletableFuture<JPanel> futureProductsList;
 
     public OrderBookViewController(String currentProductSelected,
                                    ProductService productService,
-                                   OrderBookView orderbookView) {
+                                   OrderBookPresentation orderbookPresentation) {
         super();
         this.productIds = productService.getProducts();
-        this.orderbookView = orderbookView;
+        this.orderbookView = orderbookPresentation;
         this.currentProductSelection = currentProductSelected;
         getProductsList();
     }

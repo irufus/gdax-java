@@ -374,7 +374,7 @@ public class OrderBookMessage extends FeedMessage implements Comparable<OrderBoo
                 "side='" + side + '\'' +
                 ", type='" + getType() + '\'' +
                 ", size=" + size +
-                ", price=" + price +
+                ", price=" + getPrice() +
                 ", remaining_size=" + remaining_size +
                 ", sequence=" + getSequence() +
                 '}';

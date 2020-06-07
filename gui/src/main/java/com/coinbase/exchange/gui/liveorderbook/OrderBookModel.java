@@ -136,14 +136,21 @@ public class OrderBookModel implements TableModel, TableModelListener {
 
     private boolean isInsertORUpdateORDeleteOrderType(TableModelEvent e) {
         return e.getType() == TableModelEvent.DELETE
-            || e.getType() == TableModelEvent.INSERT
-            ||  e.getType() == TableModelEvent.UPDATE;
+                || e.getType() == TableModelEvent.INSERT
+                ||  e.getType() == TableModelEvent.UPDATE;
     }
 
     protected void fireAllChanged() {
         TableModelEvent e = new TableModelEvent(this);
         fireTableModelEvent(e);
     }
+
+
+    ////////////////////////////////////////////////////////////////////
+    /**
+     * CRUD OPERATIONS
+     */
+    ////////////////////////////////////////////////////////////////////
 
     public void insertRowAt(OrderItem item, int rowIndex) {
 
@@ -199,16 +206,6 @@ public class OrderBookModel implements TableModel, TableModelListener {
         }
     }
 
-    private Integer getEntryIndex(List listToSearch, OrderBookMessage msg, Comparator comparator) {
-        // check the index to insert the order at.
-//        if (!historicOrdersMap.containsKey(msg.getSequence())) {
-//            historicOrdersMap.put(msg.getSequence(), msg);
-//        } else {
-//            priceIndexMap.get(msg);
-//        }
-        return Collections.binarySearch(listToSearch, msg, comparator);
-    }
-
     public int insertInto(OrderBookMessage msg) {
 
         // take a list of all prices on the current live orderbook.
@@ -219,7 +216,7 @@ public class OrderBookModel implements TableModel, TableModelListener {
             // item did not exist so negative index for the insertion point was returned
             // insert item at this point
             priceEntryIndex = invertIndex(priceEntryIndex);
-            log.info("Inserting order at NEW price point {}: {}, {}, {}", priceEntryIndex, getOrderPrice(msg), msg.toString(), msg.getReason());
+            log.info("Inserting order at NEW price point: {}, reason: {}", msg.toString(), msg.getReason());
             insertNewPricePoint(priceEntryIndex, msg);
 
         } else if (priceEntryIndex == 0 && getRowCount() == 0) {
@@ -239,6 +236,30 @@ public class OrderBookModel implements TableModel, TableModelListener {
         validateOrderBookElseRemoveRow(priceEntryIndex);
 
         return priceEntryIndex;
+    }
+
+    private Integer getEntryIndex(List listToSearch, OrderBookMessage msg, Comparator comparator) {
+        // check the index to insert the order at.
+//        if (!historicOrdersMap.containsKey(msg.getSequence())) {
+//            historicOrdersMap.put(msg.getSequence(), msg);
+//        } else {
+//            priceIndexMap.get(msg);
+//        }
+        return Collections.binarySearch(listToSearch, msg, comparator);
+    }
+
+    private int invertIndex(int index) {
+        return (index * -1) - 1;
+    }
+
+    private void insertNewPricePoint(int index, OrderBookMessage message) {
+        if (index >= getRowCount()
+                || !(tableData.get(index).get(PRICE_COLUMN)).equals(getOrderPrice(message))){
+            tableData.add(index, emptyEntry());
+        }
+        setValueAt(getPriceAsString(message.getPrice()), index, PRICE_COLUMN);
+        setValueAt("0", index, SIZE_COLUMN);
+        setValueAt("0", index, ORDER_QTY_COLUMN);
     }
 
     private List<OrderBookMessage> livePriceEntriesList(OrderBookMessage msg) {
@@ -296,20 +317,6 @@ public class OrderBookModel implements TableModel, TableModelListener {
         } else {
             return currentQty + 1;
         }
-    }
-
-    private int invertIndex(int index) {
-        return (index * -1) - 1;
-    }
-
-    private void insertNewPricePoint(int index, OrderBookMessage message) {
-        if (index >= getRowCount()
-                || !(tableData.get(index).get(PRICE_COLUMN)).equals(getOrderPrice(message))){
-            tableData.add(index, emptyEntry());
-        }
-        setValueAt(getPriceAsString(message.getPrice()), index, PRICE_COLUMN);
-        setValueAt("0", index, SIZE_COLUMN);
-        setValueAt("0", index, ORDER_QTY_COLUMN);
     }
 
     public List<OrderBookMessage> getSequentiallyOrderedMessages(){
