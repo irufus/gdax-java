@@ -47,49 +47,24 @@ Please see CONTRIBUTE.md if your interested in getting involved.
 ## Usage
 --------
 
-To build and run the desktop client application you can use the gradle script - this requires no installation as the "gradle wrapper" is included as part of the source code. All you need to do is:
+**If you commit your secure keys, passphrase or secrete, disable/delete them from Coinbase Pro immediately**.
 
-1. supply your API key, secret and passphrase as environment or command line variables or in the `application.yml` file. There are placeholders ready to receive these parameters. Because you should NEVER commit these details, the `application.yml` file is included in the `.gitignore` so that changes to it should be ignored. Commiting your keys, secret and passphrase may result in you losing funds from your account(s). **If you commit your secure keys, passphrase or secrete, disable/delete them from Coinbase Pro immediately**.
-
-Spring Boot will pick up the values of these variables from various places including the `application.yml` properties file, the system environment, command line variables and more.
-
-1. 1. For environment variables set: `gdax.key`, `gdax.passphrase`, `gdax.secret`
-1. 1. For command line variables with java `-Dgdax.key="apiKey" -Dgdax.passphrase="passphrase" -Dgdax.secret="secret"`
-1. 1. For command line variables with the `gradle`/`gradlew` command use `-Pgdax.key="apiKey" -Pgdax.passphrase="passphrase" -Pgdax.secret="secret"`
-1. open a command line terminal
-1. navigate to the root directory of this project
-1. execute `./gradlew bootRun` (Mac/unix). For equivalent Windows commands just remove the `./` from the commands, since there's a gradlew.bat included as well.
-
-This won't actually do much on its own but the beginnings of a GUI are in development and you can test this out by enabling the GUI in the `application.yml` config and restarting the application.
-
-1. tests can also be run with  `./gradlew test`, and `./gradlew integrationTest` - simple.
+1. tests can be run with `./gradlew test`, and `./gradlew integrationTest`.
+    1. unit tests have file/class names ending `Test` and run locally
+    1. integration tests have file/class names ending `IntegrationTest` and should run against the sandbox api 
 
 ## Examples
 
 To make use of this library you only need a reference to the Service that you want. 
- - For Accounts, get an instance of the `AccountService`. 
- - For MarketData, use the MarketDataService, and so on.
-
-In order to get an instance of the various services from the Spring Dependency Injector, you simply need to create a new component class, and then in your constructor add the `Autowired`/`Inject` annotation, then declare in the constructor signature the various services you want to have references to within your code, use variable setting then to store the references Autowiring will provide so you can use them in your class:
-
-The API and this code follows MVC design pattern - model, view, control.
-- Models are the data objects received from the API,
-- Views are the items you'll likely create on top of this codebase - e.g. Swing GUI or some webpage output
-- Control - all application logic goes in the control layer.
+ - For Accounts, get an instance of the `AccountService` See CONTRIBUTING.md for an example of how to do this 
+ - For MarketData, use the `MarketDataService`, and so on.
 
 ## Examples
 --------
 
-At present the classes match the interface specified in the Coinbase Pro api here: [https://docs.pro.coinbase.com/#api](https://docs.pro.coinbase.com/#api)
+At present the Services and Data objects returned should match the interface specified in the Coinbase Pro api here: [https://docs.pro.coinbase.com/#api](https://docs.pro.coinbase.com/#api)
 
-e.g. 
-```java
-public OrderService orderService() {
-    new OrderService();
-}
-```
-
-Each `Service` class requires the `CoinbaseExchange` object so that methods calling the REST endpoints can be made, using a `RestTemplate` that has
+Each `Service` class requires the `CoinbaseExchange` object (see CONTRIBUTING.md for examples of how to create this) so that methods calling the REST endpoints can be made, using a `RestTemplate` that has
 the correct headers and signatures is used.
 
 ## API
@@ -125,18 +100,20 @@ To use the WSF check out the API documentation and look at usages of `websocketF
 
 ## Updates - v 0.11.0
 -------------------
-- decoupling the `api` code from the spring boot desktop client application so it can be used as a library.
-- decoupling `model` code so that the shared/common elements can be depended upon by multiple projects and make building out a FIX client potentially easier
+- decoupling the `api` code from the spring boot desktop client application so the api can be used and eventually published as a library.
+- decoupling `model` code so that it can become shared/common for multiple projects and make building out a FIX client potentially easier
 - decoupling the `websocketfeed` code from the api implementation
-- decoupling the `gui` desktop app built on the api from the `api` code
-- multiproject gradle build
-- centralised dependency versioning in the root build.gradle - easier to manage them in one location
+- new `security` module so websocketfeed and api can share the `Signature` code
+- removal of the `gui` desktop app - this needs rebuilding properly (with tests)
+- new modularised multi-project gradle build
+- centralised dependency versioning for libraries, in the root `build.gradle` as its easier to manage them in a single location
 - segregating the unit tests from the integration tests
-- updated api/sandbox-api endpoints
-- renaming project to to Coinbase-Pro-java in the `settings.gradle` file
-- remove joda time lib in favour of the standard library Instant implementation
-- updated libraries to latest versions: spring boot, jackson, gson, etc.
-- removal of Gson in favour of jackson libs
+- updated api/sandbox-api endpoints for use with tests
+- renaming project to `Coinbase-Pro-java` in the `settings.gradle` file
+- remove joda time lib in favour of the standard library Instant implementation `JavaTimeModule` for the `ObjectMapper`
+- updated libraries to newer versions: spring boot, jackson, gson, etc.
+- removal of Gson in favour of Jackson libs
+- updated classes to use constructor injection rather than field based 
 
 
 ## Updates - v 0.9.1

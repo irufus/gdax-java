@@ -13,11 +13,11 @@ import static java.util.stream.Collectors.toList;
 
 public class WebsocketMessageHandler implements WebsocketFeed.MessageHandler {
 
-    public static final String FILLED = "filled";
-    Logger log = LoggerFactory.getLogger(WebsocketMessageHandler.class);
-    private final ObjectMapper objectMapper;
+    private static final String FILLED = "filled";
+    private static final Logger log = LoggerFactory.getLogger(WebsocketMessageHandler.class);
 
-    private List<OrderBookMessage> orderMessageQueue;
+    private final ObjectMapper objectMapper;
+    private final List<OrderBookMessage> orderMessageQueue;
 
     public WebsocketMessageHandler(final ObjectMapper objectMapper){
         this.objectMapper = objectMapper;
