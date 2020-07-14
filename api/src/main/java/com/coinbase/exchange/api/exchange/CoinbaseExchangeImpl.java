@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.exchange;
 
+import com.coinbase.exchange.security.Signature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

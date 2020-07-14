@@ -13,15 +13,14 @@ Please also update/amend the README.md as necessary regarding changes so that it
 # TESTING
 
 Tests act as documentation for the code, demonstrating actual usage.
-If you're not familiar with TDD then perhaps now is a great time to begin.
+If you're not familiar with TDD then now is a great time to begin!
 Test Driven Development will:
 - help determine what to build
 - help you to prioritise which elements need to be in place first
 - help you to implement a solution using the minimal amount of code
-- the design of your code should emerge from the tests
+- frontload the stress of the design of your code, which should emerge from/be driven by the tests
 
 Not testing code leads to poor implementations that are hard to read, debug and are typically unmaintainable.
-
 
 If you'd like to contribute to the codebase, your code must be robust. To ensure its Robust you must provide tests that cover the scenarios your solution should handle.
 
@@ -34,13 +33,11 @@ You'll spot this pattern clearly in the test code because most of the preconditi
 
 Test naming - typically tests are named in the following way: `shouldDoXWhenY`.
 
-The best example to follow in this codebase is probably the `LiveOrderBookTest`
-
-If you spot a bug, write a test for it to highlight the issue, create a fix and submit a pull request for review.
+If you spot a bug, write a test for it to highlight the issue, create a fix, and submit a pull request for review.
 
 Code that has very little in the way of testing is more likely to be rejected.
 
-The current codebase tests what is sensible and possible to test. Mainly getting things. Testing items are submitted to the server isn't ideal as the GDAX sandbox no longer exists so it isn't particularly safe to do this especially for placing orders.
+The current codebase tests what is sensible and possible to test. Mainly getting things.
 
 ## I want to create some new element in the codebase
 
@@ -48,7 +45,8 @@ Where do you start?
 
 Add this template, add the relevant tests you want, then begin implementing your code.
 
-Note Dependency injection is far more predictable in spring if constructor injection is used (i.e. put the @Autowired/@Inject annotation on the constructor rather than a field in your class - if a class only has one constructor the @Autowired annotation is not necessary).
+Note Dependency injection is far more predictable in spring if constructor injection is used i.e. put the `@Autowired`/`@Inject` annotation on the constructor rather than a field in your class. 
+If a class only has one constructor the `@Autowired` annotation is not necessary.
 
 ```java
 @Component
@@ -61,16 +59,52 @@ public class NewComponent {
 }
 ```
 
-If you want to utilise a current Service like getting your account details, you can autowire in the already existing (@)Component `AccountService`
+If you want to utilise an existing service, you just need the configuration similar to below:
+
+```java
+@SpringBootConfiguration
+public class ApplicationConfiguration {
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
+    }
+
+    @Bean
+    public Signature signature(@Value("${exchange.secret}") String secret) {
+        return new Signature(secret);
+    }
+    
+    @Bean
+    public CoinbaseExchange coinbasePro(@Value("${exchange.key}") String publicKey,
+                                        @Value("${exchange.passphrase}") String passphrase,
+                                        @Value("${exchange.baseUrl}") String baseUrl,
+                                        Signature signature,
+                                        ObjectMapper objectMapper) {
+        return new CoinbaseExchangeImpl(publicKey, passphrase, baseUrl, signature, objectMapper);
+    }
+
+   /**
+    * now you can create services by wiring in the CoinbaseExchange object to handle incoming/outgoing requests.
+    **/
+
+    @Bean
+    public AccountService accountService(CoinbaseExchange exchange) {
+        return new AccountService(exchange);
+    }
+} 
+```
 
 ```java
 @Component
-public class NewComponent {
+public class MyApplication {
 
     private AccountService accountService;
 
     @Autowired
-    public NewComponent(AccountService accountService) {
+    public MyApplication(AccountService accountService) {
         this.accountService = accountService;
     }
 
@@ -83,17 +117,6 @@ public class NewComponent {
 }
 ```
 
-You can now add more code to a method of this codebase and interact with your new code. You'll need a reference to the new code which can be obtained with:
+If you can do TDD, great. If not, add it after you've coded a solution.
 
-```java
-    ConfigurableApplicationContext ctx = new SpringApplicationBuilder(GdaxApiApplication.class)
-                .headless(false).run(args);
-
-    NewComponent newComponent = ctx.getBean(newComponent.class);
-    newComponent.printMyAccounts();
-    ... etc.
-```
-
-Of course, its always a good idea to let the tests drive the necessary code into your code base. If you can do TDD, great. If not, add it after you're solution.
-
-Tests all follow a given, when, then style... *given* some preconditions X, *when* I exercise a given method Y, *then* the results are expected to be Z (if not the test fails).
+Tests all follow a "given, when, then" style... *given* some preconditions `X`, *when* I exercise a given method `Y` (typically a method call on its own line), *then* the results are expected to be `Z` (if not the test fails).

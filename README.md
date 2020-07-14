@@ -33,11 +33,9 @@ Java based wrapper for the [Coinbase Pro API](https://docs.pro.coinbase.com/)
 - [x] Pagination support for all calls that support it.
 - [x] Pagination support for all calls that support it.
 - [x] Sandbox support - *sandbox support was dropped by gdax so this is now redundant*
-- [-] LiveOrderBook implementation implemented on a separate repository but in need of optimisation.
     
 ### In Development
 
-Desktop client GUI.
 Check the issues on the repo for open items to work on.
 Please join the gitter channel if you have any questions. Support always welcome. 
 Note the channel uses the legacy name of 'gdax-java' rather than 'coinbase-pro-java'

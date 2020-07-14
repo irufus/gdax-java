@@ -1,6 +1,6 @@
-package com.coinbase.exchange.api.exchange;
+package com.coinbase.exchange.security;
 
-import com.coinbase.exchange.api.constants.ExchangeConstants;
+import com.coinbase.exchange.security.constants.ExchangeConstants;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

@@ -1,4 +1,4 @@
-package com.coinbase.exchange.api.constants;
+package com.coinbase.exchange.security.constants;
 
 import javax.crypto.Mac;
 import java.security.NoSuchAlgorithmException;
