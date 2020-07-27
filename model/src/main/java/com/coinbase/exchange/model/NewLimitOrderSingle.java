@@ -1,6 +1,7 @@
 package com.coinbase.exchange.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Created by irufus on 7/31/15.
@@ -46,7 +47,7 @@ public class NewLimitOrderSingle extends NewOrderSingle {
     }
 
     public BigDecimal getPrice() {
-        return price.setScale(8, BigDecimal.ROUND_HALF_UP);
+        return price.setScale(8, RoundingMode.HALF_UP);
     }
 
     public void setPrice(BigDecimal price) {
@@ -54,7 +55,7 @@ public class NewLimitOrderSingle extends NewOrderSingle {
     }
 
     public BigDecimal getSize() {
-        return size.setScale(8, BigDecimal.ROUND_HALF_UP);
+        return size.setScale(8, RoundingMode.HALF_UP);
     }
 
     public void setSize(BigDecimal size) {
