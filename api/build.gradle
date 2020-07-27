@@ -1,3 +1,18 @@
+plugins {
+    id 'maven-publish'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.irufus'
+            artifactId = 'coinbase-pro-java'
+
+            from components.java
+        }
+    }
+}
+
 test {
     useJUnitPlatform()
 }
