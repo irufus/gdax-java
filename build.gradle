@@ -24,6 +24,7 @@ allprojects {
         include '**/*IntegrationTest*'
     }
 }
+
 subprojects { }
 
 // apply dependency constraints to all java modules

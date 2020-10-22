@@ -3,6 +3,7 @@ package com.coinbase.exchange.websocketfeed;
 import com.coinbase.exchange.security.Signature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class WebsocketFeed {
         this.websocketUrl = websocketUrl;
         this.signature = signature;
         this.guiEnabled = guiEnabled;
-        this.objectMapper = objectMapper;
+        this.objectMapper = objectMapper.registerModule(new JavaTimeModule());;
     }
 
     public void connect() {
