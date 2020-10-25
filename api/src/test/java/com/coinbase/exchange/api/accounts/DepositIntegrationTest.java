@@ -1,14 +1,19 @@
 package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
+import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
 import com.coinbase.exchange.api.deposits.DepositService;
 import com.coinbase.exchange.api.payments.CoinbaseAccount;
 import com.coinbase.exchange.api.payments.PaymentService;
 import com.coinbase.exchange.model.PaymentResponse;
 import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,13 +25,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * See class doc for BaseIntegrationTest
  */
+@ExtendWith(SpringExtension.class)
+@Import({IntegrationTestConfiguration.class})
 @Ignore
 public class DepositIntegrationTest extends BaseIntegrationTest {
     private final static Logger log = LoggerFactory.getLogger(DepositIntegrationTest.class);
 
-    PaymentService paymentService;// TODO Mock
-    AccountService accountService;// TODO Mock
+    PaymentService paymentService;
+    AccountService accountService;
     DepositService testee;
+
+    @BeforeEach
+    void setUp() {
+        this.paymentService = new PaymentService(exchange);
+        this.accountService = new AccountService(exchange);
+        this.testee = new DepositService(exchange);
+    }
 
     @Test
     public void depositToGDAXExchangeFromCoinbase(){

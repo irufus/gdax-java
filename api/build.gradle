@@ -21,4 +21,5 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation 'org.junit.platform:junit-platform-suite-api'
     testImplementation 'org.springframework.boot:spring-boot-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

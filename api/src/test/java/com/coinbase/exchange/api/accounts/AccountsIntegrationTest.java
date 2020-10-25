@@ -1,8 +1,13 @@
 package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
+import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
 import com.coinbase.exchange.model.Hold;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
@@ -14,9 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * Created by robevansuk on 03/02/2017.
  */
+@ExtendWith(SpringExtension.class)
+@Import({IntegrationTestConfiguration.class})
 public class AccountsIntegrationTest extends BaseIntegrationTest {
 
     AccountService accountService;
+
+    @BeforeEach
+    void setUp() {
+        this.accountService = new AccountService(exchange);
+    }
 
     @Test
     public void canGetAccounts() {

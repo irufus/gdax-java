@@ -1,9 +1,14 @@
 package com.coinbase.exchange.api.marketdata;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
+import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
 import com.coinbase.exchange.api.products.ProductService;
 import com.coinbase.exchange.model.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
@@ -15,10 +20,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * Created by robevansuk on 14/02/2017.
  */
+@ExtendWith(SpringExtension.class)
+@Import({IntegrationTestConfiguration.class})
 public class MarketDataIntegrationTest extends BaseIntegrationTest {
 
-    ProductService productService;// TODO Mock
+    ProductService productService;
     MarketDataService testee;
+
+    @BeforeEach
+    void setUp() {
+        productService = new ProductService(exchange);
+        testee = new MarketDataService(exchange);
+    }
 
     @Test
     public void canGetMarketDataForLevelOneBidAndAsk() {

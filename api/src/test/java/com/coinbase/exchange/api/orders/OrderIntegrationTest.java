@@ -3,6 +3,7 @@ package com.coinbase.exchange.api.orders;
 import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
+import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.products.ProductService;
@@ -10,9 +11,13 @@ import com.coinbase.exchange.model.Fill;
 import com.coinbase.exchange.model.NewLimitOrderSingle;
 import com.coinbase.exchange.model.NewMarketOrderSingle;
 import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,18 +33,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * Created by Ishmael (sakamura@gmail.com) on 6/18/2016.
  */
+@ExtendWith(SpringExtension.class)
+@Import({IntegrationTestConfiguration.class})
 public class OrderIntegrationTest extends BaseIntegrationTest {
 
     private static final Logger log = LoggerFactory.getLogger(OrderIntegrationTest.class);
 
-    ProductService productService; // TODO Mock using mockito + mocked responses (hint: use @Mock annotation)
-    AccountService accountService; // TODO Mock
-    MarketDataService marketDataService;// TODO Mock
+    ProductService productService;
+    AccountService accountService;
+    MarketDataService marketDataService;
 
     OrderService testee;
 
     // accounts: BTC, USD, GBP, EUR, CAD
     // products: BTC-USD, BTC-GBP, BTC-EUR, ETH-BTC, ETH-USD, LTC-BTC, LTC-USD
+
+
+    @BeforeEach
+    void setUp() {
+        this.productService = new ProductService(exchange);
+        this.accountService = new AccountService(exchange);
+        this.marketDataService = new MarketDataService(exchange);
+        this.testee = new OrderService(exchange);
+    }
 
     /**
      * Test is too complex. This test tests placing an order and
