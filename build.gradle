@@ -1,12 +1,14 @@
-plugins {
-    id 'java-library'
-}
-
-jar {
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.1.0'
     }
 }
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
@@ -14,6 +16,7 @@ wrapper {
 
 allprojects {
     apply plugin: 'java'
+//    apply plugin: 'com.github.johnrengelman.shadow'
 
     group = 'com.coinbase.exchange'
     description = 'Client for the Coinbase Pro API'
@@ -39,7 +42,6 @@ subprojects { }
 
 // apply dependency constraints to all java modules
 configure(subprojects.findAll { true }) {
-    apply plugin: 'java'
 
     sourceCompatibility = 1.11
     targetCompatibility = 1.11
@@ -73,4 +75,11 @@ configure(subprojects.findAll { true }) {
             testImplementation 'org.assertj:assertj-core:3.13.2'
         }
     }
+}
+
+dependencies {
+    compile project(":api")
+    compile project(":model")
+    compile project(":security")
+    compile project(":websocketfeed")
 }
