@@ -1,3 +1,13 @@
+plugins {
+    id 'java-library'
+}
+
+jar {
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
