@@ -9,14 +9,12 @@ buildscript {
 
 apply plugin: 'com.github.johnrengelman.shadow'
 
-
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
 allprojects {
     apply plugin: 'java'
-//    apply plugin: 'com.github.johnrengelman.shadow'
 
     group = 'com.coinbase.exchange'
     description = 'Client for the Coinbase Pro API'
