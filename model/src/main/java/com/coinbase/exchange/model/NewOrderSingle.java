@@ -1,5 +1,10 @@
 package com.coinbase.exchange.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  *
  * <pre>
@@ -22,63 +27,20 @@ package com.coinbase.exchange.model;
  * }
  * </pre>
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class NewOrderSingle {
-
-    private String client_oid; //optional
+    @JsonProperty("client_oid")
+    private String clientOid; //optional
+    @JsonProperty("type")
     private String type; //default is limit, other types are market and stop
+    @JsonProperty("side")
     private String side;
-    private String product_id;
+    @JsonProperty("product_id")
+    private String productId;
+    @JsonProperty("stp")
     private String stp; //optional: values are dc, co , cn , cb
+    @JsonProperty("funds")
     private String funds;
-
-    public NewOrderSingle() {
-    }
-
-    public String getStp() {
-        return stp;
-    }
-
-    public void setStp(String stp) {
-        this.stp = stp;
-    }
-
-    public String getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
-    }
-
-    public String getSide() {
-        return side;
-    }
-
-    public void setSide(String side) {
-        this.side = side;
-    }
-
-    public String getClient_oid() {
-        return client_oid;
-    }
-
-    public void setClient_oid(String client_oid) {
-        this.client_oid = client_oid;
-    }
-
-    public String getFunds() {
-        return funds;
-    }
-
-    public void setFunds(String funds) {
-        this.funds = funds;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }

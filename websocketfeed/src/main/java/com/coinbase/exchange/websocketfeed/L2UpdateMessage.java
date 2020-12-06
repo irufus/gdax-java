@@ -1,5 +1,9 @@
 package com.coinbase.exchange.websocketfeed;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * Subsequent updates will have the type l2update.
  * The changes property of l2updates is an array with [side, price, size] tuples.
@@ -20,8 +24,11 @@ package com.coinbase.exchange.websocketfeed;
  * }
  * </pre>
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class L2UpdateMessage extends FeedMessage {
 
+    @JsonProperty("changes")
     private String[][] changes;
 
     public L2UpdateMessage() {
@@ -30,14 +37,6 @@ public class L2UpdateMessage extends FeedMessage {
 
     public L2UpdateMessage(String[][] changes) {
         this();
-        this.changes = changes;
-    }
-
-    public String[][] getChanges() {
-        return changes;
-    }
-
-    public void setChanges(String[][] changes) {
         this.changes = changes;
     }
 }

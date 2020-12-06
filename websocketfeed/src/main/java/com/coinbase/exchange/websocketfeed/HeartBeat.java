@@ -1,5 +1,9 @@
 package com.coinbase.exchange.websocketfeed;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * A message sent once a second when heartbeat is turned on.
  * <pre>
@@ -12,24 +16,19 @@ package com.coinbase.exchange.websocketfeed;
  * }
  * </pre>
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class HeartBeat extends FeedMessage {
 
-    private Long last_trade_id;
+    @JsonProperty("last_trade_id")
+    private Long lastTradeId;
 
     public HeartBeat() {
         setType("heartbeat");
     }
 
-    public HeartBeat(Long last_trade_id) {
+    public HeartBeat(Long lastTradeId) {
         this();
-        this.last_trade_id = last_trade_id;
-    }
-
-    public Long getLast_trade_id() {
-        return last_trade_id;
-    }
-
-    public void setLast_trade_id(Long last_trade_id) {
-        this.last_trade_id = last_trade_id;
+        this.lastTradeId = lastTradeId;
     }
 }

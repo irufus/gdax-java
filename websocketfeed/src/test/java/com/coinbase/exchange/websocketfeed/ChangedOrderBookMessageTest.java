@@ -33,11 +33,11 @@ class ChangedOrderBookMessageTest {
         assertEquals("change", result.getType());
         assertEquals("2014-11-07T08:19:27.028459Z", result.getTime().toString());
         assertEquals(80L, result.getSequence());
-        assertEquals("ac928c66-ca53-498f-9c13-a110027a60e8", result.getOrder_id());
-        assertEquals("BTC-USD", result.getProduct_id());
-        assertEquals(new BigDecimal(5.23512).setScale(5, RoundingMode.HALF_UP), result.getNew_funds());
-        assertEquals(new BigDecimal(12.234412).setScale(6, RoundingMode.HALF_UP), result.getOld_funds());
-        assertEquals(new BigDecimal(400.23).setScale(2, RoundingMode.HALF_UP), result.getPrice());
+        assertEquals("ac928c66-ca53-498f-9c13-a110027a60e8", result.getOrderId());
+        assertEquals("BTC-USD", result.getProductId());
+        assertEquals(new BigDecimal("5.23512").setScale(5, RoundingMode.HALF_UP), result.getNewFunds());
+        assertEquals(new BigDecimal("12.234412").setScale(6, RoundingMode.HALF_UP), result.getOldFunds());
+        assertEquals(new BigDecimal("400.23").setScale(2, RoundingMode.HALF_UP), result.getPrice());
         assertEquals("sell", result.getSide());
     }
 }

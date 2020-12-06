@@ -22,7 +22,7 @@ class SnapshotMessageTest {
         SnapshotMessage result = objectMapper.readValue(json, SnapshotMessage.class);
 
         assertEquals("snapshot", result.getType());
-        assertEquals("BTC-USD", result.getProduct_id());
+        assertEquals("BTC-USD", result.getProductId());
         assertArrayEquals(new String[][] { new String[]{"10101.10", "0.45054140"}}, result.getBids());
         assertArrayEquals(new String[][] { new String[]{"10102.55", "0.57753524"}}, result.getAsks());
     }

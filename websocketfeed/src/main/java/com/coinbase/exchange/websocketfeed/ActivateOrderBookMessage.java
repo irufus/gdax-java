@@ -1,6 +1,8 @@
 package com.coinbase.exchange.websocketfeed;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -26,56 +28,29 @@ import java.time.Instant;
  * }
  * </pre>
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class ActivateOrderBookMessage extends OrderBookMessage {
-    private String stop_type;
-    private BigDecimal stop_price;
+    @JsonProperty("stop_type")
+    private String stopType;
+    @JsonProperty("stop_price")
+    private BigDecimal stopPrice;
+    @JsonProperty("timestamp")
     private Instant timestamp;
 
     public ActivateOrderBookMessage() {
         setType("activate");
     }
 
-    public ActivateOrderBookMessage(String stop_type, BigDecimal stop_price, Instant timestamp, boolean privateFlag) {
+    public ActivateOrderBookMessage(String stopType, BigDecimal stopPrice, Instant timestamp, boolean privateFlag) {
         this();
-        this.stop_type = stop_type;
-        this.stop_price = stop_price;
+        this.stopType = stopType;
+        this.stopPrice = stopPrice;
         this.timestamp = timestamp;
         this.privateFlag = privateFlag;
     }
 
     @JsonProperty("private")
     private boolean privateFlag;
-
-    public String getStop_type() {
-        return stop_type;
-    }
-
-    public void setStop_type(String stop_type) {
-        this.stop_type = stop_type;
-    }
-
-    public BigDecimal getStop_price() {
-        return stop_price;
-    }
-
-    public void setStop_price(BigDecimal stop_price) {
-        this.stop_price = stop_price;
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Instant timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public boolean isPrivateFlag() {
-        return privateFlag;
-    }
-
-    public void setPrivateFlag(boolean privateFlag) {
-        this.privateFlag = privateFlag;
-    }
 
 }

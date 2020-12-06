@@ -103,7 +103,7 @@ public class WebsocketMessageHandler implements WebsocketFeed.MessageHandler {
 
     private void handleHeartbeat(HeartBeat message) {
         HeartBeat heartBeat = message;
-        log.info("HEARTBEAT. Last trade id: {}", heartBeat.getLast_trade_id());
+        log.info("HEARTBEAT. Last trade id: {}", heartBeat.getLastTradeId());
     }
 
 

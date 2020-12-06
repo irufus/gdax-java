@@ -1,5 +1,9 @@
 package com.coinbase.exchange.websocketfeed;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * A snapshot of the order book
  * Example:
@@ -12,6 +16,8 @@ package com.coinbase.exchange.websocketfeed;
  * }
  * </pre>
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class SnapshotMessage extends FeedMessage {
 
     private String[][] bids;
@@ -24,22 +30,6 @@ public class SnapshotMessage extends FeedMessage {
     public SnapshotMessage(String[][] bids, String[][] asks) {
         this();
         this.bids = bids;
-        this.asks = asks;
-    }
-
-    public String[][] getBids() {
-        return bids;
-    }
-
-    public void setBids(String[][] bids) {
-        this.bids = bids;
-    }
-
-    public String[][] getAsks() {
-        return asks;
-    }
-
-    public void setAsks(String[][] asks) {
         this.asks = asks;
     }
 }

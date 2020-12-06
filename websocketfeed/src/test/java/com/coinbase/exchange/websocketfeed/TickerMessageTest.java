@@ -32,14 +32,14 @@ class TickerMessageTest {
         TickerMessage result = objectMapper.readValue(json, TickerMessage.class);
 
         assertEquals("ticker", result.getType());
-        assertEquals(20153558L, result.getTrade_id());
+        assertEquals(20153558L, result.getTradeId());
         assertEquals(3262786978L, result.getSequence());
         assertEquals("2017-09-02T17:05:49.250Z", result.getTime().toString());
-        assertEquals("BTC-USD", result.getProduct_id());
-        assertEquals(new BigDecimal(4388.01000000).setScale(8, HALF_UP), result.getPrice());
+        assertEquals("BTC-USD", result.getProductId());
+        assertEquals(new BigDecimal("4388.01000000").setScale(8, HALF_UP), result.getPrice());
         assertEquals("buy", result.getSide());
-        assertEquals(new BigDecimal(4388).setScale(0, HALF_UP), result.getBest_bid());
-        assertEquals(new BigDecimal(4388.01).setScale(2, HALF_UP), result.getBest_ask());
+        assertEquals(new BigDecimal(4388).setScale(0, HALF_UP), result.getBestBid());
+        assertEquals(new BigDecimal("4388.01").setScale(2, HALF_UP), result.getBestAsk());
 
 
     }

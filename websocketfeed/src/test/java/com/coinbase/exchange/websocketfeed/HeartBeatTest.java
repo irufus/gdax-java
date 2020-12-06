@@ -26,8 +26,8 @@ class HeartBeatTest {
 
         assertEquals("heartbeat", result.getType());
         assertEquals(90L, result.getSequence());
-        assertEquals(20, result.getLast_trade_id());
-        assertEquals("BTC-USD", result.getProduct_id());
+        assertEquals(20, result.getLastTradeId());
+        assertEquals("BTC-USD", result.getProductId());
         assertEquals("2014-11-07T08:19:28.464459Z", result.getTime().toString());
 
     }

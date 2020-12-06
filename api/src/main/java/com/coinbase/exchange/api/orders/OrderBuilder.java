@@ -1,19 +1,29 @@
 package com.coinbase.exchange.api.orders;
 
-/**
- * Created by irufus on 2/18/15.
- */
-public class OrderBuilder {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
+@Getter
+public class OrderBuilder {
+    @JsonProperty("id")
     private String id;
+    @JsonProperty("size")
     private String size;
+    @JsonProperty("price")
     private String price;
-    private String product_id;
+    @JsonProperty("product_id")
+    private String productId;
+    @JsonProperty("status")
     private String status;
-    private String filled_size;
-    private String fill_fees;
+    @JsonProperty("filled_size")
+    private String filledSize;
+    @JsonProperty("fill_fees")
+    private String fillFees;
+    @JsonProperty("side")
     private String side;
-    private String created_at;
+    @JsonProperty("created_at")
+    private String createdAt;
+    @JsonProperty("settled")
     private Boolean settled;
 
     public OrderBuilder setId(String id) {
@@ -31,8 +41,8 @@ public class OrderBuilder {
         return this;
     }
 
-    public OrderBuilder setProduct_id(String product_id) {
-        this.product_id = product_id;
+    public OrderBuilder setProductId(String productId) {
+        this.productId = productId;
         return this;
     }
 
@@ -41,13 +51,13 @@ public class OrderBuilder {
         return this;
     }
 
-    public OrderBuilder setFilled_size(String filled_size) {
-        this.filled_size = filled_size;
+    public OrderBuilder setFilledSize(String filledSize) {
+        this.filledSize = filledSize;
         return this;
     }
 
-    public OrderBuilder setFill_fees(String fill_fees) {
-        this.fill_fees = fill_fees;
+    public OrderBuilder setFillFees(String fillFees) {
+        this.fillFees = fillFees;
         return this;
     }
 
@@ -61,49 +71,9 @@ public class OrderBuilder {
         return this;
     }
 
-    public OrderBuilder setCreated_at(String created_at) {
-        this.created_at = created_at;
+    public OrderBuilder setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
         return this;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public String getProduct_id() {
-        return product_id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public String getFilled_size() {
-        return filled_size;
-    }
-
-    public String getFill_fees() {
-        return fill_fees;
-    }
-
-    public Boolean getSettled() {
-        return settled;
-    }
-
-    public String getSide() {
-        return side;
-    }
-
-    public String getCreated_at() {
-        return created_at;
     }
 
     public Order build() {

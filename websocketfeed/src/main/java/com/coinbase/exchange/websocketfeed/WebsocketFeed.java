@@ -51,7 +51,7 @@ public class WebsocketFeed {
         this.websocketUrl = websocketUrl;
         this.signature = signature;
         this.guiEnabled = guiEnabled;
-        this.objectMapper = objectMapper.registerModule(new JavaTimeModule());;
+        this.objectMapper = objectMapper.registerModule(new JavaTimeModule());
     }
 
     public void connect() {
@@ -150,8 +150,7 @@ public class WebsocketFeed {
 
     private String toJson(Object object) {
         try {
-            String json = objectMapper.writeValueAsString(object);
-            return json;
+            return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             log.error("Unable to serialize", e);
             throw new RuntimeException("Unable to serialize");
@@ -170,7 +169,7 @@ public class WebsocketFeed {
      * @author Jiji_Sasidharan
      */
     public interface MessageHandler {
-        public void handleMessage(String message);
+        void handleMessage(String message);
 
         List<OrderBookMessage> getQueuedMessages(Long sequenceId);
     }

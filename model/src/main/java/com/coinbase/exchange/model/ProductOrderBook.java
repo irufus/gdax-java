@@ -1,37 +1,20 @@
 package com.coinbase.exchange.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
-/**
- * Created by irufus on 8/3/15.
- */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductOrderBook {
-
-    private Integer sequence;
-    private List<List<String>> bids;
-    private List<List<String>> asks;
-
-    public List<List<String>> getAsks() {
-        return asks;
-    }
-
-    public void setAsks(List<List<String>> asks) {
-        this.asks = asks;
-    }
-
-    public List<List<String>> getBids() {
-        return bids;
-    }
-
-    public void setBids(List<List<String>> bids) {
-        this.bids = bids;
-    }
-
-    public Integer getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Integer sequence) {
-        this.sequence = sequence;
-    }
+	@JsonProperty("sequence")
+	private Integer sequence;
+	@JsonProperty("bids")
+	private List<List<String>> bids;
+	@JsonProperty("asks")
+	private List<List<String>> asks;
 }

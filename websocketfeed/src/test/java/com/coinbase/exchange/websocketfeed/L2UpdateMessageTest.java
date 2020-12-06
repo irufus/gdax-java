@@ -28,7 +28,7 @@ class L2UpdateMessageTest {
         L2UpdateMessage result = objectMapper.readValue(json, L2UpdateMessage.class);
 
         assertEquals("l2update", result.getType());
-        assertEquals("BTC-GBP", result.getProduct_id());
+        assertEquals("BTC-GBP", result.getProductId());
         assertEquals("buy", result.getChanges()[0][0]);
         assertEquals("5454.12", result.getChanges()[0][1]);
         assertEquals("0.00000000", result.getChanges()[0][2]);

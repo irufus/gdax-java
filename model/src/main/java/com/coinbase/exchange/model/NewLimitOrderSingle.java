@@ -1,65 +1,45 @@
 package com.coinbase.exchange.model;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * Created by irufus on 7/31/15.
- */
+import java.math.BigDecimal;
+
+@Getter
+@Setter
 public class NewLimitOrderSingle extends NewOrderSingle {
+    @JsonProperty("size")
     private BigDecimal size;
+    @JsonProperty("price")
     private BigDecimal price;
-    private Boolean post_only;
+    @JsonProperty("post_only")
+    private Boolean postOnly;
 
     public NewLimitOrderSingle() {}
 
-    public NewLimitOrderSingle(BigDecimal size, BigDecimal price, Boolean post_only, String product_id) {
+    public NewLimitOrderSingle(BigDecimal size, BigDecimal price, Boolean postOnly, String productId) {
         this.size = size;
         this.price = price;
-        this.post_only = post_only;
-        super.setProduct_id(product_id);
+        this.postOnly = postOnly;
+        super.setProductId(productId);
     }
 
-    public NewLimitOrderSingle(BigDecimal size, BigDecimal price, Boolean post_only,
+    public NewLimitOrderSingle(BigDecimal size, BigDecimal price, Boolean postOnly,
                                String clientOid,
                                String type,
                                String side,
-                               String product_id,
+                               String productId,
                                String stp,
                                String funds) {
         this.size = size;
         this.price = price;
-        this.post_only = post_only;
-        setClient_oid(clientOid);
+        this.postOnly = postOnly;
+        setClientOid(clientOid);
         setType(type);
         setSide(side);
-        setProduct_id(product_id);
+        setProductId(productId);
         setStp(stp);
         setFunds(funds);
     }
-
-    public Boolean getPost_only() {
-        return post_only;
-    }
-
-    public void setPost_only(Boolean post_only) {
-        this.post_only = post_only;
-    }
-
-    public BigDecimal getPrice() {
-        return price.setScale(8, RoundingMode.HALF_UP);
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public BigDecimal getSize() {
-        return size.setScale(8, RoundingMode.HALF_UP);
-    }
-
-    public void setSize(BigDecimal size) {
-        this.size = size;
-    }
-
 }

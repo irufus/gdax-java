@@ -35,15 +35,15 @@ class ActivateOrderBookMessageTest {
         ActivateOrderBookMessage result = objectMapper.readValue(json, ActivateOrderBookMessage.class);
 
         assertEquals("activate", result.getType());
-        assertEquals("BTC-GBP", result.getProduct_id());
+        assertEquals("BTC-GBP", result.getProductId());
         assertEquals(1483736448, result.getTimestamp().getEpochSecond());
         assertEquals(299000000, result.getTimestamp().getNano());
-        assertEquals("12", result.getUser_id());
-        assertEquals("30000727-d308-cf50-7b1c-c06deb1934fc", result.getProfile_id());
-        assertEquals("7b52009b-64fd-0a2a-49e6-d8a939753077", result.getOrder_id());
-        assertEquals("entry", result.getStop_type());
+        assertEquals("12", result.getUserId());
+        assertEquals("30000727-d308-cf50-7b1c-c06deb1934fc", result.getProfileId());
+        assertEquals("7b52009b-64fd-0a2a-49e6-d8a939753077", result.getOrderId());
+        assertEquals("entry", result.getStopType());
         assertEquals("buy", result.getSide());
-        assertEquals(new BigDecimal(80), result.getStop_price());
+        assertEquals(new BigDecimal(80), result.getStopPrice());
         assertEquals(new BigDecimal(2), result.getSize());
         assertEquals(new BigDecimal(50), result.getFunds());
         assertTrue(result.isPrivateFlag());

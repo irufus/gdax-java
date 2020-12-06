@@ -1,11 +1,18 @@
 package com.coinbase.exchange.websocketfeed;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
@@ -26,41 +33,12 @@ import java.time.Instant;
 })
 public abstract class FeedMessage {
 
+    @JsonProperty("type")
     private String type;  // "received" | "open" | "done" | "match" | "change" | "activate"
+    @JsonProperty("sequence")
     private Long sequence;
+    @JsonProperty("time")
     private Instant time;
-    private String product_id;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Long getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Long sequence) {
-        this.sequence = sequence;
-    }
-
-    public Instant getTime() {
-        return time;
-    }
-
-    public void setTime(Instant time) {
-        this.time = time;
-    }
-
-    public String getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
-    }
-
+    @JsonProperty("product_id")
+    private String productId;
 }

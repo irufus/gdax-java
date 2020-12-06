@@ -1,5 +1,9 @@
 package com.coinbase.exchange.websocketfeed;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+
 import static com.coinbase.exchange.websocketfeed.ChannelName.full;
 
 /**
@@ -31,25 +35,33 @@ import static com.coinbase.exchange.websocketfeed.ChannelName.full;
  *
  * See docs https://docs.pro.coinbase.com/#subscribe
  */
+@Getter
 public class Subscribe {
 
     private final static String SUBSCRIBE_MSG_TYPE = "subscribe";
 
+    @JsonProperty("type")
     private String type = SUBSCRIBE_MSG_TYPE;
-    private String[] product_ids;
+    @JsonProperty("product_ids")
+    private String[] productIds;
+    @JsonProperty("channels")
     private Channel[] channels;
 
     // Used for signing the subscribe message to the Websocket feed
+    @JsonProperty("signature")
     private String signature;
+    @JsonProperty("passphrase")
     private String passphrase;
+    @JsonProperty("timestamp")
     private String timestamp;
+    @JsonProperty("apiKey")
     private String apiKey;
 
     public Subscribe() { }
 
-    public Subscribe(String[] product_ids) {
-        this.product_ids = product_ids;
-        this.channels = new Channel[]{new Channel(full, product_ids)};
+    public Subscribe(String[] productIds) {
+        this.productIds = productIds;
+        this.channels = new Channel[]{new Channel(full, productIds)};
     }
 
     public String getType() {
@@ -60,12 +72,12 @@ public class Subscribe {
         this.type = type;
     }
 
-    public String[] getProduct_ids() {
-        return product_ids;
+    public String[] getProductIds() {
+        return productIds;
     }
 
-    public void setProduct_ids(String[] product_ids) {
-        this.product_ids = product_ids;
+    public void setProductIds(String[] productIds) {
+        this.productIds = productIds;
     }
 
     public Subscribe setSignature(String signature) {

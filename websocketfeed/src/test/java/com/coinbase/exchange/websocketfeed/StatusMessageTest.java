@@ -9,8 +9,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 
 import static java.math.RoundingMode.HALF_UP;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class StatusMessageTest {
 
@@ -77,47 +76,47 @@ class StatusMessageTest {
         assertEquals("status", result.getType());
 
         assertEquals("BTC-USD", result.getProducts()[0].getId());
-        assertEquals("BTC", result.getProducts()[0].getBase_currency());
-        assertEquals("USD", result.getProducts()[0].getQuote_currency());
-        assertEquals(0.001d, result.getProducts()[0].getBase_min_size());
-        assertEquals(70d, result.getProducts()[0].getBase_max_size());
-        assertEquals(0.00000001d, result.getProducts()[0].getBase_increment());
-        assertEquals(0.01d, result.getProducts()[0].getQuote_increment());
-        assertEquals("BTC/USD", result.getProducts()[0].getDisplay_name());
+        assertEquals("BTC", result.getProducts()[0].getBaseCurrency());
+        assertEquals("USD", result.getProducts()[0].getQuoteCurrency());
+        assertEquals(0.001d, result.getProducts()[0].getBaseMinSize());
+        assertEquals(70d, result.getProducts()[0].getBaseMaxSize());
+        assertEquals(0.00000001d, result.getProducts()[0].getBaseIncrement());
+        assertEquals(0.01d, result.getProducts()[0].getQuoteIncrement());
+        assertEquals("BTC/USD", result.getProducts()[0].getDisplayName());
         assertEquals("online", result.getProducts()[0].getStatus());
-        assertEquals("some status message1", result.getProducts()[0].getStatus_message());
-        assertEquals(10, result.getProducts()[0].getMin_market_funds());
-        assertEquals(1000000, result.getProducts()[0].getMax_market_funds());
-        assertEquals(false, result.getProducts()[0].getPost_only());
-        assertEquals(false, result.getProducts()[0].getLimit_only());
-        assertEquals(false, result.getProducts()[0].getCancel_only());
+        assertEquals("some status message1", result.getProducts()[0].getStatusMessage());
+        assertEquals(new BigDecimal(10), result.getProducts()[0].getMinMarketFunds());
+        assertEquals(1000000, result.getProducts()[0].getMaxMarketFunds());
+        assertEquals(false, result.getProducts()[0].getPostOnly());
+        assertEquals(false, result.getProducts()[0].getLimitOnly());
+        assertEquals(false, result.getProducts()[0].getCancelOnly());
 
         assertEquals("USD", result.getCurrencies()[0].getId());
         assertEquals("United States Dollar", result.getCurrencies()[0].getName());
-        assertEquals(new BigDecimal(0.01000000).setScale(8, HALF_UP), result.getCurrencies()[0].getMin_size());
+        assertEquals(new BigDecimal("0.01000000").setScale(8, HALF_UP), result.getCurrencies()[0].getMinSize());
         assertEquals("online", result.getCurrencies()[0].getStatus());
-        assertEquals("some status message2", result.getCurrencies()[0].getStatus_message());
-        assertEquals(new BigDecimal(0.01).setScale(2, HALF_UP), result.getCurrencies()[0].getMax_precision());
-        assertArrayEquals(new String[]{"USDC"}, result.getCurrencies()[0].getConvertible_to());
+        assertEquals("some status message2", result.getCurrencies()[0].getStatusMessage());
+        assertEquals(new BigDecimal("0.01").setScale(2, HALF_UP), result.getCurrencies()[0].getMaxPrecision());
+        assertArrayEquals(new String[]{"USDC"}, result.getCurrencies()[0].getConvertibleTo());
         assertEquals(Collections.EMPTY_MAP, result.getCurrencies()[0].getDetails());
 
 
         assertEquals("USDC", result.getCurrencies()[1].getId());
         assertEquals("USD Coin", result.getCurrencies()[1].getName());
-        assertEquals(new BigDecimal(0.00000100).setScale(8, HALF_UP), result.getCurrencies()[1].getMin_size());
+        assertEquals(new BigDecimal("0.00000100").setScale(8, HALF_UP), result.getCurrencies()[1].getMinSize());
         assertEquals("online", result.getCurrencies()[1].getStatus());
-        assertEquals(null, result.getCurrencies()[1].getStatus_message());
-        assertEquals(new BigDecimal(0.000001).setScale(6, HALF_UP), result.getCurrencies()[1].getMax_precision());
-        assertArrayEquals(new String[]{"USD"}, result.getCurrencies()[1].getConvertible_to());
+        assertNull(result.getCurrencies()[1].getStatusMessage());
+        assertEquals(new BigDecimal("0.000001").setScale(6, HALF_UP), result.getCurrencies()[1].getMaxPrecision());
+        assertArrayEquals(new String[]{"USD"}, result.getCurrencies()[1].getConvertibleTo());
         assertEquals(Collections.EMPTY_MAP, result.getCurrencies()[1].getDetails());
 
         assertEquals("BTC", result.getCurrencies()[2].getId());
         assertEquals("Bitcoin", result.getCurrencies()[2].getName());
-        assertEquals( new BigDecimal(0.00000001).setScale(8, HALF_UP), result.getCurrencies()[2].getMin_size());
+        assertEquals( new BigDecimal("0.00000001").setScale(8, HALF_UP), result.getCurrencies()[2].getMinSize());
         assertEquals("online", result.getCurrencies()[2].getStatus());
-        assertEquals(null, result.getCurrencies()[2].getStatus_message());
-        assertEquals(new BigDecimal(0.00000001).setScale(8, HALF_UP), result.getCurrencies()[2].getMax_precision());
-        assertArrayEquals(new String[]{}, result.getCurrencies()[2].getConvertible_to());
-        assertEquals(null, result.getCurrencies()[2].getDetails());
+        assertNull(result.getCurrencies()[2].getStatusMessage());
+        assertEquals(new BigDecimal("0.00000001").setScale(8, HALF_UP), result.getCurrencies()[2].getMaxPrecision());
+        assertArrayEquals(new String[]{}, result.getCurrencies()[2].getConvertibleTo());
+        assertNull(result.getCurrencies()[2].getDetails());
     }
 }

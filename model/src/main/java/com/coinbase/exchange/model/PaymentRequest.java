@@ -1,23 +1,22 @@
 package com.coinbase.exchange.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.math.BigDecimal;
 
-/**
- * Created by robevansuk on 15/02/2017.
- */
+@Data
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class PaymentRequest extends MonetaryRequest {
 
-    private String payment_method_id;
+    @JsonProperty("payment_method_id")
+    private String paymentMethodId;
 
-    public PaymentRequest(BigDecimal amount, String currency, String payment_method_id) {
+    public PaymentRequest(BigDecimal amount, String currency, String paymentMethodId) {
         super(amount, currency);
-        this.payment_method_id = payment_method_id;
-    }
-
-    public String getPayment_method_id() {
-        return payment_method_id;
-    }
-    public void setPayment_method_id(String payment_method_id) {
-        this.payment_method_id = payment_method_id;
+        this.paymentMethodId = paymentMethodId;
     }
 }

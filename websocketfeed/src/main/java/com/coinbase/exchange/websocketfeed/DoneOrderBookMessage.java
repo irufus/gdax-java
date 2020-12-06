@@ -17,7 +17,7 @@ package com.coinbase.exchange.websocketfeed;
  */
 public class DoneOrderBookMessage extends OrderBookMessage {
 
-    public DoneOrderBookMessage() {
-        setType("done");
-    }
+	public DoneOrderBookMessage() {
+		setType("done");
+	}
 }

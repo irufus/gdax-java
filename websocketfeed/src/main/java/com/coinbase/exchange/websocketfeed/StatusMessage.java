@@ -2,6 +2,8 @@ package com.coinbase.exchange.websocketfeed;
 
 import com.coinbase.exchange.model.Currency;
 import com.coinbase.exchange.model.Product;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * The status channel will send all products and currencies on a preset interval.
@@ -62,6 +64,8 @@ import com.coinbase.exchange.model.Product;
  * }
  * </pre>
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class StatusMessage extends FeedMessage {
 
     private Product[] products;
@@ -74,22 +78,6 @@ public class StatusMessage extends FeedMessage {
     public StatusMessage(Product[] products, Currency[] currencies) {
         this();
         this.products = products;
-        this.currencies = currencies;
-    }
-
-    public Product[] getProducts() {
-        return products;
-    }
-
-    public void setProducts(Product[] products) {
-        this.products = products;
-    }
-
-    public Currency[] getCurrencies() {
-        return currencies;
-    }
-
-    public void setCurrencies(Currency[] currencies) {
         this.currencies = currencies;
     }
 }

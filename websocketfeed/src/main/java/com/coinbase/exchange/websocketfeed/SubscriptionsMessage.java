@@ -1,5 +1,11 @@
 package com.coinbase.exchange.websocketfeed;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 /**
  * <pre>
  * {
@@ -31,17 +37,11 @@ package com.coinbase.exchange.websocketfeed;
  * }
  * </pre>
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class SubscriptionsMessage extends FeedMessage {
-
+    @JsonProperty("channels")
     private Channel[] channels;
-
-
-
-    public Channel[] getChannels() {
-        return channels;
-    }
-
-    public void setChannels(Channel[] channels) {
-        this.channels = channels;
-    }
 }

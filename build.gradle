@@ -45,6 +45,13 @@ configure(subprojects.findAll { true }) {
     targetCompatibility = 1.11
 
     dependencies {
+
+        compileOnly 'org.projectlombok:lombok:1.18.16'
+        annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+        testCompileOnly 'org.projectlombok:lombok:1.18.16'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+
         constraints {
             implementation 'com.fasterxml.jackson.core:jackson-core:2.11.0'
             implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.0'

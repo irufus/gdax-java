@@ -8,7 +8,7 @@ public enum Granularity {
     FIVE_MIN("5m"),
     ONE_MIN("1m");
 
-    private String granularity;
+    private final String granularity;
 
     Granularity(String granularity) {
         this.granularity = granularity;

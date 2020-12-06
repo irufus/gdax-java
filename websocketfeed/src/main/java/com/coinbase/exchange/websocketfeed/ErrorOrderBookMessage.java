@@ -1,5 +1,8 @@
 package com.coinbase.exchange.websocketfeed;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * If you send a message that is not recognized or an error
  * occurs, the error message will be sent and you will be
@@ -11,6 +14,8 @@ package com.coinbase.exchange.websocketfeed;
  * }
  * </pre>
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class ErrorOrderBookMessage extends FeedMessage {
 
     private String message;
@@ -29,12 +34,4 @@ public class ErrorOrderBookMessage extends FeedMessage {
 //        super(type, sequence, time, product_id);
 //        this.message = message;
 //    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

@@ -32,14 +32,14 @@ class MatchedOrderBookMessageTest {
         MatchedOrderBookMessage result = objectMapper.readValue(json, MatchedOrderBookMessage.class);
 
         assertEquals("match", result.getType());
-        assertEquals("10", result.getTrade_id());
+        assertEquals("10", result.getTradeId());
         assertEquals(50L, result.getSequence());
-        assertEquals("ac928c66-ca53-498f-9c13-a110027a60e8", result.getMaker_order_id());
-        assertEquals("132fb6ae-456b-4654-b4e0-d681ac05cea1", result.getTaker_order_id());
+        assertEquals("ac928c66-ca53-498f-9c13-a110027a60e8", result.getMakerOrderId());
+        assertEquals("132fb6ae-456b-4654-b4e0-d681ac05cea1", result.getTakerOrderId());
         assertEquals("2014-11-07T08:19:27.028459Z", result.getTime().toString());
-        assertEquals("BTC-USD", result.getProduct_id());
-        assertEquals(new BigDecimal(5.23512).setScale(5, RoundingMode.HALF_UP), result.getSize());
-        assertEquals(new BigDecimal(400.23).setScale(2, RoundingMode.HALF_UP), result.getPrice());
+        assertEquals("BTC-USD", result.getProductId());
+        assertEquals(new BigDecimal("5.23512").setScale(5, RoundingMode.HALF_UP), result.getSize());
+        assertEquals(new BigDecimal("400.23").setScale(2, RoundingMode.HALF_UP), result.getPrice());
         assertEquals("sell", result.getSide());
     }
 
