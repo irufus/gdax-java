@@ -2,9 +2,8 @@ package com.coinbase.exchange.api.products;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
-import com.coinbase.exchange.model.Candles;
-import com.coinbase.exchange.model.Granularity;
-import com.coinbase.exchange.model.Product;
+import com.coinbase.exchange.model.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -115,6 +114,18 @@ public class ProductsIntegrationTest extends BaseIntegrationTest {
         // can't predict how many candles we'll get back but going back more than 300 days
         // doesn't return 300 candles here.. easiest just to assert we get more than 100 back.
         assertTrue(candles.getCandleList().size() > 100);
+    }
+
+    @Test
+    void canGetStats() {
+        ProductStats productStats = productService.getProductStats(TEST_PRODUCT_ID);
+        Assertions.assertNotNull(productStats);
+    }
+
+    @Test
+    void canGetAllStats() {
+        List<Stats> stats = productService.getStats();
+        Assertions.assertNotNull(stats);
     }
 
     private Duration getDuration(Candles candles) {
