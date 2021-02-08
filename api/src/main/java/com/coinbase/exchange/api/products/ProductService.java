@@ -1,17 +1,13 @@
 package com.coinbase.exchange.api.products;
 
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
-import com.coinbase.exchange.model.Candles;
-import com.coinbase.exchange.model.Granularity;
-import com.coinbase.exchange.model.Product;
+import com.coinbase.exchange.model.*;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
@@ -47,7 +43,8 @@ public class ProductService {
                     .map(entry -> entry.getKey() + "=" + entry.getValue())
                     .collect(joining("&")));
         }
-        return new Candles(exchange.get(url.toString(), new ParameterizedTypeReference<List<String[]>>() {}));
+        return new Candles(exchange.get(url.toString(), new ParameterizedTypeReference<List<String[]>>() {
+        }));
     }
 
     /**
@@ -79,9 +76,26 @@ public class ProductService {
     }
 
     /**
-     *  If either one of the start or end fields are not provided then both fields will be ignored.
+     * If either one of the start or end fields are not provided then both fields will be ignored.
      */
     public Candles getCandles(String productId, Instant start, Instant end) {
         return getCandles(productId, start, end, null);
+    }
+
+    public ProductStats getProductStats(String productId) {
+        return exchange.get(PRODUCTS_ENDPOINT + "/" + productId + "/stats", new ParameterizedTypeReference<ProductStats>() {
+        });
+    }
+
+    public List<Stats> getStats() {
+        Map<String, Stats> statsMap = exchange.get(PRODUCTS_ENDPOINT + "/stats", new ParameterizedTypeReference<Map<String, Stats>>() {
+        });
+
+        List<String> products = new ArrayList<>(statsMap.keySet());
+        for (String product : products) {
+            statsMap.get(product).setProductId(product);
+        }
+
+        return new LinkedList<>(statsMap.values());
     }
 }
