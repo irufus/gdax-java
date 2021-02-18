@@ -6,3 +6,7 @@
 **/build/
 **/out/
 **/application.*.yml
+**/.classpath
+**/.project
+**/.settings
+**/.vscode
