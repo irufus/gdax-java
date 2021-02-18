@@ -3,12 +3,13 @@ package com.coinbase.exchange.api.accounts;
 import com.coinbase.exchange.model.Detail;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * Created by irufus on 2/18/15.
  */
 public class AccountHistory {
-    private Integer id;
+    private BigInteger id;
     private String created_at;
     private BigDecimal amount;
     private BigDecimal balance;
@@ -17,11 +18,11 @@ public class AccountHistory {
 
     public AccountHistory() {}
 
-    public Integer getId() {
+    public BigInteger getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 
