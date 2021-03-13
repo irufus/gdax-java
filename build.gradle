@@ -76,8 +76,8 @@ configure(subprojects.findAll { true }) {
 }
 
 dependencies {
-    compile project(":api")
-    compile project(":model")
-    compile project(":security")
-    compile project(":websocketfeed")
+    implementation project(":api")
+    implementation project(":model")
+    implementation project(":security")
+    implementation project(":websocketfeed")
 }
