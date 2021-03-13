@@ -1,6 +1,7 @@
 package com.coinbase.exchange.api.reports;
 
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import org.springframework.core.ParameterizedTypeReference;
 
 /**
@@ -17,13 +18,13 @@ public class ReportService {
     }
 
     // TODO untested
-    public ReportResponse createReport(String type, String startDate, String endDate){
+    public ReportResponse createReport(String type, String startDate, String endDate) throws CoinbaseExchangeException {
         ReportRequest reportRequest = new ReportRequest(type, startDate, endDate);
         return coinbaseExchange.post(REPORTS_ENDPOINT, new ParameterizedTypeReference<ReportResponse>(){}, reportRequest);
     }
 
     // TODO untested
-    public ReportResponse getReportStatus(String id) {
+    public ReportResponse getReportStatus(String id) throws CoinbaseExchangeException {
         return coinbaseExchange.get(REPORTS_ENDPOINT + "/" + id, new ParameterizedTypeReference<ReportResponse>(){});
     }
 }

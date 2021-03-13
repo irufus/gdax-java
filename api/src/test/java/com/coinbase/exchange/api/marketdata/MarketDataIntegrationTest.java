@@ -2,6 +2,7 @@ package com.coinbase.exchange.api.marketdata;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import com.coinbase.exchange.api.products.ProductService;
 import com.coinbase.exchange.model.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,14 +35,14 @@ public class MarketDataIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void canGetMarketDataForLevelOneBidAndAsk() {
+    public void canGetMarketDataForLevelOneBidAndAsk() throws CoinbaseExchangeException {
         MarketData marketData = testee.getMarketDataOrderBook("BTC-GBP", 1);
         System.out.println(marketData);
         assertTrue(marketData.getSequence() > 0);
     }
 
     @Test
-    public void canGetMarketDataForLevelTwoBidAndAsk() {
+    public void canGetMarketDataForLevelTwoBidAndAsk() throws CoinbaseExchangeException {
         MarketData marketData = testee.getMarketDataOrderBook("BTC-GBP", 2);
         System.out.println(marketData);
         assertTrue(marketData.getSequence() > 0);
@@ -52,14 +53,14 @@ public class MarketDataIntegrationTest extends BaseIntegrationTest {
      * order Id rather than the count of orders at a certain price.
      */
     @Test
-    public void canGetMarketDataForLevelThreeBidAndAsk() {
+    public void canGetMarketDataForLevelThreeBidAndAsk() throws CoinbaseExchangeException {
         MarketData marketData = testee.getMarketDataOrderBook("BTC-GBP", 3);
         System.out.println(marketData);
         assertTrue(marketData.getSequence() > 0);
     }
 
     @Test
-    public void canGetLevel1DataForAllProducts(){
+    public void canGetLevel1DataForAllProducts() throws CoinbaseExchangeException {
         List<Product> products = productService.getProducts();
         for(Product product : products){
             System.out.print("\nTesting: " + product.getId());

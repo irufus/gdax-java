@@ -2,6 +2,7 @@ package com.coinbase.exchange.api.products;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import com.coinbase.exchange.model.Candles;
 import com.coinbase.exchange.model.Granularity;
 import com.coinbase.exchange.model.Product;
@@ -44,21 +45,21 @@ public class ProductsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void canGetProducts() {
+    public void canGetProducts() throws CoinbaseExchangeException {
         List<Product> products = productService.getProducts();
         products.forEach(item -> System.out.println(item.getId()));
         assertTrue(products.size() >= 0);
     }
 
     @Test
-    void shouldGetCandles() {
+    void shouldGetCandles() throws CoinbaseExchangeException {
         Candles candles = productService.getCandles(TEST_PRODUCT_ID);
 
         assertEquals(300, candles.getCandleList().size());
     }
 
     @Test
-    void shouldGetCandlesForAGanularityOf_OneDay() {
+    void shouldGetCandlesForAGanularityOf_OneDay() throws CoinbaseExchangeException {
         Candles candles = productService.getCandles(TEST_PRODUCT_ID, Granularity.ONE_DAY);
 
         assertEquals(300, candles.getCandleList().size());
@@ -66,7 +67,7 @@ public class ProductsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void shouldGetCandlesForAGanularityOf_SixHours() {
+    void shouldGetCandlesForAGanularityOf_SixHours() throws CoinbaseExchangeException {
         Candles candles = productService.getCandles(TEST_PRODUCT_ID, Granularity.SIX_HOURS);
 
         assertEquals(300, candles.getCandleList().size());
@@ -74,7 +75,7 @@ public class ProductsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void shouldGetCandlesForAGanularityOf_OneHour() {
+    void shouldGetCandlesForAGanularityOf_OneHour() throws CoinbaseExchangeException {
         Candles candles = productService.getCandles(TEST_PRODUCT_ID, Granularity.ONE_HOUR);
 
         assertEquals(300, candles.getCandleList().size());
@@ -82,7 +83,7 @@ public class ProductsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void shouldGetCandlesForAGanularityOf_FifteenMins() {
+    void shouldGetCandlesForAGanularityOf_FifteenMins() throws CoinbaseExchangeException {
         Candles candles = productService.getCandles(TEST_PRODUCT_ID, Granularity.FIFTEEN_MIN);
 
         assertEquals(300, candles.getCandleList().size());
@@ -90,7 +91,7 @@ public class ProductsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void shouldGetCandlesForAGanularityOf_FiveMins() {
+    void shouldGetCandlesForAGanularityOf_FiveMins() throws CoinbaseExchangeException {
         Candles candles = productService.getCandles(TEST_PRODUCT_ID, Granularity.FIVE_MIN);
 
         assertEquals(300, candles.getCandleList().size());
@@ -98,7 +99,7 @@ public class ProductsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void shouldGetCandlesForAGanularityOf_OneMin() {
+    void shouldGetCandlesForAGanularityOf_OneMin() throws CoinbaseExchangeException {
         Candles candles = productService.getCandles(TEST_PRODUCT_ID, Granularity.ONE_MIN);
 
         assertEquals(300, candles.getCandleList().size());
@@ -106,7 +107,7 @@ public class ProductsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void shouldGetCandlesForWithAStartAndEndTime() {
+    void shouldGetCandlesForWithAStartAndEndTime() throws CoinbaseExchangeException {
         Instant startTime = Instant.now().minus(400, ChronoUnit.DAYS);
         Instant endTime = Instant.now().minus(100, ChronoUnit.DAYS);
 

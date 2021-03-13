@@ -3,6 +3,7 @@ package com.coinbase.exchange.api.accounts;
 import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
 import com.coinbase.exchange.api.deposits.DepositService;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import com.coinbase.exchange.api.payments.CoinbaseAccount;
 import com.coinbase.exchange.api.payments.PaymentService;
 import com.coinbase.exchange.model.PaymentResponse;
@@ -43,7 +44,7 @@ public class DepositIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void depositToGDAXExchangeFromCoinbase(){
+    public void depositToGDAXExchangeFromCoinbase() throws CoinbaseExchangeException {
         // given
         List<CoinbaseAccount> coinbaseAccountList = paymentService.getCoinbaseAccounts();
         assertTrue(coinbaseAccountList.size() > 0);

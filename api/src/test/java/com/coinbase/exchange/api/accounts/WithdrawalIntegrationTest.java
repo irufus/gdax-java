@@ -2,6 +2,7 @@ package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import com.coinbase.exchange.api.payments.CoinbaseAccount;
 import com.coinbase.exchange.api.payments.PaymentService;
 import com.coinbase.exchange.api.payments.PaymentType;
@@ -45,7 +46,7 @@ public class WithdrawalIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void withdrawToCoinbaseAccount(){
+    public void withdrawToCoinbaseAccount() throws CoinbaseExchangeException {
         List<Account> gdaxAccounts = accountService.getAccounts();
         List<PaymentType> paymentTypes = paymentService.getPaymentTypes();
         List<CoinbaseAccount> coinbaseAccounts = paymentService.getCoinbaseAccounts();

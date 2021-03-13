@@ -1,6 +1,7 @@
 package com.coinbase.exchange.api.products;
 
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import com.coinbase.exchange.model.Candles;
 import com.coinbase.exchange.model.Granularity;
 import com.coinbase.exchange.model.Product;
@@ -29,17 +30,17 @@ public class ProductService {
     }
 
     // no paged products necessary
-    public List<Product> getProducts() {
+    public List<Product> getProducts() throws CoinbaseExchangeException {
         return exchange.getAsList(PRODUCTS_ENDPOINT, new ParameterizedTypeReference<Product[]>() {
         });
     }
 
-    public Candles getCandles(String productId) {
+    public Candles getCandles(String productId) throws CoinbaseExchangeException {
         return new Candles(exchange.get(PRODUCTS_ENDPOINT + "/" + productId + "/candles", new ParameterizedTypeReference<List<String[]>>() {
         }));
     }
 
-    public Candles getCandles(String productId, Map<String, String> queryParams) {
+    public Candles getCandles(String productId, Map<String, String> queryParams) throws CoinbaseExchangeException {
         StringBuffer url = new StringBuffer(PRODUCTS_ENDPOINT + "/" + productId + "/candles");
         if (queryParams != null && queryParams.size() != 0) {
             url.append("?");
@@ -54,7 +55,8 @@ public class ProductService {
      * If either one of the start or end fields are not provided then both fields will be ignored.
      * If a custom time range is not declared then one ending now is selected.
      */
-    public Candles getCandles(String productId, Instant startTime, Instant endTime, Granularity granularity) {
+    public Candles getCandles(String productId, Instant startTime, Instant endTime, Granularity granularity)
+            throws CoinbaseExchangeException {
 
         Map<String, String> queryParams = new HashMap<>();
 
@@ -74,14 +76,14 @@ public class ProductService {
     /**
      * The granularity field must be one of the following values: {60, 300, 900, 3600, 21600, 86400}
      */
-    public Candles getCandles(String productId, Granularity granularity) {
+    public Candles getCandles(String productId, Granularity granularity) throws CoinbaseExchangeException {
         return getCandles(productId, null, null, granularity);
     }
 
     /**
      *  If either one of the start or end fields are not provided then both fields will be ignored.
      */
-    public Candles getCandles(String productId, Instant start, Instant end) {
+    public Candles getCandles(String productId, Instant start, Instant end) throws CoinbaseExchangeException {
         return getCandles(productId, start, end, null);
     }
 }
