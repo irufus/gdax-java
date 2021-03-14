@@ -24,12 +24,12 @@ package com.coinbase.exchange.model;
  */
 public abstract class NewOrderSingle {
 
-    private String client_oid; //optional
-    private String type; //default is limit, other types are market and stop
-    private String side;
-    private String product_id;
-    private String stp; //optional: values are dc, co , cn , cb
-    private String funds;
+    protected String client_oid; //optional
+    protected String type; //default is limit, other types are market and stop
+    protected String side;
+    protected String product_id;
+    protected String stp; //optional: values are dc, co , cn , cb
+    protected String funds;
 
     public NewOrderSingle() {
     }

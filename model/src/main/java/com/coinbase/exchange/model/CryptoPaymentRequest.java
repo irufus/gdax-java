@@ -9,10 +9,21 @@ public class CryptoPaymentRequest extends MonetaryRequest {
         super(amount, currency);
         this.crypto_address = cryptoAddress;
     }
+
     public String getCryptoAddress() {
         return crypto_address;
     }
+
     public void setCryptoAddress(String cryptoAddress) {
         this.crypto_address = cryptoAddress;
+    }
+
+    @Override
+    public String toString() {
+        return "CryptoPaymentRequest{"
+                + "crypto_address='" + crypto_address + '\''
+                + ", amount=" + amount
+                + ", currency='" + currency + '\''
+                + '}';
     }
 }

@@ -14,4 +14,11 @@ public class Candles {
     public List<Candle> getCandleList() {
         return candleList;
     }
+
+    @Override
+    public String toString() {
+        return "Candles{"
+                + "candleList=" + candleList
+                + '}';
+    }
 }

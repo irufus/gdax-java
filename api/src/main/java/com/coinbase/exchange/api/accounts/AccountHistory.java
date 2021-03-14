@@ -64,4 +64,16 @@ public class AccountHistory {
     public void setDetail(Detail detail) {
         this.detail = detail;
     }
+
+    @Override
+    public String toString() {
+        return "AccountHistory{"
+                + "id=" + id
+                + ", created_at='" + created_at + '\''
+                + ", amount=" + amount
+                + ", balance=" + balance
+                + ", type='" + type + '\''
+                + ", detail=" + detail
+                + '}';
+    }
 }

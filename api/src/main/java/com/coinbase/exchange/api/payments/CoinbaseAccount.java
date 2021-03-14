@@ -110,4 +110,19 @@ public class CoinbaseAccount {
     public void setSepa_deposit_information(SepaDepositInformation sepa_deposit_information) {
         this.sepa_deposit_information = sepa_deposit_information;
     }
+
+    @Override
+    public String toString() {
+        return "CoinbaseAccount{"
+                + "id='" + id + '\''
+                + ", name='" + name + '\''
+                + ", balance=" + balance
+                + ", currency='" + currency + '\''
+                + ", type='" + type + '\''
+                + ", primary=" + primary
+                + ", active=" + active
+                + ", wire_deposit_information=" + wire_deposit_information
+                + ", sepa_deposit_information=" + sepa_deposit_information
+                + '}';
+    }
 }

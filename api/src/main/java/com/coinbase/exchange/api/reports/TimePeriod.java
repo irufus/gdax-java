@@ -30,4 +30,12 @@ public class TimePeriod {
     public void setEnd_date(String end_date) {
         this.end_date = end_date;
     }
+
+    @Override
+    public String toString() {
+        return "TimePeriod{"
+                + "start_date='" + start_date + '\''
+                + ", end_date='" + end_date + '\''
+                + '}';
+    }
 }

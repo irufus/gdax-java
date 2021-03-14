@@ -106,4 +106,20 @@ public class Message {
         this.time = time;
     }
 
+    @Override
+    public String toString() {
+        return "Message{"
+                + "type='" + type + '\''
+                + ", sequence=" + sequence
+                + ", order_id='" + order_id + '\''
+                + ", size=" + size
+                + ", price=" + price
+                + ", side='" + side + '\''
+                + ", remaining_size=" + remaining_size
+                + ", reason='" + reason + '\''
+                + ", maker_order_id='" + maker_order_id + '\''
+                + ", taker_order_id='" + taker_order_id + '\''
+                + ", time='" + time + '\''
+                + '}';
+    }
 }

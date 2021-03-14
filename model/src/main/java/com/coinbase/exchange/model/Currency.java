@@ -3,6 +3,7 @@ package com.coinbase.exchange.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Currency {
@@ -102,5 +103,20 @@ public class Currency {
 
     public void setDetails(Object details) {
         this.details = details;
+    }
+
+    @Override
+    public String toString() {
+        return "Currency{"
+                + "id='" + id + '\''
+                + ", name='" + name + '\''
+                + ", min_size=" + min_size
+                + ", status='" + status + '\''
+                + ", status_message='" + status_message + '\''
+                + ", max_precision=" + max_precision
+                + ", convertible_to=" + Arrays.toString(convertible_to)
+                + ", funding_account_id='" + funding_account_id + '\''
+                + ", details=" + details
+                + '}';
     }
 }

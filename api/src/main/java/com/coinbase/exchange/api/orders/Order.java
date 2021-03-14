@@ -176,12 +176,24 @@ public class Order {
         this.settled = settled;
     }
 
+    @Override
     public String toString() {
-        String orderString = getSide();
-        orderString += ": " + getProduct_id();
-        orderString += ": " + getPrice();
-        orderString += ": " + getSize();
-        return orderString;
+        return "Order{"
+                + "id='" + id + '\''
+                + ", size='" + size + '\''
+                + ", price='" + price + '\''
+                + ", product_id='" + product_id + '\''
+                + ", side='" + side + '\''
+                + ", stp='" + stp + '\''
+                + ", type='" + type + '\''
+                + ", time_in_force='" + time_in_force + '\''
+                + ", post_only='" + post_only + '\''
+                + ", created_at='" + created_at + '\''
+                + ", fill_fees='" + fill_fees + '\''
+                + ", filled_size='" + filled_size + '\''
+                + ", executed_value='" + executed_value + '\''
+                + ", status='" + status + '\''
+                + ", settled=" + settled
+                + '}';
     }
-
 }
