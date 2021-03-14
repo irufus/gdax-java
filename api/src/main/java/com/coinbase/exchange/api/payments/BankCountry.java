@@ -30,4 +30,12 @@ public class BankCountry {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "BankCountry{"
+                + "code='" + code + '\''
+                + ", name='" + name + '\''
+                + '}';
+    }
 }

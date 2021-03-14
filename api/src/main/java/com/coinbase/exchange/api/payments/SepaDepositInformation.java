@@ -97,4 +97,18 @@ public class SepaDepositInformation {
     public void setReference(String reference) {
         this.reference = reference;
     }
+
+    @Override
+    public String toString() {
+        return "SepaDepositInformation{"
+                + "iban='" + iban + '\''
+                + ", swift='" + swift + '\''
+                + ", bank_name='" + bank_name + '\''
+                + ", bank_address='" + bank_address + '\''
+                + ", bank_country_name='" + bank_country_name + '\''
+                + ", account_name='" + account_name + '\''
+                + ", account_address='" + account_address + '\''
+                + ", reference='" + reference + '\''
+                + '}';
+    }
 }

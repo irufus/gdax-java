@@ -87,4 +87,19 @@ public class Fill {
     public void setTrade_id(Integer trade_id) {
         this.trade_id = trade_id;
     }
+
+    @Override
+    public String toString() {
+        return "Fill{"
+                + "trade_id=" + trade_id
+                + ", product_id='" + product_id + '\''
+                + ", size=" + size
+                + ", order_id='" + order_id + '\''
+                + ", created_at='" + created_at + '\''
+                + ", liquidity='" + liquidity + '\''
+                + ", fee=" + fee
+                + ", settled=" + settled
+                + ", side='" + side + '\''
+                + '}';
+    }
 }

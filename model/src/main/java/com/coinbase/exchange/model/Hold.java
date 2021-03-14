@@ -82,4 +82,17 @@ public class Hold {
     public void setRef(String ref) {
         this.ref = ref;
     }
+
+    @Override
+    public String toString() {
+        return "Hold{"
+                + "id='" + id + '\''
+                + ", account_id='" + account_id + '\''
+                + ", created_at='" + created_at + '\''
+                + ", update_at='" + update_at + '\''
+                + ", amount=" + amount
+                + ", type='" + type + '\''
+                + ", ref='" + ref + '\''
+                + '}';
+    }
 }

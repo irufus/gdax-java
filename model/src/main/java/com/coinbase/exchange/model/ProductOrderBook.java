@@ -34,4 +34,13 @@ public class ProductOrderBook {
     public void setSequence(Integer sequence) {
         this.sequence = sequence;
     }
+
+    @Override
+    public String toString() {
+        return "ProductOrderBook{"
+                + "sequence=" + sequence
+                + ", bids=" + bids
+                + ", asks=" + asks
+                + '}';
+    }
 }

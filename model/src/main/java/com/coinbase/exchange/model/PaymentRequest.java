@@ -20,4 +20,13 @@ public class PaymentRequest extends MonetaryRequest {
     public void setPayment_method_id(String payment_method_id) {
         this.payment_method_id = payment_method_id;
     }
+
+    @Override
+    public String toString() {
+        return "PaymentRequest{"
+                + "amount=" + amount
+                + ", currency='" + currency + '\''
+                + ", payment_method_id='" + payment_method_id + '\''
+                + '}';
+    }
 }

@@ -182,4 +182,27 @@ public class Product {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "Product{"
+                + "id='" + id + '\''
+                + ", base_currency='" + base_currency + '\''
+                + ", quote_currency='" + quote_currency + '\''
+                + ", base_min_size=" + base_min_size
+                + ", base_max_size=" + base_max_size
+                + ", quote_increment=" + quote_increment
+                + ", base_increment=" + base_increment
+                + ", display_name='" + display_name + '\''
+                + ", status='" + status + '\''
+                + ", margin_enabled=" + margin_enabled
+                + ", status_message='" + status_message + '\''
+                + ", min_market_funds=" + min_market_funds
+                + ", max_market_funds=" + max_market_funds
+                + ", post_only=" + post_only
+                + ", limit_only=" + limit_only
+                + ", cancel_only=" + cancel_only
+                + ", type='" + type + '\''
+                + '}';
+    }
 }
