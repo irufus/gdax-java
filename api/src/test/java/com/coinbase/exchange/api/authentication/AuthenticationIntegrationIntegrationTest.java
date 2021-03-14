@@ -4,6 +4,7 @@ import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
 import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,7 @@ public class AuthenticationIntegrationIntegrationTest extends BaseIntegrationTes
 
     // ensure a basic request can be made. Not a great test. Improve.
     @Test
-    public void simpleAuthenticationTest(){
+    public void simpleAuthenticationTest() throws CoinbaseExchangeException {
         List<Account> accounts = accountService.getAccounts();
         assertNotNull(accounts);
         assertTrue(accounts.size() > 0);

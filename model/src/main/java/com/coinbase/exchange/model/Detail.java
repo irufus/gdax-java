@@ -31,4 +31,13 @@ public class Detail {
     public void setProduct_id(String product_id) {
         this.product_id = product_id;
     }
+
+    @Override
+    public String toString() {
+        return "Detail{"
+                + "order_id='" + order_id + '\''
+                + ", trade_id=" + trade_id
+                + ", product_id='" + product_id + '\''
+                + '}';
+    }
 }

@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.orders;
 
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import com.coinbase.exchange.model.Fill;
 import com.coinbase.exchange.model.Hold;
 import com.coinbase.exchange.model.NewOrderSingle;
@@ -22,40 +23,40 @@ public class OrderService {
         this.exchange = exchange;
     }
 
-    public List<Hold> getHolds(String accountId) {
+    public List<Hold> getHolds(String accountId) throws CoinbaseExchangeException {
         return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/holds", new ParameterizedTypeReference<Hold[]>(){});
     }
 
-    public List<Order> getOpenOrders(String accountId) {
+    public List<Order> getOpenOrders(String accountId) throws CoinbaseExchangeException {
         return exchange.getAsList(ORDERS_ENDPOINT + "/" + accountId + "/orders", new ParameterizedTypeReference<Order[]>(){});
     }
 
-    public Order getOrder(String orderId) {
+    public Order getOrder(String orderId) throws CoinbaseExchangeException {
         return exchange.get(ORDERS_ENDPOINT + "/" + orderId,new ParameterizedTypeReference<Order>(){});
     }
 
-    public Order createOrder(NewOrderSingle order) {
+    public Order createOrder(NewOrderSingle order) throws CoinbaseExchangeException {
         return exchange.post(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order>(){}, order);
     }
 
-    public String cancelOrder(String orderId) {
+    public String cancelOrder(String orderId) throws CoinbaseExchangeException {
         String deleteEndpoint = ORDERS_ENDPOINT + "/" + orderId;
         return exchange.delete(deleteEndpoint, new ParameterizedTypeReference<String>(){});
     }
 
-    public List<Order> getOpenOrders() {
+    public List<Order> getOpenOrders() throws CoinbaseExchangeException {
         return exchange.getAsList(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){});
     }
 
-    public List<Order> cancelAllOpenOrders() {
+    public List<Order> cancelAllOpenOrders() throws CoinbaseExchangeException {
         return Arrays.asList(exchange.delete(ORDERS_ENDPOINT, new ParameterizedTypeReference<Order[]>(){}));
     }
 
-    public List<Fill> getFillsByProductId(String product_id, int resultLimit) {
+    public List<Fill> getFillsByProductId(String product_id, int resultLimit) throws CoinbaseExchangeException {
         return exchange.getAsList(FILLS_ENDPOINT + "?product_id=" + product_id + "&limit=" + resultLimit, new ParameterizedTypeReference<Fill[]>(){});
     }
-    
-    public List<Fill> getFillByOrderId(String order_id, int resultLimit) {
+
+    public List<Fill> getFillByOrderId(String order_id, int resultLimit) throws CoinbaseExchangeException {
         return exchange.getAsList(FILLS_ENDPOINT + "?order_id=" + order_id + "&limit=" + resultLimit, new ParameterizedTypeReference<Fill[]>(){});
     }
 }

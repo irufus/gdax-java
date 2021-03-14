@@ -2,6 +2,7 @@ package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import com.coinbase.exchange.model.Hold;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,27 +32,27 @@ public class AccountsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void canGetAccounts() {
+    public void canGetAccounts() throws CoinbaseExchangeException {
         List<Account> accounts  = accountService.getAccounts();
         assertNotNull(accounts);
     }
 
     @Test
-    public void getAccount() {
+    public void getAccount() throws CoinbaseExchangeException {
         List<Account> accounts  = accountService.getAccounts();
         Account account = accountService.getAccount(accounts.get(0).getId());
         assertNotNull(account);
     }
 
     @Test
-    public void canGetAccountHistory() {
+    public void canGetAccountHistory() throws CoinbaseExchangeException {
         List<Account> accounts = accountService.getAccounts();
         List<AccountHistory> history = accountService.getAccountHistory(accounts.get(0).getId());
         assertNotNull(history); // anything but null/error.
     }
 
     @Test
-    public void canGetAccountHolds() {
+    public void canGetAccountHolds() throws CoinbaseExchangeException {
         List<Account> accounts = accountService.getAccounts();
         List<Hold> holds = accountService.getHolds(accounts.get(0).getId());
         assertNotNull(holds);
@@ -66,7 +67,7 @@ public class AccountsIntegrationTest extends BaseIntegrationTest {
      * only if before is null and after is not-null will the after param be inserted.
      */
     @Test
-    public void canGetPagedAccountHistory() {
+    public void canGetPagedAccountHistory() throws CoinbaseExchangeException {
         List<Account> accounts = accountService.getAccounts();
         assertTrue(accounts.size() > 0);
         String beforeOrAfter = "before";
@@ -79,7 +80,7 @@ public class AccountsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void canGetPagedHolds() {
+    public void canGetPagedHolds() throws CoinbaseExchangeException {
         List<Account> accounts = accountService.getAccounts();
 
         assertTrue(accounts!=null);

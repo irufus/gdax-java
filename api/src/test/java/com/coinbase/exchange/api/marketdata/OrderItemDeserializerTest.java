@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.marketdata;
 
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ public class OrderItemDeserializerTest {
      * @throws IOException
      */
     @Test
-    public void testDesirialization() throws IOException {
+    public void testDesirialization() throws CoinbaseExchangeException, IOException {
         String test = "{\n" +
                 "    \"sequence\": \"3\",\n" +
                 "    \"bids\": [\n" +

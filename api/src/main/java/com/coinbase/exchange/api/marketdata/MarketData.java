@@ -42,4 +42,13 @@ public class MarketData {
     public void setAsks(List<OrderItem> asks) {
         this.asks = asks;
     }
+
+    @Override
+    public String toString() {
+        return "MarketData{"
+                + "sequence=" + sequence
+                + ", bids=" + bids
+                + ", asks=" + asks
+                + '}';
+    }
 }

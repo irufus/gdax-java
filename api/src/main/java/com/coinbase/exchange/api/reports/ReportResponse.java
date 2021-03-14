@@ -97,4 +97,18 @@ public class ReportResponse {
     public void setParams(TimePeriod params) {
         this.params = params;
     }
+
+    @Override
+    public String toString() {
+        return "ReportResponse{"
+                + "id='" + id + '\''
+                + ", type='" + type + '\''
+                + ", status='" + status + '\''
+                + ", created_at='" + created_at + '\''
+                + ", completed_at='" + completed_at + '\''
+                + ", expires_at='" + expires_at + '\''
+                + ", file_url='" + file_url + '\''
+                + ", params=" + params
+                + '}';
+    }
 }

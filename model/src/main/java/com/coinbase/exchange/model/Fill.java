@@ -1,6 +1,7 @@
 package com.coinbase.exchange.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 /**
  * Created by irufus on 2/18/15.
@@ -8,9 +9,10 @@ import java.math.BigDecimal;
 public class Fill {
     private Integer trade_id;
     private String product_id;
+    private BigDecimal price;
     private BigDecimal size;
     private String order_id;
-    private String created_at;
+    private Instant created_at;
     private String liquidity;
     private BigDecimal fee;
     private Boolean settled;
@@ -40,11 +42,11 @@ public class Fill {
         this.fee = fee;
     }
 
-    public String getCreated_at() {
+    public Instant getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(String created_at) {
+    public void setCreated_at(Instant created_at) {
         this.created_at = created_at;
     }
 
@@ -86,5 +88,29 @@ public class Fill {
 
     public void setTrade_id(Integer trade_id) {
         this.trade_id = trade_id;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(final BigDecimal price) {
+        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Fill{"
+                + "trade_id=" + trade_id
+                + ", product_id='" + product_id + '\''
+                + ", price=" + price
+                + ", size=" + size
+                + ", order_id='" + order_id + '\''
+                + ", created_at=" + created_at
+                + ", liquidity='" + liquidity + '\''
+                + ", fee=" + fee
+                + ", settled=" + settled
+                + ", side='" + side + '\''
+                + '}';
     }
 }

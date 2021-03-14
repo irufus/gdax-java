@@ -13,20 +13,22 @@ public class Candle {
     private BigDecimal volume;
 
     public Candle(String[] entry) {
-        this(Instant.ofEpochSecond(Long.parseLong(entry[0])),
+        this(
+                Instant.ofEpochSecond(Long.parseLong(entry[0])),
                 new BigDecimal(entry[1]),
                 new BigDecimal(entry[2]),
                 new BigDecimal(entry[3]),
                 new BigDecimal(entry[4]),
-                new BigDecimal(entry[5]));
+                new BigDecimal(entry[5])
+        );
     }
 
     public Candle(Instant time, BigDecimal low, BigDecimal high, BigDecimal open, BigDecimal close, BigDecimal volume) {
-        this.time   = time;
-        this.low    = low;
-        this.high   = high;
-        this.open   = open;
-        this.close  = close;
+        this.time = time;
+        this.low = low;
+        this.high = high;
+        this.open = open;
+        this.close = close;
         this.volume = volume;
     }
 
@@ -76,5 +78,17 @@ public class Candle {
 
     public void setVolume(BigDecimal volume) {
         this.volume = volume;
+    }
+
+    @Override
+    public String toString() {
+        return "Candle{"
+                + "time=" + time
+                + ", low=" + low
+                + ", high=" + high
+                + ", open=" + open
+                + ", close=" + close
+                + ", volume=" + volume
+                + '}';
     }
 }

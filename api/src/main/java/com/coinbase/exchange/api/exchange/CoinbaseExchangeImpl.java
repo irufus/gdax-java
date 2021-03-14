@@ -48,7 +48,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
     }
 
     @Override
-    public <T> T get(String resourcePath, ParameterizedTypeReference<T> responseType) {
+    public <T> T get(String resourcePath, ParameterizedTypeReference<T> responseType) throws CoinbaseExchangeException {
         try {
             ResponseEntity<T> responseEntity = restTemplate.exchange(getBaseUrl() + resourcePath,
                     HttpMethod.GET,
@@ -59,12 +59,13 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
             return responseEntity.getBody();
         } catch (HttpClientErrorException ex) {
             log.error("GET request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
+            throw CoinbaseExchangeException.create(ex, objectMapper);
         }
-        return null;
     }
 
     @Override
-    public <T> List<T> getAsList(String resourcePath, ParameterizedTypeReference<T[]> responseType) {
+    public <T> List<T> getAsList(String resourcePath, ParameterizedTypeReference<T[]> responseType)
+            throws CoinbaseExchangeException {
        T[] result = get(resourcePath, responseType);
 
        return result == null ? emptyList() : Arrays.asList(result);
@@ -75,7 +76,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
                           ParameterizedTypeReference<T> responseType,
                           String beforeOrAfter,
                           Integer pageNumber,
-                          Integer limit) {
+                          Integer limit) throws CoinbaseExchangeException {
         resourcePath += "?" + beforeOrAfter + "=" + pageNumber + "&limit=" + limit;
         return get(resourcePath, responseType);
     }
@@ -85,13 +86,14 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
                           ParameterizedTypeReference<T[]> responseType,
                           String beforeOrAfter,
                           Integer pageNumber,
-                          Integer limit) {
+                          Integer limit) throws CoinbaseExchangeException {
         T[] result = pagedGet(resourcePath, responseType, beforeOrAfter, pageNumber, limit );
         return result == null ? emptyList() : Arrays.asList(result);
     }
 
     @Override
-    public <T> T delete(String resourcePath, ParameterizedTypeReference<T> responseType) {
+    public <T> T delete(String resourcePath, ParameterizedTypeReference<T> responseType)
+            throws CoinbaseExchangeException {
         try {
             ResponseEntity<T> response = restTemplate.exchange(getBaseUrl() + resourcePath,
                 HttpMethod.DELETE,
@@ -100,12 +102,13 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
             return response.getBody();
         } catch (HttpClientErrorException ex) {
             log.error("DELETE request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
+            throw CoinbaseExchangeException.create(ex, objectMapper);
         }
-        return null;
     }
 
     @Override
-    public <T, R> T post(String resourcePath,  ParameterizedTypeReference<T> responseType, R jsonObj) {
+    public <T, R> T post(String resourcePath,  ParameterizedTypeReference<T> responseType, R jsonObj)
+            throws CoinbaseExchangeException {
         String jsonBody = toJson(jsonObj);
 
         try {
@@ -116,8 +119,8 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
             return response.getBody();
         } catch (HttpClientErrorException ex) {
             log.error("POST request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
+            throw CoinbaseExchangeException.create(ex, objectMapper);
         }
-        return null;
     }
 
     @Override

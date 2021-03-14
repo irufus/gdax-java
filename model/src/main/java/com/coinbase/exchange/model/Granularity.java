@@ -29,4 +29,11 @@ public enum Granularity {
         }
         return "";
     }
+
+    @Override
+    public String toString() {
+        return "Granularity{"
+                + "granularity='" + granularity + '\''
+                + '}';
+    }
 }

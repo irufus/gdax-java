@@ -1,6 +1,7 @@
 package com.coinbase.exchange.api.transfers;
 
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.math.BigDecimal;
@@ -28,7 +29,7 @@ public class TransferService {
      * @param coinbaseAccountId
      * @return
      */
-    public String transfer(String type, BigDecimal amount, String coinbaseAccountId) {
+    public String transfer(String type, BigDecimal amount, String coinbaseAccountId) throws CoinbaseExchangeException {
         return coinbaseExchange.post(TRANSFER_ENDPOINT,
                 new ParameterizedTypeReference<String>(){},
                 new Transfer(type, amount, coinbaseAccountId));

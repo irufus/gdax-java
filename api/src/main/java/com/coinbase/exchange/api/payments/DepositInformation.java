@@ -97,4 +97,18 @@ public class DepositInformation {
     public void setReference(String reference) {
         this.reference = reference;
     }
+
+    @Override
+    public String toString() {
+        return "DepositInformation{"
+                + "account_number='" + account_number + '\''
+                + ", routing_number='" + routing_number + '\''
+                + ", bank_name='" + bank_name + '\''
+                + ", bank_address='" + bank_address + '\''
+                + ", bank_country=" + bank_country
+                + ", account_name='" + account_name + '\''
+                + ", account_address='" + account_address + '\''
+                + ", reference='" + reference + '\''
+                + '}';
+    }
 }

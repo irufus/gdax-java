@@ -42,4 +42,13 @@ public class Transfer {
     public void setCoinbase_account_id(String coinbase_account_id) {
         this.coinbase_account_id = coinbase_account_id;
     }
+
+    @Override
+    public String toString() {
+        return "Transfer{"
+                + "type='" + type + '\''
+                + ", amount=" + amount
+                + ", coinbase_account_id='" + coinbase_account_id + '\''
+                + '}';
+    }
 }

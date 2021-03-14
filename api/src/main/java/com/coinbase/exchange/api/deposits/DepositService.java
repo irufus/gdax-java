@@ -1,5 +1,6 @@
 package com.coinbase.exchange.api.deposits;
 
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import com.coinbase.exchange.model.CoinbasePaymentRequest;
 import com.coinbase.exchange.model.PaymentResponse;
 import com.coinbase.exchange.api.exchange.CoinbaseExchange;
@@ -28,7 +29,8 @@ public class DepositService {
      * @param paymentMethodId
      * @return PaymentResponse
      */
-    public PaymentResponse depositViaPaymentMethod(BigDecimal amount, String currency, final String paymentMethodId) {
+    public PaymentResponse depositViaPaymentMethod(BigDecimal amount, String currency, final String paymentMethodId)
+            throws CoinbaseExchangeException {
         CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, paymentMethodId);
         return exchange.post(DEPOSIT_ENDPOINT + PAYMENTS,
                 new ParameterizedTypeReference<PaymentResponse>(){},
@@ -41,7 +43,8 @@ public class DepositService {
      * @param coinbaseAccountId
      * @return PaymentResponse
      */
-    public PaymentResponse depositViaCoinbase(BigDecimal amount, String currency, String coinbaseAccountId) {
+    public PaymentResponse depositViaCoinbase(BigDecimal amount, String currency, String coinbaseAccountId)
+            throws CoinbaseExchangeException {
         CoinbasePaymentRequest coinbasePaymentRequest = new CoinbasePaymentRequest(amount, currency, coinbaseAccountId);
         return exchange.post(DEPOSIT_ENDPOINT + COINBASE_PAYMENT,
                 new ParameterizedTypeReference<PaymentResponse>(){},

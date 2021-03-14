@@ -25,4 +25,16 @@ public class NewMarketOrderSingle extends NewOrderSingle {
         this.size = size;
     }
 
+    @Override
+    public String toString() {
+        return "NewMarketOrderSingle{"
+                + "size=" + size
+                + ", client_oid='" + client_oid + '\''
+                + ", type='" + type + '\''
+                + ", side='" + side + '\''
+                + ", product_id='" + product_id + '\''
+                + ", stp='" + stp + '\''
+                + ", funds='" + funds + '\''
+                + '}';
+    }
 }

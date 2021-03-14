@@ -52,4 +52,14 @@ public class UserAccountData {
     public void setRecorded_at(String recorded_at) {
         this.recorded_at = recorded_at;
     }
+
+    @Override
+    public String toString() {
+        return "UserAccountData{"
+                + "product_id='" + product_id + '\''
+                + ", exchange_volume=" + exchange_volume
+                + ", volume=" + volume
+                + ", recorded_at='" + recorded_at + '\''
+                + '}';
+    }
 }

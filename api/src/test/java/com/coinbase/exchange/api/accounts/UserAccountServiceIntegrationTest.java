@@ -2,6 +2,7 @@ package com.coinbase.exchange.api.accounts;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import com.coinbase.exchange.api.useraccount.UserAccountData;
 import com.coinbase.exchange.api.useraccount.UserAccountService;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,7 @@ public class UserAccountServiceIntegrationTest extends BaseIntegrationTest {
      * Trailing volume could be empty so all we have to do is make sure it's not returning null
      */
     @Test
-    public void getTrailingVolume(){
+    public void getTrailingVolume() throws CoinbaseExchangeException {
         List<UserAccountData> data = userAccountService.getTrailingVolume();
         assertNotNull(data);
     }

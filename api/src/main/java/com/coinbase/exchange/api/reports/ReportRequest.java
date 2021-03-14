@@ -40,4 +40,13 @@ public class ReportRequest {
     public void setEnd_date(String end_date) {
         this.end_date = end_date;
     }
+
+    @Override
+    public String toString() {
+        return "ReportRequest{"
+                + "type='" + type + '\''
+                + ", start_date='" + start_date + '\''
+                + ", end_date='" + end_date + '\''
+                + '}';
+    }
 }

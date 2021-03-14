@@ -129,4 +129,21 @@ public class PaymentType {
     public void setLimits(Limit limits) {
         this.limits = limits;
     }
+
+    @Override
+    public String toString() {
+        return "PaymentType{"
+                + "id='" + id + '\''
+                + ", type='" + type + '\''
+                + ", name='" + name + '\''
+                + ", currency='" + currency + '\''
+                + ", primary_buy=" + primary_buy
+                + ", primary_sell=" + primary_sell
+                + ", allow_buy=" + allow_buy
+                + ", allow_sell=" + allow_sell
+                + ", allow_deposit=" + allow_deposit
+                + ", allow_withdraw=" + allow_withdraw
+                + ", limits=" + limits
+                + '}';
+    }
 }

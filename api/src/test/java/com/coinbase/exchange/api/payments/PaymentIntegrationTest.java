@@ -2,6 +2,7 @@ package com.coinbase.exchange.api.payments;
 
 import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,12 +25,12 @@ public class PaymentIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void hasAvailablePayments(){
+    public void hasAvailablePayments() throws CoinbaseExchangeException {
         List<PaymentType> types = testee.getPaymentTypes();
         assertTrue(types.size() > 0);
     }
     @Test
-    public void hasCoinbaseAccounts(){
+    public void hasCoinbaseAccounts() throws CoinbaseExchangeException {
         List<CoinbaseAccount> accounts = testee.getCoinbaseAccounts();
         assertTrue(accounts.size() > 0);
     }

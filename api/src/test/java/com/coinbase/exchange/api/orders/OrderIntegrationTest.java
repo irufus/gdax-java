@@ -4,6 +4,7 @@ import com.coinbase.exchange.api.BaseIntegrationTest;
 import com.coinbase.exchange.api.accounts.Account;
 import com.coinbase.exchange.api.accounts.AccountService;
 import com.coinbase.exchange.api.config.IntegrationTestConfiguration;
+import com.coinbase.exchange.api.exchange.CoinbaseExchangeException;
 import com.coinbase.exchange.api.marketdata.MarketData;
 import com.coinbase.exchange.api.marketdata.MarketDataService;
 import com.coinbase.exchange.api.products.ProductService;
@@ -63,7 +64,7 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
      * Note: You'll need credit available in your test account
      */
     @Ignore
-    public void canMakeLimitOrderAndGetTheOrderAndCancelIt() {
+    public void canMakeLimitOrderAndGetTheOrderAndCancelIt() throws CoinbaseExchangeException {
         List<Account> accounts = accountService.getAccounts();
         Optional<Account> accountsWithMoreThanZeroCoinsAvailable = accounts.stream()
                 .filter(account -> account.getBalance().compareTo(BigDecimal.ONE) > 0 && account.getCurrency().contains("BTC"))
@@ -101,25 +102,25 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void cancelAllOrders() {
+    public void cancelAllOrders() throws CoinbaseExchangeException {
         List<Order> cancelledOrders = testee.cancelAllOpenOrders();
         assertTrue(cancelledOrders.size() >= 0);
     }
 
     @Test
-    public void getAllOpenOrders() {
+    public void getAllOpenOrders() throws CoinbaseExchangeException {
         List<Order> openOrders = testee.getOpenOrders();
         assertTrue(openOrders.size() >= 0);
     }
 
     @Test
-    public void getFillsByProductId() {
+    public void getFillsByProductId() throws CoinbaseExchangeException {
         List<Fill> fills = testee.getFillsByProductId("BTC-USD", 100);
         assertTrue(fills.size() >= 0);
     }
 
     @Ignore
-    public void shouldGetFilledByOrderIdWhenMakingMarketOrderBuy() {
+    public void shouldGetFilledByOrderIdWhenMakingMarketOrderBuy() throws CoinbaseExchangeException {
         NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "buy", new BigDecimal(0.01));
         Order order = testee.createOrder(marketOrder);
 
@@ -129,7 +130,7 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
     }
 
     @Ignore
-    public void createMarketOrderBuy() {
+    public void createMarketOrderBuy() throws CoinbaseExchangeException {
         NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "buy", new BigDecimal(0.01));
         Order order = testee.createOrder(marketOrder);
 
@@ -144,7 +145,7 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
     }
 
     @Ignore
-    public void createMarketOrderSell() {
+    public void createMarketOrderSell() throws CoinbaseExchangeException {
         NewMarketOrderSingle marketOrder = createNewMarketOrder("BTC-USD", "sell", new BigDecimal(0.01));
         Order order = testee.createOrder(marketOrder);
         assertNotNull(order); //make sure we created an order
@@ -165,7 +166,7 @@ public class OrderIntegrationTest extends BaseIntegrationTest {
         return marketOrder;
     }
 
-    private MarketData getMarketDataOrderBook(String product) {
+    private MarketData getMarketDataOrderBook(String product) throws CoinbaseExchangeException {
         return marketDataService.getMarketDataOrderBook(product, 1);
     }
 
