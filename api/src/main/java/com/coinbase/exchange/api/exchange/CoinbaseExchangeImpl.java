@@ -59,7 +59,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
             return responseEntity.getBody();
         } catch (HttpClientErrorException ex) {
             log.error("GET request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
-            throw new CoinbaseExchangeException(ex);
+            throw CoinbaseExchangeException.create(ex, objectMapper);
         }
     }
 
@@ -102,7 +102,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
             return response.getBody();
         } catch (HttpClientErrorException ex) {
             log.error("DELETE request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
-            throw new CoinbaseExchangeException(ex);
+            throw CoinbaseExchangeException.create(ex, objectMapper);
         }
     }
 
@@ -119,7 +119,7 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
             return response.getBody();
         } catch (HttpClientErrorException ex) {
             log.error("POST request Failed for '" + resourcePath + "': " + ex.getResponseBodyAsString());
-            throw new CoinbaseExchangeException(ex);
+            throw CoinbaseExchangeException.create(ex, objectMapper);
         }
     }
 
