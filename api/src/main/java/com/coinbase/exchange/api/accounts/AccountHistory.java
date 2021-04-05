@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * Created by irufus on 2/18/15.
  */
 public class AccountHistory {
-    private Integer id;
+    private String id;
     private String created_at;
     private BigDecimal amount;
     private BigDecimal balance;
@@ -17,11 +17,11 @@ public class AccountHistory {
 
     public AccountHistory() {}
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
