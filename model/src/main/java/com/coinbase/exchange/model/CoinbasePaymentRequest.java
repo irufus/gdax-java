@@ -22,4 +22,10 @@ public class CoinbasePaymentRequest extends MonetaryRequest {
     public void setCoinbase_account_id(String coinbase_account_id) {
         this.coinbase_account_id = coinbase_account_id;
     }
+    public String getPayment_method_id() {
+      return payment_method_id;
+    }
+    public void setPayment_method_id(String payment_method_id) {
+      this.payment_method_id = payment_method_id;
+    }    
 }
