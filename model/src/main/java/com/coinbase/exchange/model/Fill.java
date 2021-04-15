@@ -6,8 +6,9 @@ import java.math.BigDecimal;
  * Created by irufus on 2/18/15.
  */
 public class Fill {
-    private Integer trade_id;
+    private String trade_id;
     private String product_id;
+    private BigDecimal price;
     private BigDecimal size;
     private String order_id;
     private String created_at;
@@ -63,6 +64,14 @@ public class Fill {
     public void setOrder_id(String order_id) {
         this.order_id = order_id;
     }
+    
+    public BigDecimal getPrice() {
+      return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+      this.price = price;
+    }    
 
     public BigDecimal getSize() {
         return size;
@@ -80,11 +89,11 @@ public class Fill {
         this.product_id = product_id;
     }
 
-    public Integer getTrade_id() {
+    public String getTrade_id() {
         return trade_id;
     }
 
-    public void setTrade_id(Integer trade_id) {
+    public void setTrade_id(String trade_id) {
         this.trade_id = trade_id;
     }
 }
