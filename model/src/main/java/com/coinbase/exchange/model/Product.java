@@ -41,7 +41,7 @@ public class Product {
     private Boolean margin_enabled;
     private String status_message;
     private BigDecimal min_market_funds;
-    private Integer max_market_funds;
+    private BigDecimal max_market_funds;
     private Boolean post_only;
     private Boolean limit_only;
     private Boolean cancel_only;
@@ -143,11 +143,11 @@ public class Product {
         this.min_market_funds = min_market_funds;
     }
 
-    public Integer getMax_market_funds() {
+    public BigDecimal getMax_market_funds() {
         return max_market_funds;
     }
 
-    public void setMax_market_funds(Integer max_market_funds) {
+    public void setMax_market_funds(BigDecimal max_market_funds) {
         this.max_market_funds = max_market_funds;
     }
 
